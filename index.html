@@ -620,6 +620,17 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .chat-head .p3-slot{margin:-8px -6px -10px -8px}
 .profile-head .p3-slot{margin:-14px -6px -14px -10px}
 #celeb-mascot .p3-slot{margin:-10px auto -14px}
+/* Nubi companion */
+.buddy{position:absolute;right:4px;bottom:146px;z-index:39;opacity:0;transform:translateY(24px) scale(.7);transform-origin:bottom right;transition:opacity .3s,transform .4s cubic-bezier(.3,1.5,.5,1);pointer-events:none;filter:drop-shadow(0 8px 14px rgba(0,0,0,.5))}
+.buddy.show{opacity:1;transform:none;pointer-events:auto}
+.pbub.bud{transform-origin:bottom right}
+.pbub.bud .pb-body::before{content:"";position:absolute;bottom:-7px;right:28px;width:12px;height:12px;background:#0E1336;border-right:1px solid rgba(167,139,250,.55);border-bottom:1px solid rgba(167,139,250,.55);transform:rotate(45deg)}
+.friend{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:16px;background:var(--mental-soft);border:1px solid rgba(142,92,247,.35)}
+.fr-ic{color:#FF6FB5;flex:none}
+.fr-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.fr-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
+.fr-top small{color:var(--muted);font-size:12px;white-space:nowrap}
+.fr-b > small{font-size:11.5px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -660,6 +671,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
     </main>
     <nav class="tabbar" id="tabbar" aria-label="Secciones"></nav>
     <button class="fab" id="fab" data-act="fab" aria-label="Agregar rápido"></button>
+    <div class="buddy" id="buddy"></div>
     <div class="tour" id="tour" hidden role="dialog" aria-modal="true" aria-label="Recorrido por la app"><div class="tour-spot" id="tour-spot"></div><div class="tour-card" id="tour-card"></div></div>
 
     <div class="notif" id="notif" role="status" aria-live="polite">
@@ -1079,7 +1091,7 @@ function stepFx() {
 function cheer(pos, big = false) {
   pos = pos || {x:phone.clientWidth / 2, y:phone.clientHeight * .35};
   if (big) { SND.party(); cannons(); burst(pos.x, pos.y, 70, 1.3); buzz([40, 50, 40, 50, 80]); }
-  else { SND.cheer(); burst(pos.x, pos.y, 48, 1); buzz([25, 40, 25]); setTimeout(() => say(pick1(CHEERS), {ms:2200}), 120); }
+  else { SND.cheer(); burst(pos.x, pos.y, 48, 1); buzz([25, 40, 25]); setTimeout(() => { if (Date.now() - lastNubiAt > 400) say(pick1(CHEERS), {ms:2200}); }, 120); }
   P3 && P3.ok() && P3.play(big ? 'celebrate' : 'cheer');
   document.querySelectorAll('.mascot').forEach(m => { m.classList.remove('cheer'); void m.getBoundingClientRect(); m.classList.add('cheer'); clearTimeout(m._ct); m._ct = setTimeout(() => m.classList.remove('cheer'), big ? 2200 : 1300); });
 }
@@ -1153,7 +1165,7 @@ function toggleHabit(id, btn) {
   if (h.state === 'done') { h.state = null; h.streak = Math.max(0, h.streak - 1); addXP(-10); SND.miss(); }
   else if (h.state === 'missed') { if (S.reasons[h.reason] > 0) S.reasons[h.reason]--; h.state = null; h.reason = null; }
   else {
-    h.state = 'done'; h.streak++; cheer(pos); addXP(10, pos);
+    h.state = 'done'; h.streak++; cheer(pos); addXP(10, pos); nubi('habit', {h});
     if (toMin(nowHM()) < 480) unlock('madrugador');
   }
   save(); rerender();
@@ -1209,7 +1221,7 @@ function setMode(m) { Object.assign(S.pomo, {mode:m, running:false, left:PMODES[
 function pomoToggle() {
   const p = S.pomo;
   if (p.running) { p.left = pomoLeft(); p.running = false; P3 && P3.play('idle'); }
-  else { if (p.left <= 0) p.left = p.total; p.endAt = Date.now() + p.left*1000; p.running = true; tone([520], .12, 'sine', 0, .06); if (p.mode === 'focus') { P3 && P3.play('meditate'); setTimeout(() => say('Modo enfoque activado. Yo cuido el tiempo.'), 250); } }
+  else { if (p.left <= 0) p.left = p.total; p.endAt = Date.now() + p.left*1000; p.running = true; tone([520], .12, 'sine', 0, .06); if (p.mode === 'focus') { P3 && P3.play('meditate'); setTimeout(() => nubi('pomoStart'), 250); } }
   save(); updatePomo(); topTimer();
 }
 function pomoComplete(counted) {
@@ -1223,10 +1235,10 @@ function pomoComplete(counted) {
       if (p.today >= 2) autoHabit('h3', 'Hábito “2 pomodoros de trabajo profundo” cumplido.');
     }
     const next = p.set >= 4 ? 'long' : 'short'; setMode(next);
-    if (counted) toast(next === 'long' ? '¡4 pomodoros! Tómate 15 minutos de descanso.' : 'Pomodoro completo. Descansa 5 minutos.');
+    if (counted) nubi('pomoDone', {long:next === 'long'});
   } else {
     if (was === 'long') p.set = 0;
-    if (counted) { SND.bell(); buzz([200]); toast('Fin del descanso. ¿Vamos por otro pomodoro?'); }
+    if (counted) { SND.bell(); buzz([200]); nubi('breakEnd'); }
     setMode('focus');
   }
   save(); if (current === 'inicio') rerender(); topTimer();
@@ -1249,7 +1261,7 @@ const walkLeft = () => S.walk.running ? Math.max(0, Math.ceil((S.walk.endAt - Da
 function walkStart(min, demo) {
   const total = demo ? 10 : min * 60;
   S.walk = {running:true, min, total, left:total, endAt:Date.now() + total*1000};
-  save(); rerender(); tone([520], .12, 'sine', 0, .06);
+  save(); rerender(); tone([520], .12, 'sine', 0, .06); nubi('walk', {min});
 }
 function walkComplete() {
   const m = S.walk.min; S.walk = {running:false, endAt:0, left:0, total:0, min:0};
@@ -1274,7 +1286,7 @@ function tick() {
   if (S.walk.running) { if (walkLeft() <= 0) walkComplete(); else updateWalk(); }
   if (restEnd) {
     const l = Math.ceil((restEnd - Date.now()) / 1000);
-    if (l <= 0) { restEnd = 0; updateRest(0); SND.bell(); buzz([150, 80, 150]); toast('Descanso terminado. ¡Siguiente serie!'); }
+    if (l <= 0) { restEnd = 0; updateRest(0); SND.bell(); buzz([150, 80, 150]); nubi('restEnd'); }
     else updateRest(l);
   }
 }
@@ -1477,6 +1489,7 @@ const HI = {inicio:'¡De vuelta! Vamos por tu siguiente paso.', mental:'Aquí cu
 const pick1 = a => a[Math.floor(Math.random() * a.length)];
 let sayT = 0, sayM = null;
 function visibleMascot() {
+  const bud = $('#buddy.show .p3-slot'); if (bud) return bud;
   const sec = $('#s-' + current), sr = $('#scroller').getBoundingClientRect(); if (!sec) return null;
   return [...sec.querySelectorAll('.p3-slot.live, .mascot')].find(x => { const r = x.getBoundingClientRect(); return r.width && r.top > sr.top - 10 && r.bottom < sr.bottom - 60; }) || null;
 }
@@ -1487,13 +1500,17 @@ function say(text, o = {}) {
   const b = $('#pbub'), P = phone.getBoundingClientRect(), m = visibleMascot();
   hideSay();
   const body = `<div class="pb-body"><p class="pb-t">${esc(text)}</p>${o.sub ? `<p class="pb-s">${esc(o.sub)}</p>` : ''}${o.desc ? `<p class="muted small" style="margin-top:2px">${o.desc}</p>` : ''}${o.act ? `<div class="pb-btns"><button class="btn small" data-act="${o.act}" data-id="${o.id || ''}">${o.label}</button><button class="link" data-act="pbub-close">Ahora no</button></div>` : ''}</div>`;
-  if (m) {
+  if (m && m.closest('#buddy')) {
     const r = m.getBoundingClientRect();
+    b.innerHTML = body; b.className = 'pbub bud'; b.style.top = ''; b.style.left = ''; b.style.right = '10px'; b.style.bottom = (P.bottom - r.top - 2) + 'px';
+    sayM = m;
+  } else if (m) {
+    const r = m.getBoundingClientRect(); b.style.left = '';
     b.innerHTML = body; b.className = 'pbub anch';
     b.style.top = (r.bottom - P.top - 4) + 'px'; b.style.bottom = ''; b.style.right = Math.max(10, P.right - r.right - 4) + 'px';
     sayM = m;
   } else {
-    b.innerHTML = body + `<span class="pb-av">${mascot(o.mood || 'happy', 58)}</span>`; b.className = 'pbub dock';
+    b.innerHTML = body + `<span class="pb-av">${mascot(o.mood || 'happy', 58)}</span>`; b.className = 'pbub dock'; b.style.left = '';
     b.style.top = ''; b.style.bottom = '150px'; b.style.right = '12px';
     sayM = b.querySelector('.mascot');
   }
@@ -1514,10 +1531,113 @@ let lastAct = Date.now(), dozing = false;
 function wake() { lastAct = Date.now(); if (!dozing) return; dozing = false; P3 && P3.play(S.pomo.running && S.pomo.mode === 'focus' ? 'meditate' : 'idle'); document.querySelectorAll('.mascot.sleepy').forEach(m => m.classList.remove('sleepy')); }
 document.addEventListener('pointerdown', wake, true); document.addEventListener('keydown', wake, true);
 setInterval(() => {
-  if (dozing || Date.now() - lastAct < 40000 || !$('#tour').hidden || $('#sheet').classList.contains('show') || S.pomo.running) return;
+  if (dozing || Date.now() - lastAct < 60000 || !$('#tour').hidden || $('#sheet').classList.contains('show') || S.pomo.running) return;
   dozing = true; document.querySelectorAll('.mascot').forEach(m => m.classList.add('sleepy')); P3 && P3.play('sleep');
   say('¿Sigues ahí? Te espero aquí.', {mood:'calm', ms:5000});
 }, 5000);
+
+/* ---------- Nubi as a companion friend ---------- */
+const tL = (es, en) => S.lang === 'en' ? en : es;
+const pickL = a => { const x = a[Math.floor(Math.random() * a.length)]; return tL(x[0], x[1]); };
+const hn = n => S.lang === 'en' ? enT(n) : n;
+let lastNubiAt = 0, lastChatter = 0, nameT = 0; const tabSaidAt = {};
+const FRIEND = [[0, 'Conocidos', 'Acquaintances'], [20, 'Amigos', 'Friends'], [60, 'Buenos amigos', 'Good friends'], [140, 'Mejores amigos', 'Best friends']];
+function friendLv(pts = S.friend || 0) { let i = 0; FRIEND.forEach((f, k) => { if (pts >= f[0]) i = k; }); return i; }
+function friendUp(n) {
+  const before = friendLv(); S.friend = (S.friend || 0) + n; save();
+  const after = friendLv();
+  if (after > before) setTimeout(() => {
+    P3 && P3.ok() && P3.play('celebrate'); SND.party();
+    const F = FRIEND[after];
+    nubiSay(tL(`¡Ahora somos ${F[1].toLowerCase()}, ${S.name || 'Ana'}! Gracias por dejarme acompañarte.`, `We're ${F[2].toLowerCase()} now, ${S.name || 'Ana'}! Thanks for letting me be with you.`), {ms:5000});
+  }, 1200);
+}
+function nubiSay(text, o = {}) { lastNubiAt = Date.now(); say(text, o); }
+function nubi(ev, d = {}) {
+  const name = S.name || 'Ana', tot = S.habits.length, done = S.habits.filter(h => h.state === 'done').length;
+  let line = null, o = {}, clip = null, pts = 0;
+  switch (ev) {
+    case 'habit': { const h = d.h, left = tot - done, n = hn(h.name); pts = 1; clip = 'clap';
+      if (!left) break;
+      line = h.streak > 1 && h.streak % 7 === 0
+        ? tL(`¡${h.streak} días seguidos con "${n}"! Estoy muy orgulloso de ti.`, `${h.streak} days in a row with "${n}"! I'm so proud of you.`)
+        : pickL([[`¡Eso, ${name}! "${n}" listo. Vas ${done} de ${tot}.`, `Nice, ${name}! "${n}" is done. ${done} of ${tot}.`],
+                 [`¡Uno más! Te faltan ${left}. Aquí estoy contigo.`, `One more! ${left} to go. I'm right here with you.`],
+                 [`Racha de ${h.streak} en "${n}". ¡Así se construye un hábito!`, `${h.streak}-day streak on "${n}". That's how habits are built!`]]);
+      break; }
+    case 'task': { const left = (S.tasks || []).filter(x => !x.done).length; pts = 1; clip = 'nod';
+      if (!left) break;
+      line = pickL([[`¡Tachado! "${d.t}" ya es historia.`, `Crossed off! "${hn(d.t)}" is history.`], [`¡Uno menos! Te quedan ${left} pendientes.`, `One less! ${left} to-dos left.`]]); break; }
+    case 'taskAdd': clip = 'nod';
+      line = pickL([[`Anotado: "${d.t}". Lo sacamos juntos.`, `Noted: "${d.t}". We'll get it done together.`], ['Listo, lo agregué a tus pendientes. Tú puedes.', "Done, I added it to your to-dos. You've got this."]]); break;
+    case 'goal': { const g = d.g, pct = Math.round(g.cur / g.target * 100); clip = 'clap'; pts = 1;
+      line = tL(`"${g.name}": vas en ${pct}%. ¡Cada paso cuenta!`, `"${hn(g.name)}": you're at ${pct}%. Every step counts!`); break; }
+    case 'water': clip = 'cheer'; pts = 1;
+      if (S.water >= 8) break;
+      line = S.water >= 6 ? tL(`Vaso ${S.water} de 8. ¡Ya casi llegas!`, `Glass ${S.water} of 8. Almost there!`)
+        : pickL([[`Vaso ${S.water} de 8. Tu cerebro te lo agradece.`, `Glass ${S.water} of 8. Your brain thanks you.`], [`¡Glup! Vaso ${S.water} de 8. Me encanta verte hidratado.`, `Gulp! Glass ${S.water} of 8. Love seeing you hydrated.`]]); break;
+    case 'meal': { const k = MEALS.filter(m => S.eaten[m.id]).reduce((a, m) => a + mealTot(m).k, 0); clip = 'nod'; pts = 1;
+      line = pickL([[`¡Buen provecho, ${name}! Llevas ${nf(k)} kcal hoy.`, `Enjoy your meal, ${name}! ${nf(k)} kcal so far today.`], [`Rico y nutritivo. Llevas ${nf(k)} kcal.`, `Tasty and nutritious. ${nf(k)} kcal so far.`]]); break; }
+    case 'set': { const e = d.e, all = Array.from({length:e.sets}, (_, i) => S.sets[e.id + '-' + (i + 1)]).every(Boolean); clip = 'clap'; pts = 1;
+      line = all ? tL(`¡${e.n} completo! Vamos con el siguiente.`, `${hn(e.n)} done! On to the next one.`)
+                 : tL(`Serie ${d.k} de ${e.sets}. Respira, descansamos 60 segundos.`, `Set ${d.k} of ${e.sets}. Breathe, we rest for 60 seconds.`); break; }
+    case 'restEnd': clip = 'cheer'; line = pickL([['¡Se acabó el descanso! Siguiente serie, tú puedes.', 'Rest is over! Next set, you can do it.'], ['¡Arriba! Otra serie y vamos por más.', 'Up we go! One more set.']]); break;
+    case 'walk': clip = 'wave'; line = tL(`¡A caminar ${d.min} minutos! Yo llevo el tiempo.`, `Let's walk for ${d.min} minutes! I'll keep time.`); break;
+    case 'pomoStart': clip = 'nod'; line = pickL([['Modo enfoque activado. Yo cuido el tiempo.', "Focus mode on. I'll watch the clock."], ['25 minutos solo para lo importante. ¡Vamos!', "25 minutes just for what matters. Let's go!"], ['Celular lejos y a darle. Te aviso al terminar.', "Phone away and go for it. I'll tell you when it's over."]]); break;
+    case 'pomoDone': clip = 'clap'; pts = 1;
+      line = d.long ? tL('¡4 pomodoros! Tómate 15 minutos, te lo ganaste.', '4 pomodoros! Take 15 minutes, you earned it.')
+                    : tL(`¡Pomodoro terminado! Llevas ${S.pomo.today} hoy. Descansa 5 minutos y estírate.`, `Pomodoro done! ${S.pomo.today} today. Rest 5 minutes and stretch.`); break;
+    case 'breakEnd': clip = 'wave'; line = tL('¿Listo para otro bloque? Yo te acompaño.', "Ready for another block? I'm with you."); break;
+    case 'checkin': { const c = S.check; pts = 3;
+      if (c.stress >= 7 || c.anx >= 7 || c.mood <= 2) { line = tL(`Veo mucha carga hoy, ${name}. ¿Respiramos un minuto juntos?`, `I see a lot on your plate today, ${name}. Shall we breathe together for a minute?`); o = {act:'breathe', label:tL('Respirar', 'Breathe'), sad:true}; }
+      else if (c.mood >= 4) { clip = 'clap'; line = tL('¡Qué bien que te sientes así! Aprovechemos esa energía.', "So glad you feel this way! Let's use that energy."); }
+      else { clip = 'nod'; line = tL('Gracias por contarme cómo estás. Aquí estoy para lo que necesites.', "Thanks for telling me how you are. I'm here for whatever you need."); }
+      break; }
+    case 'breathDone': P3 && P3.ok() && P3.play('idle'); clip = 'clap'; pts = 2; line = tL('¿Ves? Un minuto para ti hace la diferencia.', 'See? One minute for yourself makes a difference.'); break;
+    case 'name': clip = 'wave'; line = tL(`¡Mucho gusto, ${name}! Me encanta tu nombre.`, `Nice to meet you, ${name}! I love your name.`); break;
+    case 'coach': clip = 'clap'; line = tL('¡Ahora somos equipo con tu coach! Vamos con todo.', "Now we're a team with your coach! Let's go."); break;
+  }
+  if (pts) friendUp(pts);
+  if (clip && P3 && P3.ok()) P3.play(clip);
+  if (line) nubiSay(line, o);
+}
+/* entering a section: a contextual hello (at most every 30 s per section) */
+function nubiTab(tab) {
+  const name = S.name || 'Ana', kcal = MEALS.filter(m => S.eaten[m.id]).reduce((a, m) => a + mealTot(m).k, 0);
+  if (tab === 'inicio') { const n = nextSteps()[0]; nubiSay(tL(`¡De vuelta, ${name}! Te sugiero esto:`, `Welcome back, ${name}! Here's my suggestion:`), {sub:n.t, desc:n.d, act:n.act, id:n.id, label:n.b}); }
+  else if (tab === 'mental') { if (S.check) nubiSay(tL(`Hoy te sentiste "${MOODS[S.check.mood - 1].toLowerCase()}". Si quieres platicar, aquí estoy.`, `Today you felt "${hn(MOODS[S.check.mood - 1]).toLowerCase()}". If you want to talk, I'm here.`));
+    else nubiSay(tL('¿Cómo te sientes hoy? Cuéntamelo en tu registro.', 'How are you feeling today? Tell me in your check-in.'), {act:'qa-checkin', label:tL('Hacer registro', 'Check in')}); }
+  else if (tab === 'nutricion') nubiSay(tL(`Llevas ${S.water} de 8 vasos de agua y ${nf(kcal)} kcal. ¿Cómo vamos con la comida?`, `You've had ${S.water} of 8 glasses of water and ${nf(kcal)} kcal. How's eating going?`), S.water < 8 ? {act:'qa-water', label:tL('Tomé un vaso', 'I had a glass')} : {});
+  else if (tab === 'entreno') nubiSay(setsDone() ? tL(`Llevas ${nf(S.steps)} pasos y ${setsDone()} series. ¡Qué energía!`, `${nf(S.steps)} steps and ${setsDone()} sets so far. What energy!`) : tL(`Llevas ${nf(S.steps)} pasos. ¿Hacemos la rutina juntos?`, `${nf(S.steps)} steps so far. Shall we do the workout together?`));
+  else if (tab === 'perfil') nubiSay(tL(`Tienes ${nf(S.coins || 0)} monedas. ¿Me compras algo bonito?`, `You have ${nf(S.coins || 0)} coins. Want to buy me something nice?`), {act:'shop-open', label:tL('Ver tienda', 'See shop')});
+  P3 && P3.ok() && P3.play('wave');
+}
+/* opening the app: a daily welcome with your day in one line */
+function nubiWelcome() {
+  const name = S.name || 'Ana', hr = new Date().getHours(), first = S.greetDay !== todayKey(); S.greetDay = todayKey(); save();
+  const greet = hr < 12 ? tL('¡Buenos días', 'Good morning') : hr < 19 ? tL('¡Buenas tardes', 'Good afternoon') : tL('¡Buenas noches', 'Good evening');
+  P3 && P3.ok() && P3.play('wave');
+  if (first) {
+    const ph = S.habits.filter(h => !h.state).length, pt = (S.tasks || []).filter(x => !x.done).length, n = nextSteps()[0];
+    nubiSay(tL(`${greet}, ${name}! Hoy tienes ${ph} hábitos y ${pt} pendientes. ¿Empezamos por aquí?`, `${greet}, ${name}! Today you have ${ph} habits and ${pt} to-dos. Shall we start here?`), {sub:n.t, desc:n.d, act:n.act, id:n.id, label:n.b, ms:9000});
+  } else nubiSay(pickL([[`¡Qué gusto verte otra vez, ${name}!`, `So good to see you again, ${name}!`], [`¡Volviste! Te estaba esperando, ${name}.`, `You're back! I was waiting for you, ${name}.`]]));
+}
+/* a quiet moment: Nubi checks in with something useful for where you are */
+function nubiChatter() {
+  const tab = current;
+  if (tab === 'inicio') { const n = nextSteps()[0]; nubiSay(pickL([['Oye, ¿y si hacemos esto?', 'Hey, what if we do this?'], ['Tengo una idea para ti:', 'I have an idea for you:']]), {sub:n.t, desc:n.d, act:n.act, id:n.id, label:n.b}); }
+  else if (tab === 'mental') { if (Math.random() < .5) nubiSay(tL('Recuerda: está bien no estar bien. Aquí estoy contigo.', "Remember: it's okay not to be okay. I'm here with you."));
+    else nubiSay(tL('¿Una pausa de respiración? Solo un minuto, conmigo.', 'A breathing break? Just one minute, with me.'), {act:'breathe', label:tL('Respirar', 'Breathe')}); }
+  else if (tab === 'nutricion') { if (S.water < 8) nubiSay(tL(`¿Un vaso de agua? Llevas ${S.water} de 8.`, `A glass of water? You're at ${S.water} of 8.`), {act:'qa-water', label:tL('Tomé uno', 'I had one')}); else nubiSay(tL('¡Ya tomaste tus 8 vasos! Eres increíble.', "You've had all 8 glasses! You're amazing.")); }
+  else if (tab === 'entreno') nubiSay(tL('¿Y si caminamos 10 minutos? Despeja la mente.', 'What if we walk for 10 minutes? It clears the mind.'), {act:'qa-walk', label:tL('Caminar 10 min', 'Walk 10 min')});
+  else if (tab === 'perfil') nubiSay(tL('Con cada avance ganas monedas para vestirme. ¿Vemos la tienda?', 'Every bit of progress earns coins to dress me up. Shall we see the shop?'), {act:'shop-open', label:tL('Ver tienda', 'See shop')});
+  P3 && P3.ok() && P3.play('wave');
+}
+setInterval(() => {
+  const idle = Date.now() - lastAct;
+  if (dozing || idle < 20000 || idle > 55000 || Date.now() - lastChatter < 70000 || Date.now() - lastNubiAt < 15000 || !$('#tour').hidden || $('#sheet').classList.contains('show') || $('#celeb').classList.contains('show')) return;
+  lastChatter = Date.now(); nubiChatter();
+}, 4000);
 
 /* ---------- render: mental ---------- */
 function dayOfYear() { const d = new Date(); return Math.floor((d - new Date(d.getFullYear(), 0, 0)) / 864e5); }
@@ -1613,7 +1733,7 @@ function openBreath() {
   const endAt = Date.now() + 60800;
   const phase = inhale => {
     const c = $('#bc'); if (!c) return;
-    if (Date.now() >= endAt - 300) { stopBreath(); closeSheet(); addXP(10); SND.done(); toast('Bien hecho. Ese minuto fue para ti.'); return; }
+    if (Date.now() >= endAt - 300) { stopBreath(); closeSheet(); addXP(10); SND.done(); setTimeout(() => nubi('breathDone'), 300); return; }
     c.style.transitionDuration = (inhale ? 4 : 6) + 's'; c.classList.toggle('in', inhale);
     $('#bl').textContent = inhale ? 'Inhala' : 'Exhala';
     breathT = setTimeout(() => phase(!inhale), inhale ? 4000 : 6000);
@@ -1661,8 +1781,8 @@ async function sendChat(text) {
   S.chat.push({role:'user', content:text});
   if (CRISIS.test(text.toLowerCase())) S.chat.push({role:'crisis'});
   const reply = {role:'assistant', content:'', pending:true}; S.chat.push(reply);
-  S.chat = S.chat.slice(-30); renderChat(); chatBusy = true; setSend(true);
-  const finish = () => { reply.pending = false; chatBusy = false; chatCtl = null; setSend(false); renderChat(); save(); };
+  S.chat = S.chat.slice(-30); renderChat(); chatBusy = true; setSend(true); friendUp(2); P3 && P3.ok() && P3.play('think');
+  const finish = () => { reply.pending = false; chatBusy = false; chatCtl = null; setSend(false); renderChat(); save(); if (P3 && P3.ok()) { P3.play('idle'); P3.play('nod'); } };
   if (aiState !== 'live') { await wait(900); reply.content = demoReply(text); reply.demo = true; finish(); return; }
   const ctl = new AbortController(); chatCtl = ctl;
   const turns = S.chat.filter(m => (m.role === 'user' || m.role === 'assistant') && !m.pending && !m.err && !m.demo && m.content).slice(-12).map(m => ({role:m.role, content:m.content}));
@@ -1884,7 +2004,7 @@ function show(tab) {
   if (tab === 'mental') renderChat();
   $('#scroller').scrollTop = 0; topTimer(); P3 && P3.mount();
   hideSay();
-  if (from >= 0 && !seenTab[tab]) { seenTab[tab] = 1; setTimeout(() => { if (current === tab) say(HI[tab]); }, 650); }
+  if (from >= 0 && Date.now() - (tabSaidAt[tab] || 0) > 30000) { tabSaidAt[tab] = Date.now(); setTimeout(() => { if (current === tab && Date.now() - lastNubiAt > 1500) nubiTab(tab); }, 650); }
   if (!RM && from >= 0) {
     sec.classList.remove('enter-l', 'enter-r'); [...sec.children].forEach((c, i) => c.style.setProperty('--i', Math.min(i, 8)));
     void sec.offsetWidth; sec.classList.add(to > from ? 'enter-r' : 'enter-l');
@@ -1903,7 +2023,7 @@ const A = {
     if (S.water >= 8) { closeSheet(); toast('Ya llevas tus 8 vasos de hoy. ¡Muy bien!'); return; }
     const pos = relPos(t); S.water++; save(); closeSheet();
     if (S.water === 8) { cheer(pos, true); unlock('agua'); } else cheer(pos);
-    toast(`Vaso ${S.water} de 8 registrado.`); rerender();
+    rerender(); nubi('water');
   },
   'qa-task': () => goScroll('inicio', '#task-in', true),
   'qa-habit': () => newHabitSheet(),
@@ -1935,13 +2055,13 @@ const A = {
   'goal-plus': t => {
     const g = S.goals.find(x => x.id === t.dataset.id); if (!g || g.cur >= g.target) return;
     const pos = relPos(t); g.cur = Math.min(g.target, Math.round((g.cur + g.step) * 10) / 10);
-    if (g.cur >= g.target) { addXP(50, pos); celebrate('goal', g.name); } else { cheer(pos); addXP(5, pos); }
+    if (g.cur >= g.target) { addXP(50, pos); celebrate('goal', g.name); } else { cheer(pos); addXP(5, pos); nubi('goal', {g}); }
     save(); rerender();
   },
   'task-toggle': t => {
     const x = S.tasks.find(k => k.id === t.dataset.id); if (!x) return;
     const pos = relPos(t); x.done = !x.done;
-    if (x.done) { addXP(5, pos); if (S.tasks.every(k => k.done) && !S.tasksDone) { S.tasksDone = true; addXP(20); setTimeout(() => celebrate('tasks'), 250); } else cheer(pos); }
+    if (x.done) { addXP(5, pos); if (S.tasks.every(k => k.done) && !S.tasksDone) { S.tasksDone = true; addXP(20); setTimeout(() => celebrate('tasks'), 250); } else { cheer(pos); nubi('task', {t:x.t}); } }
     else SND.miss();
     save(); rerender();
   },
@@ -1965,7 +2085,7 @@ const A = {
     S.check = {...draft, sleep:+draft.sleep || 0, at:nowHM()}; editing = false; draft = null; save();
     if (first) { addXP(15, pos); unlock('checkin'); }
     rerender(); SND.check();
-    const ck = S.check; setTimeout(() => (ck.stress >= 7 || ck.anx >= 7 || ck.mood <= 2) ? say('Veo mucha carga hoy. ¿Respiramos un minuto juntos?', {act:'breathe', label:'Respirar', sad:true}) : say('Gracias por contarme cómo estás.'), 250);
+    setTimeout(() => nubi('checkin'), 250);
   },
   'edit-checkin': () => { editing = true; draft = {...S.check}; rerender(); },
   'breathe': () => openBreath(),
@@ -1975,7 +2095,7 @@ const A = {
   'meal-eat': t => {
     const id = t.dataset.id, on = !S.eaten[id]; S.eaten[id] = on; save();
     if (on) { const pos = relPos(t); addXP(5, pos);
-      if (MEALS.every(x => S.eaten[x.id]) && !S.mealsDone) { S.mealsDone = true; save(); addXP(20); setTimeout(() => celebrate('meals'), 250); } else cheer(pos); }
+      if (MEALS.every(x => S.eaten[x.id]) && !S.mealsDone) { S.mealsDone = true; save(); addXP(20); setTimeout(() => celebrate('meals'), 250); } else { cheer(pos); nubi('meal'); } }
     const m = MEALS.find(x => x.id === id); $('#meal-' + id).outerHTML = mealBlock(m); $('#eaten').outerHTML = eatenBlock();
   },
   'swap': t => { const k = t.dataset.meal + t.dataset.i; S.swaps[k] = (S.swaps[k] || 0) + 1; save(); const m = MEALS.find(x => x.id === t.dataset.meal); $('#meal-' + m.id).outerHTML = mealBlock(m); $('#eaten').outerHTML = eatenBlock(); },
@@ -1983,7 +2103,7 @@ const A = {
     const i = +t.dataset.i; S.water = i + 1 === S.water ? i : i + 1; save();
     $('#water').innerHTML = waterBtns(); $('#water-txt').textContent = `${S.water} de 8 vasos`;
     const wp = relPos(t);
-    if (S.water === 8) { cheer(wp, true); unlock('agua'); } else if (S.water > i) cheer(wp); else SND.check();
+    if (S.water === 8) { cheer(wp, true); unlock('agua'); } else if (S.water > i) { cheer(wp); nubi('water'); } else SND.check();
   },
   'walk': t => walkStart(+t.dataset.min, false),
   'walk-demo': () => walkStart(20, true),
@@ -1994,7 +2114,7 @@ const A = {
     const pos = relPos(t); save();
     const e = EXS.find(x => x.id === id); $('#ex-' + id).outerHTML = exRow(e); $('#ex-prog').textContent = `${setsDone()} de ${setsTotal} series`;
     if (!on) return;
-    addXP(2, pos); if (setsDone() !== setsTotal) cheer(pos);
+    addXP(2, pos); if (setsDone() !== setsTotal) { cheer(pos); nubi('set', {e, k:+t.dataset.k}); }
     if (setsDone() === setsTotal) { restEnd = 0; updateRest(0); if (!S.workoutDone) { S.workoutDone = true; save(); addXP(30); unlock('entreno'); setTimeout(() => celebrate('workout'), 300); } }
     else { restEnd = Date.now() + 60000; updateRest(60); }
   },
@@ -2048,20 +2168,20 @@ document.addEventListener('input', e => {
   } else if (d.np !== undefined) {
     S.profile[d.np] = el.value; save(); $('#nutri-calc').innerHTML = nutriCalc(); $('#eaten').outerHTML = eatenBlock();
   } else if (d.kg !== undefined) { S.weights[d.kg] = el.value; save(); }
-  else if (d.pf === 'name') { S.name = el.value.trim() || 'Ana'; save(); }
+  else if (d.pf === 'name') { S.name = el.value.trim() || 'Ana'; save(); clearTimeout(nameT); nameT = setTimeout(() => nubi('name'), 1400); }
 });
 document.addEventListener('submit', e => {
   e.preventDefault();
   if (e.target.id === 'chat-form') { if (chatBusy) { chatCtl && chatCtl.abort(); return; } const i = $('#chat-in'); const v = i.value; i.value = ''; sendChat(v); }
   if (e.target.id === 'task-form') {
     const i = $('#task-in'), v = i.value.trim(); if (!v) return;
-    S.tasks.push({id:'t' + Date.now(), t:v, done:false}); S.tasksDone = false; save(); rerender(); SND.check();
+    S.tasks.push({id:'t' + Date.now(), t:v, done:false}); S.tasksDone = false; save(); rerender(); SND.check(); nubi('taskAdd', {t:v});
     setTimeout(() => { const n = $('#task-in'); n && n.focus({preventScroll:true}); }, 30); return;
   }
   if (e.target.id === 'coach-form') {
     const code = $('#coach-code').value.trim().toUpperCase();
     if (code.length < 4) { $('#coach-err').textContent = 'Escribe el código que te dio tu coach, por ejemplo FP-4821.'; return; }
-    S.coach = {connected:true, code}; save(); rerender(); SND.done(); toast('Coach conectado.');
+    S.coach = {connected:true, code}; save(); rerender(); SND.done(); toast('Coach conectado.'); nubi('coach');
   }
 });
 document.addEventListener('keydown', e => {
@@ -2409,7 +2529,7 @@ var P3 = (() => {
   let lookX = 0, lookY = 0, ltX = 0, ltY = 0, lastPtr = 0, wanderAt = 0, userYaw = 0, yawVel = 0, drag = null;
   /* aliveness: puff wobble, tossing, hugging, petting, taps, particles, idle behaviours, expressions */
   let puffs = [], BR = [], jig = 0, wasAir = 0, toss = {y:0, v:0, on:false}, hugging = false, holdT = 0, taps = [], petDist = 0, petT = 0, petCool = 0;
-  let fx = [], fxTex = {}, nowS = 0, idleAct = null, idleT0 = 0, idleNext = 3, lastIdle = '', lastNotice = 0, happyUntil = 0, surpriseUntil = 0;
+  let lastTapPt = 0, fx = [], fxTex = {}, nowS = 0, idleAct = null, idleT0 = 0, idleNext = 3, lastIdle = '', lastNotice = 0, happyUntil = 0, surpriseUntil = 0;
   const DEF = {y:0, sx:1, sy:1, rx:0, rz:0, yaw:0, aL:.24, aR:.24, fL:0, fR:0, eL:.38, eR:.38, ezL:0, ezR:0, hL:0, hR:0, kL:0, kR:0, splay:0, lid:0, mo:0, frown:0, glow:0, bY:0, bT:0};
   const P = {}; for (const k in DEF) P[k] = {c:DEF[k], v:0};
   const STIFF = {lid:1100, mo:520, frown:200, glow:60, bY:320, bT:260};
@@ -2491,6 +2611,9 @@ var P3 = (() => {
     dizzy:{dur:2.3, f:(t, g) => { const k = 1 - t / 2.3, w = Math.sin(t * 6); g.rz = .22 * Math.sin(t * 9) * k; g.rx = .12 * Math.cos(t * 7) * k; g.aL = 1.1 + .5 * Math.sin(t * 8); g.aR = 1.1 - .5 * Math.sin(t * 8); g.eL = g.eR = .4;
       g.hL = .25 * Math.max(0, w); g.kL = .5 * Math.max(0, w); g.hR = .25 * Math.max(0, -w); g.kR = .5 * Math.max(0, -w); g.mo = .5; g.lid = .35; g.bT = -.08;
       return {spin:sm(Math.min(1, t / 1.2)) * Math.PI * 4, look:[Math.cos(t * 10) * .8, Math.sin(t * 10) * .6]}; }},
+    clap:{dur:1.5, f:(t, g) => { br(g, t); const c = Math.abs(Math.sin(t * 13)); g.fL = g.fR = 1.25; g.aL = g.aR = .32 - .5 * c; g.eL = g.eR = .55; g.mo = .55; g.bY = .04; g.y = .02 * c; return {noDb:true}; }},
+    nod:{dur:1.1, f:(t, g) => { br(g, t); g.rx = .14 * Math.sin(t * 11) * (1 - t / 1.1); g.mo = .3; g.bY = .03; }},
+    think:{f:(t, g) => { br(g, t, .015, 1.4); g.fR = 1.5; g.eR = 2.25; g.aR = .05; g.rz = .06; g.mo = .05; g.bT = -.06; g.bY = .02; return {look:[-.45, .5], noDb:true}; }},
     hug:{f:(t, g) => { const b = Math.sin(t * 3); g.sx = 1.1 + .02 * b; g.sy = .9 - .02 * b; g.aL = g.aR = .7; g.fL = g.fR = 1.25; g.eL = g.eR = 1.7; g.lid = .78; g.mo = .3; g.glow = .35; g.bY = .03; g.rz = .05 * Math.sin(t * 2.2); g.hL = g.hR = .15; g.kL = g.kR = .3;
       if (Math.random() < .07) spawn('heart', 1); return {noDb:true}; }},
     curl:{dur:4.3, f:(t, g) => { br(g, t); curls(t, g); }},
@@ -2793,23 +2916,28 @@ var P3 = (() => {
     canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', () => { clearTimeout(holdT); if (hugging) endHug(false); toss.on = false; drag = null; });
     document.addEventListener('pointermove', e => { if (!slot) return; const r = canvas.getBoundingClientRect(); if (!r.width) return; ltX = cl((e.clientX - (r.left + r.width / 2)) / (r.width * 1.3), -1, 1); ltY = cl(-(e.clientY - (r.top + r.height * .4)) / (r.height * 1.3), -1, 1); lastPtr = performance.now();
       const n = lastPtr / 1000; if (Math.abs(ltX) < .55 && Math.abs(ltY) < .55 && n - lastNotice > 15 && clip === 'idle' && !idleAct) { lastNotice = n; idleAct = 'wave'; idleT0 = n; } }, {passive:true});
+    // glance at whatever you tap or type in, anywhere in the app
+    const glance = (x, y) => { if (!slot) return; const r = canvas.getBoundingClientRect(); if (!r.width) return; ltX = cl((x - (r.left + r.width / 2)) / (r.width * 1.3), -1, 1); ltY = cl(-(y - (r.top + r.height * .4)) / (r.height * 1.3), -1, 1); lastPtr = performance.now(); };
+    document.addEventListener('pointerdown', e => { if (e.target !== canvas) glance(e.clientX, e.clientY); }, {capture:true, passive:true});
+    document.addEventListener('input', e => { const r = e.target.getBoundingClientRect && e.target.getBoundingClientRect(); if (r && r.width) glance(r.left + r.width / 2, r.top + r.height / 2); }, true);
     document.addEventListener('visibilitychange', kick);
     ok = true; mount();
   }
   function endHug(release) {
     hugging = false;
-    if (release) { clip = 'cheer'; clipT = 0; happyUntil = performance.now() / 1000 + 1.8; spawn('heart', 6); SND.cheer && SND.cheer(); }
+    if (release) { clip = 'cheer'; clipT = 0; happyUntil = performance.now() / 1000 + 1.8; spawn('heart', 6); SND.cheer && SND.cheer(); typeof friendUp === 'function' && friendUp(3); }
     else { clip = back; clipT = 0; }
     kick();
   }
   function petMove(e) {
     const n = performance.now() / 1000; if (n - petT > 1.2) petDist = 0; petT = n;
     petDist += Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0);
-    if (petDist > 450 && n > petCool) { petCool = n + 3; petDist = 0; happyUntil = n + 2.2; jig = Math.max(jig, .7); spawn('heart', 5); SND.check(); kick(); }
+    if (petDist > 450 && n > petCool) { petCool = n + 3; petDist = 0; happyUntil = n + 2.2; jig = Math.max(jig, .7); spawn('heart', 5); SND.check(); kick(); typeof friendUp === 'function' && friendUp(2); }
   }
   function tap() {
     const n = performance.now() / 1000; taps = taps.filter(x => n - x < 1.3); taps.push(n);
     surpriseUntil = n + .45; jig = Math.max(jig, .8);
+    if (n - lastTapPt > 15) { lastTapPt = n; typeof friendUp === 'function' && friendUp(1); }
     if (taps.length >= 4) { taps = []; clip = 'dizzy'; clipT = 0; spawn('star', 5); SND.cheer && SND.cheer(); buzz([20, 30, 20]); if (!inSheet && typeof say === 'function') say('¡Me mareo!', {ms:1800}); kick(); return; }
     if (inSheet) { play(['jump', 'wave', 'dance', 'cheer'][Math.floor(Math.random() * 4)]); SND.check(); buzz(15); return; }
     play('jump'); if (typeof tapNubi === 'function') tapNubi(slot);
@@ -2920,12 +3048,16 @@ var P3 = (() => {
   function kick() { if (!raf && ok && slot && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } }
   let lastW = 0, lastH = 0;
   function bestSlot() {
-    const top = $('#celeb.show .p3-slot') || $('#sheet.show .p3-slot'); if (top) return top;
+    const bud = $('#buddy'), top = $('#celeb.show .p3-slot') || $('#sheet.show .p3-slot');
+    if (top) { bud && bud.classList.remove('show'); return top; }
     const sec = $('#s-' + current); if (!sec) return null;
-    const list = [...sec.querySelectorAll('.p3-slot')]; if (list.length < 2) return list[0] || null;
-    const sr = $('#scroller').getBoundingClientRect(); let best = list[0], bv = -1;
+    const list = [...sec.querySelectorAll('.p3-slot')], sr = $('#scroller').getBoundingClientRect();
+    let best = list[0] || null, bv = list.length ? -1 : 0;
     list.forEach(el => { const r = el.getBoundingClientRect(), v = Math.max(0, Math.min(r.bottom, sr.bottom - 70) - Math.max(r.top, sr.top)) / (r.height || 1); if (v > bv + .02) { bv = v; best = el; } });
-    return best;
+    // when you scroll away from Nubi, a small Nubi floats along with you
+    const useBud = !!bud && bv < .35 && $('#tour').hidden;
+    if (bud) { if (!useBud && bud.classList.contains('show') && $('#pbub.bud.show') && typeof hideSay === 'function') hideSay(); bud.classList.toggle('show', useBud); }
+    return useBud ? bud.querySelector('.p3-slot') : best;
   }
   function mount() {
     if (!ok) return;
@@ -3038,10 +3170,15 @@ function panelHTML() {
   }).join('')}</div><p class="muted small" style="margin-top:8px">Toca lo que ya tienes para ponérselo o quitárselo.</p>`;
 }
 function refreshShop() { const p = $('#p3-panel'); if (p) p.innerHTML = panelHTML(); renderTop(); }
+function friendHTML() {
+  const fl = friendLv(), F = FRIEND[fl], nx = FRIEND[fl + 1], fp = S.friend || 0, pct = nx ? Math.round((fp - F[0]) / (nx[0] - F[0]) * 100) : 100;
+  return `<div class="friend"><span class="fr-ic">${ic('heart', 18)}</span><div class="fr-b"><div class="fr-top"><b>${tL('Amistad', 'Friendship')}: ${tL(F[1], F[2])}</b><small>${nx ? tL(`${nx[0] - fp} pts para ${nx[1]}`, `${nx[0] - fp} pts to ${nx[2]}`) : tL('¡Nivel máximo!', 'Max level!')}</small></div><div class="bar" style="--acc:#FF6FB5"><i style="width:${Math.max(4, pct)}%"></i></div><small class="muted">${tL('Sube al cumplir hábitos, registrarte, platicar, abrazarme y consentirme.', 'It grows when you do habits, check in, chat, hug me and treat me.')}</small></div></div>`;
+}
 function playSheet(tab) {
   if (tab) shopTab = tab;
   const tabs = [['acts', 'Acciones'], ['ropa', 'Ropa'], ['acc', 'Accesorios'], ['estilo', 'Estilo']];
   openSheet(`<div class="game-head"><div><h3 class="h2">Jugar con Nubi</h3><p class="muted small">Nivel ${level()} · ${nf(S.xp)} XP</p></div><span class="coins-big"><span class="coin"></span><b id="coins-sheet">${nf(S.coins || 0)}</b></span></div>
+    ${friendHTML()}
     <div class="p3-slot p3-big" id="p3-stage">${mascot('happy', 190)}</div>
     <p class="hint" style="justify-content:center;margin:-2px 0 0">Gíralo, lánzalo hacia arriba, abrázalo (mantén presionado) o tócalo rápido varias veces</p>
     <div class="seg shop-seg" role="tablist" aria-label="Tienda de Nubi">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${shopTab === k}" data-act="shop-tab" data-tab="${k}">${l}</button>`).join('')}</div>
@@ -3054,7 +3191,7 @@ function buyItem(id, btn) {
   if ((S.coins || 0) < it.p) { toast(`Te faltan ${it.p - S.coins} monedas. Cumple hábitos y rutinas para ganar más.`); SND.miss(); return; }
   S.coins -= it.p; S.wardrobe.owned[id] = true; S.wardrobe.eq[it.slot] = id; save();
   P3.dress(S.wardrobe.eq); P3.ok() && P3.play('cheer'); SND.cheer(); if (btn) { const pos = relPos(btn); burst(pos.x, pos.y, 40, .9); }
-  toast(`¡Listo! Nubi estrena: ${it.n}.`); refreshShop();
+  toast(tL(`¡Me encanta mi ${it.n}! Gracias, ${S.name || 'Ana'}.`, `I love my ${enT(it.n)}! Thank you, ${S.name || 'Ana'}.`)); friendUp(4); P3.ok() && P3.play('clap'); refreshShop();
 }
 function equipItem(id) {
   const it = SHOP.find(x => x.id === id); if (!it) return; const eq = S.wardrobe.eq;
@@ -3087,10 +3224,11 @@ setTimeout(() => { const sp = $('#splash'); sp && sp.remove(); }, 2100);
 $('#lang-btn').innerHTML = `${ic('globe', 16)}<span>${(S.lang || 'es').toUpperCase()}</span>`;
 trObs.observe($('.stage'), {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:TATTR});
 if (S.lang === 'en') { document.documentElement.lang = 'en'; trDeep($('.stage')); }
+$('#buddy').innerHTML = slot3d('happy', 62, 72, 82);
 P3.init();
 let p3raf = 0; const p3follow = () => { if (!p3raf) p3raf = requestAnimationFrame(() => { p3raf = 0; P3.mount(); }); };
 $('#scroller').addEventListener('scroll', p3follow, {passive:true}); window.addEventListener('resize', p3follow);
-if (!S.tourDone) setTimeout(startTour, 1900);
+if (!S.tourDone) setTimeout(startTour, 1900); else setTimeout(nubiWelcome, 2400);
 })();
 </script>
 </body>
