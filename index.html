@@ -615,6 +615,11 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 @keyframes splash-out{to{opacity:0;visibility:hidden}}
 @media (prefers-reduced-motion: reduce){.splash{display:none}}
 @media (max-width:400px){.topbar .nb-word{display:none}}
+[hidden]{display:none!important}
+.quote .p3-slot{margin:0 -6px -6px -8px}
+.chat-head .p3-slot{margin:-8px -6px -10px -8px}
+.profile-head .p3-slot{margin:-14px -6px -14px -10px}
+#celeb-mascot .p3-slot{margin:-10px auto -14px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -742,6 +747,7 @@ const I = {
 };
 const ic = (n, s = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]||''}</svg>`;
 
+const slot3d = (mood, size, w, h, extra = '') => `<div class="p3-slot" style="width:${w}px;height:${h}px">${mascot(mood, size)}${extra}</div>`;
 function mascot(mood = 'happy', size = 56) {
   /* Nubi, pseudo-3D: every puff gets its own radial gradient (lit from top-left), so the cloud reads as a soft volume tinted with the brand gradient.
      Parts live in groups the CSS animates: body breathes, arms press the dumbbells, eyes blink and follow the pointer. */
@@ -1115,11 +1121,11 @@ function celebrate(kind, data) {
   const el = $('#celeb');
   if (el.classList.contains('show')) { celebQ.push([kind, data]); return; }
   const [t, s] = CELEB[kind](data);
-  $('#celeb-title').textContent = t; $('#celeb-sub').textContent = s; $('#celeb-mascot').innerHTML = mascot('celebrate', 176);
-  el.classList.add('show'); cheer({x:phone.clientWidth/2, y:phone.clientHeight*.4}, true);
+  $('#celeb-title').textContent = t; $('#celeb-sub').textContent = s; $('#celeb-mascot').innerHTML = slot3d('celebrate', 176, 210, 220);
+  el.classList.add('show'); P3 && P3.mount(); cheer({x:phone.clientWidth/2, y:phone.clientHeight*.4}, true);
   setTimeout(() => $('[data-act="celeb-close"]', el).focus(), 50);
 }
-function closeCeleb() { $('#celeb').classList.remove('show'); const n = celebQ.shift(); if (n) setTimeout(() => celebrate(...n), 350); }
+function closeCeleb() { $('#celeb').classList.remove('show'); P3 && P3.mount(); const n = celebQ.shift(); if (n) setTimeout(() => celebrate(...n), 350); }
 
 /* ---------- sheet + notification ---------- */
 function openSheet(html) { $('#sheet-body').innerHTML = html; $('#backdrop').classList.add('show'); $('#sheet').classList.add('show'); setTimeout(() => { const f = $('#sheet button, #sheet input'); f && f.focus({preventScroll:true}); $('.phone').scrollTop = 0; }, 60); }
@@ -1560,13 +1566,13 @@ function renderMental() {
   } else bo = `<section class="card"><h2 class="h2">Señales de burnout</h2><p class="muted" style="margin-top:6px">Guarda tu registro de hoy y verás aquí tu nivel de carga.</p></section>`;
   return `
   <header class="screen-head"><p class="eyebrow">Mental</p><h1 class="h1">¿Cómo estás hoy, ${esc(S.name)}?</h1></header>
-  <div class="quote">${mascot('calm', 112)}<div class="bubble"><p class="eyebrow" style="color:var(--mental);margin-bottom:4px">Frase del día</p><p class="quote-txt">${esc(phrase())}</p><button class="link" data-act="next-phrase">Otra frase</button></div></div>
+  <div class="quote">${slot3d('calm', 112, 126, 142)}<div class="bubble"><p class="eyebrow" style="color:var(--mental);margin-bottom:4px">Frase del día</p><p class="quote-txt">${esc(phrase())}</p><button class="link" data-act="next-phrase">Otra frase</button></div></div>
   ${ck}${bo}
   <section><div class="sec-head"><h2 class="h2">Tu semana</h2><span class="muted small">Días anteriores: ejemplo</span></div>${weekCharts()}</section>
   ${reasonsBlock()}
   <button class="card row-btn" data-act="breathe"><span class="ico">${ic('wind', 22)}</span><span><b>Respira 1 minuto</b><small>Inhala 4 segundos y exhala 6. Baja la tensión en el momento.</small></span>${ic('chevron', 18)}</button>
   <section class="card" id="chat-card">
-    <div class="chat-head">${mascot('happy', 84)}<div><h2 class="h2">Habla con Nubi</h2><p class="muted small">Te acompaña con estrés, ansiedad, burnout y enfoque. No sustituye a un psicólogo.</p></div></div>
+    <div class="chat-head">${slot3d('happy', 84, 96, 108)}<div><h2 class="h2">Habla con Nubi</h2><p class="muted small">Te acompaña con estrés, ansiedad, burnout y enfoque. No sustituye a un psicólogo.</p></div></div>
     <div class="chat" id="chat" aria-live="polite"></div>
     <div class="starters">${STARTERS.map(s => `<button class="chip-btn" data-act="chat-starter" data-text="${esc(s)}">${esc(s)}</button>`).join('')}</div>
     <form class="chat-form" id="chat-form"><label class="sr" for="chat-in">Escribe a Nubi</label><input id="chat-in" autocomplete="off" maxlength="600" placeholder="Cuéntame qué pasó hoy…"><button class="send" id="chat-send" aria-label="Enviar">${ic('send', 18)}</button></form>
@@ -1735,7 +1741,7 @@ function renderNutri() {
   const p = S.profile, opt = (v, l, cur) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${l}</option>`;
   const num = (k, l, attrs) => `<div class="field"><label for="np-${k}">${l}</label><input id="np-${k}" type="number" inputmode="decimal" data-np="${k}" value="${esc(p[k])}" ${attrs}></div>`;
   return `
-  <header class="hello screen-head"><div><p class="eyebrow">Nutrición</p><h1 class="h1">Tu plan de alimentación</h1></div>${mascot('happy', 112)}</header>
+  <header class="hello screen-head"><div><p class="eyebrow">Nutrición</p><h1 class="h1">Tu plan de alimentación</h1></div><div class="p3-slot">${mascot('happy', 112)}</div></header>
   <section class="card"><div class="sec-head"><h2 class="h2">Tus datos</h2><span class="muted small">Se recalcula al instante</span></div>
     <div class="form-grid">
       <div class="field"><label for="np-sexo">Sexo</label><select id="np-sexo" data-np="sexo">${opt('mujer', 'Mujer', p.sexo)}${opt('hombre', 'Hombre', p.sexo)}</select></div>
@@ -1781,7 +1787,7 @@ function renderTrain() {
   const ti = (new Date().getDay() + 6) % 7, mon = new Date(Date.now() - ti * 864e5), L = S.lang === 'en' ? ['M','T','W','T','F','S','S'] : ['L','M','M','J','V','S','D'];
   const sd = setsDone();
   return `
-  <header class="hello screen-head"><div><p class="eyebrow">Entrenamiento</p><h1 class="h1">Muévete hoy</h1></div>${mascot(S.workoutDone ? 'celebrate' : 'happy', 112)}</header>
+  <header class="hello screen-head"><div><p class="eyebrow">Entrenamiento</p><h1 class="h1">Muévete hoy</h1></div><div class="p3-slot">${mascot(S.workoutDone ? 'celebrate' : 'happy', 112)}</div></header>
   <section class="card steps-card">${ring(S.steps / 10000, 100, 'var(--train)', nf(S.steps), 'de 10,000')}
     <div><h2 class="h2">Pasos de hoy</h2><p class="muted small">${anyDev() ? 'Sincronizado con tu reloj hace 5 min (ejemplo).' : 'Dato de ejemplo. Conecta tu reloj en Perfil.'}</p>
     <p class="small">${S.steps >= 10000 ? '¡Meta de pasos cumplida!' : `Te faltan ${nf(10000 - S.steps)}. Caminar 20 minutos son unos 2,000 pasos.`}</p></div></section>
@@ -1810,7 +1816,7 @@ function renderPerfil() {
   const into = S.xp % 100, un = BADGES.filter(b => S.badges[b.id]).length;
   const share = [['habitos','Hábitos y metas'],['mental','Registro mental'],['sueno','Sueño'],['reloj','Datos del reloj'],['nutricion','Nutrición y entreno']];
   return `
-  <header class="card profile-head">${mascot('happy', 110)}<div>
+  <header class="card profile-head">${slot3d('happy', 110, 118, 132)}<div>
     <label class="sr" for="pf-name">Tu nombre</label><input id="pf-name" class="name-in" maxlength="24" value="${esc(S.name)}" data-pf="name">
     <p class="muted small">Nivel ${level()} · ${nf(S.xp)} XP · Racha de ${S.streak} días</p><div class="bar gold"><i style="width:${into}%"></i></div></div>
     <span class="plan-chip ${S.plan || 'gratis'}">Plan ${planOf().n}</span></header>
@@ -2800,13 +2806,22 @@ var P3 = (() => {
     raf = requestAnimationFrame(frame);
   }
   function kick() { if (!raf && ok && slot && !document.hidden) { last = performance.now(); raf = requestAnimationFrame(frame); } }
+  let lastW = 0, lastH = 0;
+  function bestSlot() {
+    const top = $('#celeb.show .p3-slot') || $('#sheet.show .p3-slot'); if (top) return top;
+    const sec = $('#s-' + current); if (!sec) return null;
+    const list = [...sec.querySelectorAll('.p3-slot')]; if (list.length < 2) return list[0] || null;
+    const sr = $('#scroller').getBoundingClientRect(); let best = list[0], bv = -1;
+    list.forEach(el => { const r = el.getBoundingClientRect(), v = Math.max(0, Math.min(r.bottom, sr.bottom - 70) - Math.max(r.top, sr.top)) / (r.height || 1); if (v > bv + .02) { bv = v; best = el; } });
+    return best;
+  }
   function mount() {
     if (!ok) return;
-    const s = $('#sheet.show .p3-slot') || $(`#s-${current} .p3-slot`);
+    const s = bestSlot();
     if (!s) { if (slot) slot.classList.remove('live'); slot = null; return; }
-    if (s !== slot) { if (slot) slot.classList.remove('live'); slot = s; s.appendChild(canvas); s.classList.add('live'); inSheet = !!s.closest('#sheet'); }
+    if (s !== slot) { if (slot) slot.classList.remove('live'); slot = s; s.appendChild(canvas); s.classList.add('live'); inSheet = !!s.closest('#sheet, #celeb'); lastW = 0; }
     const w = s.clientWidth || 138, h = s.clientHeight || 150;
-    R.setSize(w, h, false); cam.aspect = w / h; cam.fov = inSheet ? 27 : 31; cam.updateProjectionMatrix();
+    if (w !== lastW || h !== lastH) { lastW = w; lastH = h; R.setSize(w, h, false); cam.aspect = w / h; cam.fov = s.closest('#sheet') ? 27 : 31; cam.updateProjectionMatrix(); }
     dress(S.wardrobe && S.wardrobe.eq);
     const tot = S.habits.length || 1; timeScale = .8 + .45 * (S.habits.filter(x => x.state === 'done').length / tot);
     kick();
@@ -2960,6 +2975,8 @@ $('#lang-btn').innerHTML = `${ic('globe', 16)}<span>${(S.lang || 'es').toUpperCa
 trObs.observe($('.stage'), {subtree:true, childList:true, characterData:true, attributes:true, attributeFilter:TATTR});
 if (S.lang === 'en') { document.documentElement.lang = 'en'; trDeep($('.stage')); }
 P3.init();
+let p3raf = 0; const p3follow = () => { if (!p3raf) p3raf = requestAnimationFrame(() => { p3raf = 0; P3.mount(); }); };
+$('#scroller').addEventListener('scroll', p3follow, {passive:true}); window.addEventListener('resize', p3follow);
 if (!S.tourDone) setTimeout(startTour, 1900);
 })();
 </script>
