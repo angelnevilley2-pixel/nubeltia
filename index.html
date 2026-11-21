@@ -2253,6 +2253,7 @@ const EN = {
 'Ayuda':'Help','¿Quieres ver otra vez cómo funciona la app?':'Want to see how the app works again?','Ver el recorrido':'Take the tour','Sobre este prototipo':'About this prototype',
 '¡Hey! Aquí sigo, flotando y entrenando.':'Hey! Still here, floating and training.','¿Una pausa de respiración?':'Breathing break?','¡Vamos por ese hábito!':'Let’s get that habit!','Tu mente también se entrena.':'Your mind needs training too.','¡Me haces cosquillas!':'That tickles!',
 };
+Object.assign(EN, {'¡Me mareo!':'I’m dizzy!'});
 Object.assign(EN, {'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. En esta versión de prueba, Nubi responde con ejemplos; en la app final responderá con IA.':'Names and past days are sample data. What you do is saved only in this browser. In this test version Nubi gives sample replies; in the final app it will answer with AI.'});
 Object.assign(EN, {'Estilo':'Style','Yoga':'Yoga','Correr':'Run','Patineta':'Skateboard','Karate':'Karate','Bici':'Bike','Pintar':'Paint','Cocinar':'Cook','DJ':'DJ','Espacio':'Space',
   'Gorro de fiesta':'Party hat','Gorro de invierno':'Beanie','Sombrero vaquero':'Cowboy hat','Gorro de chef':'Chef hat','Aureola':'Halo','Mochila':'Backpack','Jetpack':'Jetpack','Alas':'Wings','Tenis violeta':'Violet sneakers',
@@ -2264,7 +2265,7 @@ Object.assign(EN, {'Tus monedas y la tienda de Nubi':'Your coins and Nubi’s sh
   'Lentes de sol':'Sunglasses','Moño':'Bow tie','Medalla':'Medal','Pesas doradas':'Gold dumbbells','Piel rosa':'Pink skin','Piel menta':'Mint skin','Piel dorada':'Gold skin',
   'Puesto':'Wearing','Usar':'Wear','Toca lo que ya tienes para ponérselo o quitárselo.':'Tap what you own to put it on or take it off.',
   'Pendiente':'To-do','Serie':'Set','Rutina completa':'Full workout','Comida del plan':'Planned meal','Plan de comidas':'Meal plan','Meta cumplida':'Goal reached','Subir de nivel':'Level up'});
-Object.assign(EN, {'Jugar con Nubi':'Play with Nubi','Arrastra para girarlo · Toca para que salte':'Drag to spin him · Tap to make him jump','Pesas':'Curls','Brincar':'Jump','Bailar':'Dance','Saludar':'Wave',
+Object.assign(EN, {'Jugar con Nubi':'Play with Nubi','Gíralo, lánzalo hacia arriba, abrázalo (mantén presionado) o tócalo rápido varias veces':'Spin him, toss him up, hug him (press and hold) or tap fast a few times','Pesas':'Curls','Brincar':'Jump','Bailar':'Dance','Saludar':'Wave',
   'Meditar':'Meditate','Dormir':'Sleep','Tus avances le dan energía a Nubi.':'Your progress powers Nubi.','Accesorios':'Gear','Cinta cian':'Cyan headband','Capa violeta':'Violet cape','Corona':'Crown','Desbloqueado':'Unlocked',
   'El modo 3D no está disponible en este navegador.':'3D mode isn’t available in this browser.'});
 Object.assign(EN, {'¡Eso es!':'That’s it!','¡Bien hecho!':'Well done!','¡Vas con todo!':'You’re on fire!','¡Un paso más!':'One more step!','¡Así se hace!':'That’s how it’s done!',
@@ -2406,9 +2407,12 @@ var P3 = (() => {
   let ok = false, slot = null, inSheet = false, raf = 0, last = 0, timeScale = 1;
   let clip = 'idle', clipT = 0, back = 'idle', talkUntil = 0, sadUntil = 0, blinkAt = 2, blinkEnd = 0;
   let lookX = 0, lookY = 0, ltX = 0, ltY = 0, lastPtr = 0, wanderAt = 0, userYaw = 0, yawVel = 0, drag = null;
-  const DEF = {y:0, sx:1, sy:1, rx:0, rz:0, yaw:0, aL:.24, aR:.24, fL:0, fR:0, eL:.38, eR:.38, ezL:0, ezR:0, hL:0, hR:0, kL:0, kR:0, splay:0, lid:0, mo:0, frown:0, glow:0};
+  /* aliveness: puff wobble, tossing, hugging, petting, taps, particles, idle behaviours, expressions */
+  let puffs = [], BR = [], jig = 0, wasAir = 0, toss = {y:0, v:0, on:false}, hugging = false, holdT = 0, taps = [], petDist = 0, petT = 0, petCool = 0;
+  let fx = [], fxTex = {}, nowS = 0, idleAct = null, idleT0 = 0, idleNext = 3, lastIdle = '', lastNotice = 0, happyUntil = 0, surpriseUntil = 0;
+  const DEF = {y:0, sx:1, sy:1, rx:0, rz:0, yaw:0, aL:.24, aR:.24, fL:0, fR:0, eL:.38, eR:.38, ezL:0, ezR:0, hL:0, hR:0, kL:0, kR:0, splay:0, lid:0, mo:0, frown:0, glow:0, bY:0, bT:0};
   const P = {}; for (const k in DEF) P[k] = {c:DEF[k], v:0};
-  const STIFF = {lid:1100, mo:520, frown:200, glow:60};
+  const STIFF = {lid:1100, mo:520, frown:200, glow:60, bY:320, bT:260};
   const sm = x => x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x);
   const cl = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
   const br = (g, t, amp = .018, sp = 1.9) => { const b = Math.sin(t * sp); g.sx = 1 + amp * b; g.sy = 1 - amp * b; };
@@ -2423,14 +2427,72 @@ var P3 = (() => {
     else if (t < 1.05) { g.hL = g.hR = .6; g.kL = g.kR = 1.2; g.sy = .88; g.sx = 1.1; g.aL = g.aR = .9; }
     return {air};
   }
+  const IDLE = {
+    curls:{d:3.6, f:(u, g) => { curls(u, g); }},
+    press:{d:3.4, f:(u, g) => { press(u, g); }},
+    look:{d:2.4, f:(u, g) => { const q = Math.sin(u / 2.4 * Math.PI * 2); g.yaw += .55 * q; g.rz += .05 * q; g.bY = .02; return {look:[q * .9, .15]}; }},
+    yawn:{d:2.6, f:(u, g) => { const k = Math.sin(Math.min(1, u / 2.6) * Math.PI); g.aL = g.aR = .3 + 2.3 * k; g.eL = g.eR = .3; g.mo = .95 * k; g.lid = .75 * k; g.sy = 1 + .07 * k; g.sx = 1 - .05 * k; g.bY = .04 * k; g.rx = -.08 * k; }},
+    wave:{d:2.2, f:(u, g) => { g.aR = 2.75; g.ezR = .35 + .5 * Math.sin(u * 10); g.eR = .15; g.rz -= .06; g.mo = .45; g.bY = .04; g.yaw += .1; return {look:[.1, .1]}; }},
+    float:{d:3, f:(u, g) => { g.hL = .25 + .12 * Math.sin(u * 5); g.hR = .25 + .12 * Math.sin(u * 5 + 2); g.kL = g.kR = .5; g.aL = g.aR = 1.0 + .2 * Math.sin(u * 4); g.mo = .35; g.bY = .03; return {air:.38 * Math.sin(u / 3 * Math.PI), spin:sm(u / 3) * Math.PI * 2}; }},
+    shake:{d:1.2, f:(u, g) => { const k = 1 - u / 1.2; g.rz += .2 * Math.sin(u * 30) * k; g.sx = 1 + .05 * Math.sin(u * 30) * k; if (u < .06) jig = Math.max(jig, 1.2); g.lid = .6; }},
+    hop:{d:1, f:(u, g) => { const q = Math.min(1, u / .8); g.aL = g.aR = 1.4; g.mo = .5; g.bY = .04; return {air:u < .8 ? .2 * 4 * q * (1 - q) : 0}; }},
+    groove:{d:2.8, f:(u, g) => { const b = u * Math.PI * 2.6, w = Math.sin(b); g.y = .04 * Math.abs(w); g.rz = .1 * Math.sin(b / 2); g.aL = 1 + .6 * w; g.aR = 1 - .6 * w; g.eL = g.eR = .7; g.mo = .4;
+      g.hL = .2 * Math.max(0, w); g.kL = .4 * Math.max(0, w); g.hR = .2 * Math.max(0, -w); g.kR = .4 * Math.max(0, -w); }},
+  };
+  function pickIdle() {
+    const low = timeScale < .95, bag = ['curls', 'press', 'look', 'float', 'shake', 'hop', 'groove', 'look', low ? 'yawn' : 'curls', low ? 'yawn' : 'float'];
+    if (performance.now() - lastPtr < 6000) bag.push('wave', 'wave');
+    let k; do { k = bag[Math.floor(Math.random() * bag.length)]; } while (k === lastIdle);
+    lastIdle = k; return k;
+  }
+  /* particles: hearts (hug / pet), rain (sad), sparkles (cheer, landing), stars (dizzy) */
+  function fxTexOf(type) {
+    if (fxTex[type]) return fxTex[type];
+    const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d');
+    if (type === 'heart') { g.fillStyle = '#FF6FB5'; g.beginPath(); g.moveTo(32, 56); g.bezierCurveTo(2, 34, 10, 6, 32, 22); g.bezierCurveTo(54, 6, 62, 34, 32, 56); g.fill(); }
+    else if (type === 'drop') { g.fillStyle = '#7DE3FF'; g.beginPath(); g.moveTo(32, 4); g.bezierCurveTo(44, 24, 50, 34, 50, 42); g.arc(32, 42, 18, 0, Math.PI); g.bezierCurveTo(14, 34, 20, 24, 32, 4); g.fill(); }
+    else { g.fillStyle = type === 'star' ? '#FFD66E' : '#B8F6FF'; g.beginPath(); for (let i = 0; i < 8; i++) { const a = i * Math.PI / 4 - Math.PI / 2, r = i % 2 ? 9 : 30; g.lineTo(32 + Math.cos(a) * r, 32 + Math.sin(a) * r); } g.closePath(); g.fill(); }
+    return (fxTex[type] = new T.CanvasTexture(c));
+  }
+  function spawn(type, n = 1) {
+    if (!ok) return;
+    for (let i = 0; i < n && fx.length < 60; i++) {
+      const sp = new T.Sprite(new T.SpriteMaterial({map:fxTexOf(type), transparent:true, depthWrite:false})), bx = root.position.x, by = root.position.y + .64, R1 = Math.random;
+      let q;
+      if (type === 'heart') q = {x:bx + (R1() - .5) * 1.2, y:by + .75 + R1() * .3, z:.5, vx:(R1() - .5) * .4, vy:.7 + R1() * .4, life:1.5, sc:.2 + R1() * .1};
+      else if (type === 'drop') q = {x:bx + (R1() - .5) * 1.3, y:by - .55, z:.15 + R1() * .5, vx:0, vy:-2.4, life:.5, sc:.09};
+      else if (type === 'star') q = {orbit:true, a:i / n * Math.PI * 2, life:2.2, sc:.16};
+      else q = {x:bx + (R1() - .5) * 2, y:by + (R1() - .2) * 1.4, z:.6, vx:0, vy:.3, life:.8, sc:.12 + R1() * .1};
+      q.age = 0; q.s = sp; sp.scale.setScalar(q.sc); scene.add(sp); fx.push(q);
+    }
+  }
+  function updFx(dt) {
+    for (let i = fx.length - 1; i >= 0; i--) {
+      const q = fx[i]; q.age += dt; const k = q.age / q.life;
+      if (k >= 1) { scene.remove(q.s); q.s.material.dispose(); fx.splice(i, 1); continue; }
+      if (q.orbit) { const a = q.a + q.age * 5; q.s.position.set(root.position.x + Math.cos(a) * .7, root.position.y + 1.66 + .05 * Math.sin(q.age * 9), Math.sin(a) * .5); }
+      else { q.x += q.vx * dt; q.y += q.vy * dt; q.s.position.set(q.x, q.y, q.z); }
+      q.s.material.opacity = k < .15 ? k / .15 : 1 - Math.max(0, (k - .6) / .4);
+      q.s.material.rotation = q.orbit ? q.age * 4 : (q.vx || 0) * .6;
+    }
+  }
   const CLIPS = {
     idle:{f:(t, g) => {
-      br(g, t); g.y = .012 * Math.sin(t * 1.9); g.rz = .035 * Math.sin(t * .55); g.eL = .38 + .04 * Math.sin(t * 1.9); g.eR = .38 + .04 * Math.sin(t * 1.9 + .5);
-      const u = t % 18;
-      if (u > 5 && u < 9.3) { const o = {...g}; curls(u - 5, o); blend(g, o, sm((u - 5) / .5) * sm((9.3 - u) / .5)); }
-      if (u > 11 && u < 15) { const o = {...g}; press(u - 11, o); blend(g, o, sm((u - 11) / .6) * sm((15 - u) / .6)); }
-      if (u > 16 && u < 17.6) { const s = (u - 16) / 1.6; g.yaw += .5 * Math.sin(s * Math.PI * 2); g.rz += .05 * Math.sin(s * Math.PI * 2); }
+      br(g, t, .022, 1.7); g.y = .03 * Math.sin(t * 1.25); g.rz = .04 * Math.sin(t * .55); g.rx = .02 * Math.sin(t * .8);
+      g.eL = .38 + .05 * Math.sin(t * 1.7); g.eR = .38 + .05 * Math.sin(t * 1.7 + .6); g.aL = .26 + .04 * Math.sin(t * 1.3); g.aR = .26 + .04 * Math.sin(t * 1.3 + 1);
+      if (!idleAct && nowS > idleNext) { idleAct = pickIdle(); idleT0 = nowS; }
+      if (!idleAct) return;
+      const u = nowS - idleT0, A = IDLE[idleAct];
+      if (u >= A.d) { idleAct = null; idleNext = nowS + 3 + Math.random() * 4; return; }
+      const o = {...g}, r = A.f(u, o) || {}, k = sm(u / .45) * sm((A.d - u) / .45);
+      blend(g, o, k);
+      return {air:(r.air || 0) * k, spin:r.spin && k > .01 ? r.spin : 0, look:r.look};
     }},
+    dizzy:{dur:2.3, f:(t, g) => { const k = 1 - t / 2.3, w = Math.sin(t * 6); g.rz = .22 * Math.sin(t * 9) * k; g.rx = .12 * Math.cos(t * 7) * k; g.aL = 1.1 + .5 * Math.sin(t * 8); g.aR = 1.1 - .5 * Math.sin(t * 8); g.eL = g.eR = .4;
+      g.hL = .25 * Math.max(0, w); g.kL = .5 * Math.max(0, w); g.hR = .25 * Math.max(0, -w); g.kR = .5 * Math.max(0, -w); g.mo = .5; g.lid = .35; g.bT = -.08;
+      return {spin:sm(Math.min(1, t / 1.2)) * Math.PI * 4, look:[Math.cos(t * 10) * .8, Math.sin(t * 10) * .6]}; }},
+    hug:{f:(t, g) => { const b = Math.sin(t * 3); g.sx = 1.1 + .02 * b; g.sy = .9 - .02 * b; g.aL = g.aR = .7; g.fL = g.fR = 1.25; g.eL = g.eR = 1.7; g.lid = .78; g.mo = .3; g.glow = .35; g.bY = .03; g.rz = .05 * Math.sin(t * 2.2); g.hL = g.hR = .15; g.kL = g.kR = .3;
+      if (Math.random() < .07) spawn('heart', 1); return {noDb:true}; }},
     curl:{dur:4.3, f:(t, g) => { br(g, t); curls(t, g); }},
     press:{dur:4.6, f:(t, g) => { press(t, g); }},
     jump:{dur:1.25, f:(t, g) => jump(t, g)},
@@ -2510,7 +2572,7 @@ var P3 = (() => {
     pivot = new T.Group(); root.add(pivot);
     brain = new T.Group(); brain.position.y = .64; pivot.add(brain);
     const L = [[0,.36,0,.56],[.5,.24,-.04,.46],[.8,-.06,0,.38],[.92,-.3,.02,.28],[.46,-.28,.22,.42],[.14,-.3,.3,.42],[.16,.02,.3,.46],[.4,.1,-.32,.46],[.56,-.14,.1,.4]];
-    [-1, 1].forEach(sd => L.forEach(([x, y, z, r]) => { const m = sph(mBrain, r, sd * x, y, z); m.rotation.set(x * 3 + sd, y * 5, z * 4); brain.add(m); }));
+    [-1, 1].forEach(sd => L.forEach(([x, y, z, r]) => { const m = sph(mBrain, r, sd * x, y, z); m.rotation.set(x * 3 + sd, y * 5, z * 4); m.userData = {r, ph:Math.random() * 6.28}; puffs.push(m); brain.add(m); }));
     band = new T.Mesh(new T.TorusGeometry(1, .05, 12, 64), mCyan); band.rotation.x = Math.PI / 2; band.scale.set(.97, .82, 1); band.position.y = .3; brain.add(band);
     // face
     [-1, 1].forEach(sd => {
@@ -2525,6 +2587,8 @@ var P3 = (() => {
       brain.add(sph(mPink, [.09, .05, .03], sd * .47, -.16, .67));
     });
     const bridge = cyl(.018, .018, .11, mCyan); bridge.rotation.z = Math.PI / 2; bridge.position.set(0, .1, .9); brain.add(bridge);
+    const mBrow = new T.MeshStandardMaterial({color:0x1a0f4a, roughness:.6});
+    [-1, 1].forEach(sd => { const bw = new T.Group(); bw.position.set(sd * .25, .31, .9); brain.add(bw); const m = sph(mBrow, [.1, .026, .03]); bw.add(m); BR.push(bw); });
     /* mouth: a D-shaped open smile that reads on the cloud — light lip outline, dark inside, pink tongue */
     mouth.g = new T.Group(); mouth.g.position.set(0, -.26, .86); brain.add(mouth.g);
     const mLip = new T.MeshStandardMaterial({color:0xffe4f7, emissive:0xffd6f5, emissiveIntensity:.45, roughness:.35});
@@ -2708,28 +2772,70 @@ var P3 = (() => {
     [PR.book, PR.guitar, PR.car, PR.skate, PR.bike, PR.easel, PR.dj, PR.pan, PR.helmet, PR.stars].forEach(o => { o.visible = false; });
     for (const id in SLOTOF) if (W[id] && id !== 'band') W[id].visible = false;
 
-    canvas.addEventListener('pointerdown', e => { drag = {x:e.clientX, lx:e.clientX, t:performance.now(), moved:false}; try { canvas.setPointerCapture(e.pointerId); } catch (er) {} });
-    canvas.addEventListener('pointermove', e => { if (!drag) return; const dx = e.clientX - drag.lx; drag.lx = e.clientX; if (Math.abs(e.clientX - drag.x) > 5) drag.moved = true; userYaw += dx * .013; yawVel = dx * .013; });
-    const up = () => { if (!drag) return; const d = drag; drag = null; if (!d.moved && performance.now() - d.t < 450) tap(); };
-    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', () => { drag = null; });
-    document.addEventListener('pointermove', e => { if (!slot) return; const r = canvas.getBoundingClientRect(); if (!r.width) return; ltX = cl((e.clientX - (r.left + r.width / 2)) / (r.width * 1.3), -1, 1); ltY = cl(-(e.clientY - (r.top + r.height * .4)) / (r.height * 1.3), -1, 1); lastPtr = performance.now(); }, {passive:true});
+    canvas.addEventListener('pointerdown', e => {
+      drag = {x:e.clientX, y:e.clientY, lx:e.clientX, ly:e.clientY, t:performance.now(), moved:false, mode:null};
+      try { canvas.setPointerCapture(e.pointerId); } catch (er) {}
+      clearTimeout(holdT); holdT = setTimeout(() => { if (drag && !drag.moved) { hugging = true; clip = 'hug'; clipT = 0; jig = Math.max(jig, .6); SND.check(); buzz(25); kick(); } }, 520);
+    });
+    canvas.addEventListener('pointermove', e => {
+      if (!drag) { if (e.pointerType === 'mouse') petMove(e); return; }
+      const dx = e.clientX - drag.lx, dy = e.clientY - drag.ly, tx = e.clientX - drag.x, ty = e.clientY - drag.y; drag.lx = e.clientX; drag.ly = e.clientY;
+      if (!drag.mode && Math.hypot(tx, ty) > 6) { drag.moved = true; drag.mode = (ty < -6 && Math.abs(ty) > Math.abs(tx) * 1.2) ? 'toss' : 'spin'; clearTimeout(holdT); if (hugging) endHug(false); }
+      if (drag.mode === 'spin') { userYaw += dx * .013; yawVel = dx * .013; }
+      else if (drag.mode === 'toss') { toss.on = true; toss.y = cl(-ty * .004, 0, .5); toss.v = -dy * .3; }
+    });
+    const up = () => {
+      clearTimeout(holdT); if (!drag) return; const d = drag; drag = null;
+      if (hugging) { endHug(true); return; }
+      if (d.mode === 'toss') { toss.on = false; toss.v = Math.max(0, toss.v) * 1.1 + .4; SND.check(); return; }
+      if (!d.moved && performance.now() - d.t < 450) tap();
+    };
+    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', () => { clearTimeout(holdT); if (hugging) endHug(false); toss.on = false; drag = null; });
+    document.addEventListener('pointermove', e => { if (!slot) return; const r = canvas.getBoundingClientRect(); if (!r.width) return; ltX = cl((e.clientX - (r.left + r.width / 2)) / (r.width * 1.3), -1, 1); ltY = cl(-(e.clientY - (r.top + r.height * .4)) / (r.height * 1.3), -1, 1); lastPtr = performance.now();
+      const n = lastPtr / 1000; if (Math.abs(ltX) < .55 && Math.abs(ltY) < .55 && n - lastNotice > 15 && clip === 'idle' && !idleAct) { lastNotice = n; idleAct = 'wave'; idleT0 = n; } }, {passive:true});
     document.addEventListener('visibilitychange', kick);
     ok = true; mount();
   }
+  function endHug(release) {
+    hugging = false;
+    if (release) { clip = 'cheer'; clipT = 0; happyUntil = performance.now() / 1000 + 1.8; spawn('heart', 6); SND.cheer && SND.cheer(); }
+    else { clip = back; clipT = 0; }
+    kick();
+  }
+  function petMove(e) {
+    const n = performance.now() / 1000; if (n - petT > 1.2) petDist = 0; petT = n;
+    petDist += Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0);
+    if (petDist > 450 && n > petCool) { petCool = n + 3; petDist = 0; happyUntil = n + 2.2; jig = Math.max(jig, .7); spawn('heart', 5); SND.check(); kick(); }
+  }
   function tap() {
+    const n = performance.now() / 1000; taps = taps.filter(x => n - x < 1.3); taps.push(n);
+    surpriseUntil = n + .45; jig = Math.max(jig, .8);
+    if (taps.length >= 4) { taps = []; clip = 'dizzy'; clipT = 0; spawn('star', 5); SND.cheer && SND.cheer(); buzz([20, 30, 20]); if (!inSheet && typeof say === 'function') say('¡Me mareo!', {ms:1800}); kick(); return; }
     if (inSheet) { play(['jump', 'wave', 'dance', 'cheer'][Math.floor(Math.random() * 4)]); SND.check(); buzz(15); return; }
     play('jump'); if (typeof tapNubi === 'function') tapNubi(slot);
   }
   function step(dt) {
-    const now = performance.now() / 1000;
+    const now = performance.now() / 1000; nowS = now;
     clipT += dt * timeScale;
     const g = Object.assign({}, DEF), c = CLIPS[clip] || CLIPS.idle, r = c.f(clipT, g) || {};
     lastProp = r.prop || ''; curNoDb = !!r.noDb; curX += ((r.x || 0) - curX) * Math.min(1, dt * 6);
     if (c.dur && clipT >= c.dur) { clip = back; clipT = 0; }
     if (now < talkUntil) g.mo = Math.max(g.mo, .22 + .42 * Math.abs(Math.sin(now * 17)));
-    if (now < sadUntil) { g.frown = 1; g.rx += .14; g.aL = Math.min(g.aL, .14); g.aR = Math.min(g.aR, .14); g.lid = Math.max(g.lid, .3); }
+    if (now < sadUntil) { g.frown = 1; g.rx += .14; g.aL = Math.min(g.aL, .14); g.aR = Math.min(g.aR, .14); g.lid = Math.max(g.lid, .3); g.bT += .35; if (Math.random() < dt * 16) spawn('drop', 1); }
+    if (now < happyUntil) { g.lid = Math.max(g.lid, .55); g.mo = Math.max(g.mo, .45); g.bY += .04; g.glow = Math.max(g.glow, .25); }
+    if (now < surpriseUntil) { g.bY += .07; g.mo = Math.max(g.mo, .7); }
     if (now > blinkAt) { blinkEnd = now + .13; blinkAt = now + 2.2 + Math.random() * 3.6; }
-    if (now < blinkEnd) g.lid = 1;
+    if (now < blinkEnd && now > surpriseUntil) g.lid = 1;
+    // leans toward the pointer when you are near
+    if (performance.now() - lastPtr < 1500 && !drag) { g.rz -= lookX * .07; g.rx -= lookY * .04; }
+    // tossed up: legs dangle, arms flail, then a floaty fall with a squishy bounce
+    if (!toss.on && (toss.y > 0 || toss.v > 0)) {
+      toss.v -= 5.5 * dt; toss.v *= .995; toss.y = Math.min(.6, toss.y + toss.v * dt); if (toss.y >= .6) toss.v = Math.min(toss.v, 0);
+      if (toss.y <= 0) { toss.y = 0; if (toss.v < -1.1) { toss.v = -toss.v * .38; jig = Math.max(jig, Math.min(1.5, -toss.v)); spawn('spark', 3); } else { toss.v = 0; jig = Math.max(jig, .7); } }
+    }
+    if (toss.y > .04) { g.hL = .25 + .15 * Math.sin(now * 8); g.hR = .25 + .15 * Math.sin(now * 8 + 2); g.kL = g.kR = .55; g.aL = g.aR = 1.9 + .35 * Math.sin(now * 9); g.eL = g.eR = .3; g.mo = Math.max(g.mo, .65); g.bY += .05; }
+    jig *= Math.exp(-dt * 2.6);
+    updFx(dt);
     // eyes: follow the pointer, or glance around on their own
     if (performance.now() - lastPtr > 3000 && now > wanderAt) { wanderAt = now + 1.6 + Math.random() * 2; const a = Math.random() * Math.PI * 2, k = Math.random() < .3 ? 0 : .8; ltX = Math.cos(a) * k; ltY = Math.sin(a) * k * .6; }
     if (r.look) { ltX = r.look[0]; ltY = r.look[1]; }
@@ -2737,7 +2843,10 @@ var P3 = (() => {
     if (!drag) g.yaw += lookX * .32;
     for (const k in P) { const s = P[k], K = STIFF[k] || 140, D = 2 * Math.sqrt(K) * .74, a = K * (g[k] - s.c) - D * s.v; s.v += a * dt; s.c += s.v * dt; }
     if (!drag) { userYaw += yawVel; yawVel *= .9; if (!inSheet) userYaw *= .97; }
-    apply(r.air || 0, r.spin || 0, !!r.zz, now, r.prop || '', clipT);
+    const air = (r.air || 0) + toss.y;
+    if (wasAir > .06 && air < .01) jig = Math.max(jig, 1);
+    wasAir = air;
+    apply(air, r.spin || 0, !!r.zz, now, r.prop || '', clipT);
   }
   function apply(air, spin, showZ, now, prop, ct) {
     const v = k => P[k].c, hL = v('hL'), kL = v('kL'), hR = v('hR'), kR = v('kR');
@@ -2750,6 +2859,9 @@ var P3 = (() => {
     const sp = v('splay');
     LG.L.hip.rotation.set(-hL, -sp * .6, -sp * .35); LG.L.kn.rotation.x = kL; LG.L.an.rotation.x = hL - kL;
     LG.R.hip.rotation.set(-hR, sp * .6, sp * .35); LG.R.kn.rotation.x = kR; LG.R.an.rotation.x = hR - kR;
+    puffs.forEach(m => { const d = m.userData, w = Math.sin(now * 14 + d.ph * 3) * jig;
+      m.scale.set(d.r * (1 + .018 * Math.sin(now * 2.3 + d.ph) + .09 * w), d.r * (1 + .018 * Math.sin(now * 2.3 + d.ph + 1.2) - .07 * w), d.r * (1 + .09 * w)); });
+    BR.forEach((bw, i) => { bw.position.y = .31 + v('bY'); bw.rotation.z = (i ? -1 : 1) * v('bT'); });
     const lid = -.6 + 2.1 * cl(v('lid'));
     EY.forEach(e => { e.lid.rotation.x = lid; e.pu.position.set(lookX * .045, lookY * .04, 0); });
     const fr = cl(v('frown')), mo = cl(v('mo'), 0, 1.2);
@@ -2828,6 +2940,7 @@ var P3 = (() => {
   }
   function play(name) {
     if (!CLIPS[name]) return;
+    if (name === 'cheer' || name === 'celebrate') spawn('spark', name === 'celebrate' ? 14 : 7);
     if (CLIPS[name].dur) { clip = name; clipT = 0; } else { back = name; clip = name; clipT = 0; }
     kick();
   }
@@ -2930,7 +3043,7 @@ function playSheet(tab) {
   const tabs = [['acts', 'Acciones'], ['ropa', 'Ropa'], ['acc', 'Accesorios'], ['estilo', 'Estilo']];
   openSheet(`<div class="game-head"><div><h3 class="h2">Jugar con Nubi</h3><p class="muted small">Nivel ${level()} · ${nf(S.xp)} XP</p></div><span class="coins-big"><span class="coin"></span><b id="coins-sheet">${nf(S.coins || 0)}</b></span></div>
     <div class="p3-slot p3-big" id="p3-stage">${mascot('happy', 190)}</div>
-    <p class="hint" style="justify-content:center;margin:-2px 0 0">Arrastra para girarlo · Toca para que salte</p>
+    <p class="hint" style="justify-content:center;margin:-2px 0 0">Gíralo, lánzalo hacia arriba, abrázalo (mantén presionado) o tócalo rápido varias veces</p>
     <div class="seg shop-seg" role="tablist" aria-label="Tienda de Nubi">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${shopTab === k}" data-act="shop-tab" data-tab="${k}">${l}</button>`).join('')}</div>
     <div id="p3-panel">${panelHTML()}</div>`);
   P3.mount();
