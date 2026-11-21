@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#050720">
 <meta name="description" content="Nubeltia: hábitos, enfoque y bienestar en una sola app. Prototipo para revisión del equipo.">
 <meta property="og:title" content="Nubeltia · prototipo">
-<meta property="og:description" content="Hábitos, enfoque, bienestar y Pulso, tu cerebro entrenador en 3D. Pruébalo y danos tu opinión.">
+<meta property="og:description" content="Hábitos, enfoque, bienestar y Nubi, tu nube entrenadora en 3D. Pruébalo y danos tu opinión.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://angelnevilley2-pixel.github.io/nubeltia/">
 <meta property="og:image" content="https://angelnevilley2-pixel.github.io/nubeltia/og.png">
@@ -527,7 +527,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .lang-opt small{color:var(--muted);font-size:12.5px}
 .lang-opt .ic{color:var(--brand)}
 .lang-code{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);font:800 14px var(--f-display)}
-/* Pulso talks: a speech bubble anchored under the visible Pulso, or docked bottom-right with a mini Pulso when he is scrolled away */
+/* Nubi talks: a speech bubble anchored under the visible Nubi, or docked bottom-right with a mini Nubi when he is scrolled away */
 .pbub{position:absolute;z-index:45;max-width:268px;display:flex;gap:8px;align-items:flex-end;opacity:0;transform:translateY(-6px) scale(.92);transform-origin:top right;transition:opacity .22s,transform .3s cubic-bezier(.3,1.5,.5,1);pointer-events:none}
 .pbub.show{opacity:1;transform:none;pointer-events:auto}
 .pbub.dock{transform-origin:bottom right}
@@ -548,7 +548,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .mascot.sad .m-body{animation:m-breathe 3s ease-in-out infinite}
 @keyframes m-z{0%{opacity:0;transform:translate(0,4px)}30%{opacity:1}100%{opacity:0;transform:translate(4px,-8px)}}
 .m-zzz{transform-box:view-box}
-/* 3D Pulso */
+/* 3D Nubi */
 .p3-slot{position:relative;flex:none;display:grid;place-items:center;touch-action:none}
 .p3-slot > canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
 .p3-slot > canvas:active{cursor:grabbing}
@@ -618,7 +618,8 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-  <radialGradient id="mp-lobe" cx=".36" cy=".3" r=".75"><stop offset="0" stop-color="#EDE4FF"/><stop offset=".4" stop-color="#B69CFF"/><stop offset=".8" stop-color="#8E5CF7"/><stop offset="1" stop-color="#4C1D95"/></radialGradient>
+  <radialGradient id="mp-lobe" cx=".36" cy=".3" r=".78"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#EEF1FF"/><stop offset=".82" stop-color="#C6CDFA"/><stop offset="1" stop-color="#959FEC"/></radialGradient>
+  <linearGradient id="mp-tint" gradientUnits="userSpaceOnUse" x1="12" y1="0" x2="90" y2="0"><stop offset="0" stop-color="#39E1FF"/><stop offset=".5" stop-color="#3491E4"/><stop offset="1" stop-color="#9B5CFF"/></linearGradient>
   <linearGradient id="mp-limb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D9CCFF"/><stop offset="1" stop-color="#8E5CF7"/></linearGradient>
   <linearGradient id="mp-leg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#B8FBFF"/><stop offset="1" stop-color="#22C7E0"/></linearGradient>
   <linearGradient id="mp-bell" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#A5F8FF"/><stop offset=".5" stop-color="#00D4E8"/><stop offset="1" stop-color="#067A99"/></linearGradient>
@@ -631,7 +632,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
   <aside class="rail" aria-label="Sobre el prototipo">
     <p class="eyebrow">Prototipo · Fase 1</p>
     <h2 class="rail-logo"><span class="nb-mark" aria-hidden="true"></span><span class="nb-word" role="img" aria-label="Nubeltia"></span></h2>
-    <p>Hábitos, enfoque y bienestar en una sola app. Pruébala como si fuera tuya: marca hábitos, inicia un pomodoro, haz tu registro mental y habla con Pulso.</p>
+    <p>Hábitos, enfoque y bienestar en una sola app. Pruébala como si fuera tuya: marca hábitos, inicia un pomodoro, haz tu registro mental y habla con Nubi.</p>
     <div class="about" id="rail-about"></div>
   </aside>
 
@@ -641,7 +642,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
       <span class="proto">Prototipo</span>
       <span class="spacer"></span>
       <button class="tpill" id="top-timer" data-act="top-timer" hidden></button>
-      <button class="xp" data-act="shop-open" aria-label="Tus monedas y la tienda de Pulso"><span class="lv" id="lv">7</span><span class="coin"></span><span id="coin-txt">150</span></button>
+      <button class="xp" data-act="shop-open" aria-label="Tus monedas y la tienda de Nubi"><span class="lv" id="lv">7</span><span class="coin"></span><span id="coin-txt">150</span></button>
       <button class="icon-btn lang-btn" data-act="lang" id="lang-btn" aria-label="Idioma / Language"></button>
       <button class="icon-btn" data-act="test-reminder" aria-label="Probar un recordatorio" id="bell-btn"></button>
     </header>
@@ -742,9 +743,9 @@ const I = {
 const ic = (n, s = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]||''}</svg>`;
 
 function mascot(mood = 'happy', size = 56) {
-  /* Pulso, pseudo-3D: every lobe gets its own radial gradient (lit from top-left), so the brain reads as a bumpy volume.
+  /* Nubi, pseudo-3D: every puff gets its own radial gradient (lit from top-left), so the cloud reads as a soft volume tinted with the brand gradient.
      Parts live in groups the CSS animates: body breathes, arms press the dumbbells, eyes blink and follow the pointer. */
-  const ink = '#140A33', lobes = [[33,38,12],[46,31,13],[60,31,13],[71,40,11],[75,53,10],[65,64,11],[50,66,12],[34,63,11],[25,51,11],[50,48,19]];
+  const ink = '#1A1650', lobes = [[30,55,13],[40,40,15],[57,34,18],[72,46,14],[80,59,10],[66,64,12],[50,65,14],[34,65,11],[21,61,9],[50,52,20]];
   const lob = (w, fill) => lobes.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r + w}" fill="${fill}"/>`).join('');
   const arm = side => {
     const L = side === 'l', x = L ? 3.5 : 68.5, hx = L ? 17.5 : 82.5;
@@ -767,7 +768,7 @@ function mascot(mood = 'happy', size = 56) {
     eyes = `<g class="m-look"><ellipse cx="40" cy="53" rx="2.8" ry="3.5" fill="${ink}"/><ellipse cx="60" cy="53" rx="2.8" ry="3.5" fill="${ink}"/><circle cx="41.1" cy="51.6" r="1.1" fill="#fff"/><circle cx="61.1" cy="51.6" r="1.1" fill="#fff"/></g>`;
     mouth = `<path d="M43.5 62.5q6.5 8.5 13 0z" fill="${ink}"/><path d="M46.5 66.2q3.5 2.4 7 0q-3.5-2-7 0z" fill="#F0ABFC"/>`;
   }
-  return `<svg class="mascot m-${mood}" style="--d:-${(Math.random() * 8).toFixed(2)}s" viewBox="0 0 100 100" width="${size}" height="${size}" role="img" aria-label="Pulso">
+  return `<svg class="mascot m-${mood}" style="--d:-${(Math.random() * 8).toFixed(2)}s" viewBox="0 0 100 100" width="${size}" height="${size}" role="img" aria-label="Nubi">
     <ellipse class="m-shadow" cx="50" cy="95.5" rx="20" ry="3.2" fill="url(#mp-shadow)"/>
     <g class="m-body">
       <g class="m-legs"><path d="M44 76v10M56 76v10" stroke="${ink}" stroke-width="6" stroke-linecap="round"/><path d="M44 76v10M56 76v10" stroke="url(#mp-leg)" stroke-width="3.8" stroke-linecap="round"/>
@@ -776,9 +777,9 @@ function mascot(mood = 'happy', size = 56) {
       ${arm('l')}${arm('r')}
       <g class="m-head">
         ${lob(1.6, ink)}${lob(0, 'url(#mp-lobe)')}
-        <path d="M50 20v14M38 27q5 4 1 10M62 27q-5 4-1 10M27 46q6 0 7 6M73 46q-6 0-7 6M30 66q5-4 10-1M70 66q-5-4-10-1M50 70v6" stroke="#2E1065" stroke-width="2" fill="none" stroke-linecap="round" opacity=".55"/>
-        <path d="M50.8 20.5v13M38.8 27.5q4.5 4 .8 9.5M62.8 27.5q-4 4-.2 9.5" stroke="#7DF3FF" stroke-width="1.1" fill="none" stroke-linecap="round" opacity=".75"/>
-        <ellipse cx="40" cy="25" rx="9" ry="4.2" fill="#fff" opacity=".42" transform="rotate(-18 40 25)"/>
+        <g opacity=".2">${lob(0, 'url(#mp-tint)')}</g>
+        <ellipse cx="44" cy="27" rx="10" ry="4.6" fill="#fff" opacity=".7" transform="rotate(-16 44 27)"/><ellipse cx="27" cy="47" rx="4.5" ry="2.6" fill="#fff" opacity=".55" transform="rotate(-30 27 47)"/>
+        <path d="M24 70q8 5 16 3M60 73q9 1 15-5" stroke="#8E95E8" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".55"/>
         <ellipse cx="30" cy="60" rx="3.8" ry="2.3" fill="#E879F9" opacity=".55"/><ellipse cx="70" cy="60" rx="3.8" ry="2.3" fill="#E879F9" opacity=".55"/>
         <g class="m-eyes">${eyes}</g>
         <circle cx="40" cy="53" r="8.2" fill="url(#mp-lens)" stroke="#39E1FF" stroke-width="2.3"/><circle cx="60" cy="53" r="8.2" fill="url(#mp-lens)" stroke="#39E1FF" stroke-width="2.3"/>
@@ -816,12 +817,12 @@ const REASON_TIP = {
   estres:'Antes del hábito, haz 1 minuto de respiración. Bajar la tensión te ayuda a empezar.',
   olvido:'Ata el hábito a algo que ya haces, por ejemplo después del café, y deja activo el aviso en tu reloj.',
   ganas:'Empieza por lo más fácil y celebra el inicio, no solo el final.',
-  otro:'Anota qué pasó en tu registro mental. Con eso Pulso y tu coach pueden ayudarte mejor.',
+  otro:'Anota qué pasó en tu registro mental. Con eso Nubi y tu coach pueden ayudarte mejor.',
 };
 const REASON_REPLY = {
   cansancio:'Anotado. Descansar también cuenta. Mañana lo movemos a una hora con más energía.',
   tiempo:'Anotado. Mañana prueba la versión mini: 5 minutos también cuentan.',
-  estres:'Anotado. Si quieres, habla con Pulso o respira 1 minuto en Mental.',
+  estres:'Anotado. Si quieres, habla con Nubi o respira 1 minuto en Mental.',
   olvido:'Anotado. Mañana te avisamos también en el reloj.',
   ganas:'Anotado. Pasa. Mañana empieza por lo más fácil.',
   otro:'Anotado. Mañana es otra oportunidad.',
@@ -853,8 +854,8 @@ const BADGES = [
   {id:'racha30', name:'Racha de 30', desc:'30 días seguidos cumpliendo', icon:'flame'},
 ];
 const PLANS = [
-  {id:'gratis', n:'Gratis', p:0, d:'Para empezar a crear hábitos.', f:['Hábitos, metas y recordatorios','Pomodoro y temporizadores','Registro mental diario','5 mensajes al día con Pulso']},
-  {id:'pro', n:'Pro', p:149, d:'Todo personalizado para ti.', tag:'Más popular', f:['Todo lo del plan Gratis','Pulso sin límite de mensajes','Plan de comidas personalizado','Rutinas completas y progreso','Relojes y anillos conectados','Estadísticas de cada semana']},
+  {id:'gratis', n:'Gratis', p:0, d:'Para empezar a crear hábitos.', f:['Hábitos, metas y recordatorios','Pomodoro y temporizadores','Registro mental diario','5 mensajes al día con Nubi']},
+  {id:'pro', n:'Pro', p:149, d:'Todo personalizado para ti.', tag:'Más popular', f:['Todo lo del plan Gratis','Nubi sin límite de mensajes','Plan de comidas personalizado','Rutinas completas y progreso','Relojes y anillos conectados','Estadísticas de cada semana']},
   {id:'coach', n:'Pro + Coach', p:799, d:'Con un coach de nuestra consultoría.', tag:'Acompañamiento', f:['Todo lo del plan Pro','Coach de alto rendimiento asignado','Plan de comidas y entreno hecho por tu coach','Revisión de tu avance cada semana','Mensajes directos con tu coach']},
 ];
 const planOf = () => PLANS.find(p => p.id === (S.plan || 'gratis')) || PLANS[0];
@@ -903,7 +904,7 @@ const PLAN = [['Fuerza','Fuerza · tren inferior'],['Caminar','Caminata de 30 mi
 const PMODES = {focus:{label:'Enfoque', short:'Enfoque · 25', min:25}, short:{label:'Pausa corta', short:'Pausa · 5', min:5}, long:{label:'Pausa larga', short:'Pausa · 15', min:15}};
 const STARTERS = ['Tengo mucho estrés hoy','Siento ansiedad y no sé por qué','No cumplí mi rutina','Me cuesta concentrarme'];
 const CRISIS = /kill myself|end my life|want to die|hurt myself|self.harm|suicid|matarme|quitarme la vida|no quiero vivir|quiero morir|me quiero morir|hacerme da[ñn]o|autolesi|cortarme|acabar con todo/;
-const RULES = `Eres Pulso, el acompañante de bienestar de la app Nubeltia. Hablas en español neutro, de tú, con calidez, en frases cortas y sin tecnicismos.
+const RULES = `Eres Nubi, el acompañante de bienestar de la app Nubeltia. Hablas en español neutro, de tú, con calidez, en frases cortas y sin tecnicismos.
 
 Tu tema es solo este: estrés, ansiedad del día a día, burnout, falta de concentración, sueño, motivación y por qué no se cumplió un hábito o una rutina.
 
@@ -1068,7 +1069,7 @@ function stepFx() {
   }
   if (parts.length) requestAnimationFrame(stepFx); else { fxRun = false; cx.clearRect(0, 0, cv.width, cv.height); }
 }
-/* cheer(): the one celebration for any progress. Small = sound + confetti from the spot + Pulso hops; big adds the cannons and a fanfare. */
+/* cheer(): the one celebration for any progress. Small = sound + confetti from the spot + Nubi hops; big adds the cannons and a fanfare. */
 function cheer(pos, big = false) {
   pos = pos || {x:phone.clientWidth / 2, y:phone.clientHeight * .35};
   if (big) { SND.party(); cannons(); burst(pos.x, pos.y, 70, 1.3); buzz([40, 50, 40, 50, 80]); }
@@ -1101,7 +1102,7 @@ function unlock(id) {
 }
 const CELEB = {
   day:() => ['¡Día completo!', 'Cumpliste todos tus hábitos de hoy. Ganaste 50 XP extra.'],
-  level:() => [`¡Subiste al nivel ${level()}!`, 'Ganaste 50 monedas y cosas nuevas para Pulso.'],
+  level:() => [`¡Subiste al nivel ${level()}!`, 'Ganaste 50 monedas y cosas nuevas para Nubi.'],
   workout:() => ['¡Entreno completado!', 'Terminaste tu rutina de hoy. Ganaste 30 XP.'],
   walk:m => ['¡Caminata completada!', `${m} minutos en movimiento. Ganaste 20 XP.`],
   goal:g => ['¡Meta cumplida!', `${g}. Ganaste 50 XP.`],
@@ -1284,7 +1285,7 @@ function renderInicio() {
   return `
   <header class="hello">
     <div><p class="eyebrow">${esc(dateLabel())}</p><h1 class="h1">${greet}, ${esc(S.name)}</h1></div>
-    <div class="p3-slot">${mascot(pct === 1 ? 'celebrate' : 'happy', 122)}<button class="p3-play" data-act="play-pulso" aria-label="Jugar con Pulso">${ic('game', 17)}</button></div>
+    <div class="p3-slot">${mascot(pct === 1 ? 'celebrate' : 'happy', 122)}<button class="p3-play" data-act="play-pulso" aria-label="Jugar con Nubi">${ic('game', 17)}</button></div>
   </header>
   ${nextCard()}
   <div class="card today">
@@ -1355,7 +1356,7 @@ function habitRow(h) {
   </div>`;
 }
 
-/* ---------- next step: Pulso picks what to do now ---------- */
+/* ---------- next step: Nubi picks what to do now ---------- */
 let nextOff = 0; const seenTab = {};
 function nextSteps() {
   const L = [], m = toMin(nowHM());
@@ -1381,7 +1382,7 @@ function nextCard() {
 /* ---------- quick add ---------- */
 const QA = [
   ['qa-water', 'drop', 'Vaso de agua', 'var(--water)'], ['qa-task', 'plus', 'Tarea', 'var(--brand)'], ['qa-habit', 'star', 'Hábito', 'var(--gold)'], ['qa-checkin', 'heart', 'Cómo me siento', 'var(--mental)'],
-  ['qa-pomo', 'clock', 'Pomodoro', 'var(--brand)'], ['qa-walk', 'steps', 'Caminar 10 min', 'var(--train)'], ['breathe', 'wind', 'Respirar 1 min', 'var(--food)'], ['qa-chat', 'send', 'Hablar con Pulso', 'var(--mental)'],
+  ['qa-pomo', 'clock', 'Pomodoro', 'var(--brand)'], ['qa-walk', 'steps', 'Caminar 10 min', 'var(--train)'], ['breathe', 'wind', 'Respirar 1 min', 'var(--food)'], ['qa-chat', 'send', 'Hablar con Nubi', 'var(--mental)'],
 ];
 function quickSheet() {
   $('#fab').classList.add('open');
@@ -1421,7 +1422,7 @@ document.addEventListener('click', e => { if (swallow) { e.stopPropagation(); e.
 
 /* ---------- guided tour ---------- */
 const TOUR = [
-  {tab:'inicio', sel:null, t:'¡Hola! Soy Pulso', d:'Te enseño Nubeltia en 30 segundos. Cada cosa que logres la celebramos juntos.'},
+  {tab:'inicio', sel:null, t:'¡Hola! Soy Nubi', d:'Te enseño Nubeltia en 30 segundos. Cada cosa que logres la celebramos juntos.'},
   {tab:'inicio', sel:'#next', t:'Tu siguiente paso', d:'Aquí te digo qué conviene hacer ahora. Un toque y listo. Si no te late, pide otra idea.'},
   {tab:'inicio', sel:'.habit', t:'Tus hábitos', d:'Toca el círculo para cumplirlo, o desliza a la derecha. Desliza a la izquierda si hoy no pudiste.'},
   {tab:'inicio', sel:'#fab', t:'Agrega en un toque', d:'Con el botón + registras agua, tareas, hábitos, un pomodoro y más, desde cualquier pantalla.'},
@@ -1435,7 +1436,7 @@ let tourI = -1;
 function startTour() { closeSheet(); tourI = 0; $('#tour').hidden = false; tourStep(); }
 function endTour() { $('#tour').hidden = true; tourI = -1; S.tourDone = true; save(); }
 function tourStep() {
-  const st = TOUR[tourI]; if (!st) { endTour(); cheer(); toast('¡Bienvenida! Toca a Pulso cuando quieras.'); return; }
+  const st = TOUR[tourI]; if (!st) { endTour(); cheer(); toast('¡Bienvenida! Toca a Nubi cuando quieras.'); return; }
   if (st.tab && current !== st.tab) go(st.tab);
   setTimeout(() => {
     const el = st.sel ? $(st.sel) : null, inScroll = el && el.closest('#scroller');
@@ -1464,7 +1465,7 @@ function placeTour(el, st) {
   setTimeout(() => { const b = card.querySelector('[data-act="tour-next"]'); b && b.focus({preventScroll:true}); }, 50);
 }
 
-/* ---------- Pulso talks and reacts ---------- */
+/* ---------- Nubi talks and reacts ---------- */
 const CHEERS = ['¡Eso es!', '¡Bien hecho!', '¡Vas con todo!', '¡Un paso más!', '¡Así se hace!'];
 const HI = {inicio:'¡De vuelta! Vamos por tu siguiente paso.', mental:'Aquí cuidamos tu mente. ¿Cómo te sientes hoy?', nutricion:'Comer bien es combustible para tu cerebro.', entreno:'¡A moverse! Yo cargo las pesas.', perfil:'Aquí ves tus logros y tu plan.'};
 const pick1 = a => a[Math.floor(Math.random() * a.length)];
@@ -1494,7 +1495,7 @@ function say(text, o = {}) {
   void b.offsetWidth; b.classList.add('show');
   sayT = setTimeout(hideSay, o.ms || (o.act ? 8000 : 3800));
 }
-function tapPulso(pm) {
+function tapNubi(pm) {
   if (pm.classList.contains('p3-slot') && P3 && P3.ok()) P3.play('jump');
   pm.classList.remove('poke', 'sleepy'); void pm.getBoundingClientRect(); pm.classList.add('poke'); setTimeout(() => pm.classList.remove('poke'), 800);
   SND.check(); buzz(15);
@@ -1502,7 +1503,7 @@ function tapPulso(pm) {
   say(pick1(POKE), {sub:n.t, desc:n.d, act:n.act, label:n.b, id:n.id});
 }
 $('#scroller').addEventListener('scroll', () => { if ($('#pbub').classList.contains('anch')) hideSay(); }, {passive:true});
-/* idle: Pulso dozes off after 40 s without interaction and wakes when you come back */
+/* idle: Nubi dozes off after 40 s without interaction and wakes when you come back */
 let lastAct = Date.now(), dozing = false;
 function wake() { lastAct = Date.now(); if (!dozing) return; dozing = false; P3 && P3.play(S.pomo.running && S.pomo.mode === 'focus' ? 'meditate' : 'idle'); document.querySelectorAll('.mascot.sleepy').forEach(m => m.classList.remove('sleepy')); }
 document.addEventListener('pointerdown', wake, true); document.addEventListener('keydown', wake, true);
@@ -1534,7 +1535,7 @@ function renderMental() {
       <div class="ck-sum">${face(c.mood - 1, 44)}<div><b>${MOODS[c.mood - 1]}</b><p class="muted small">Guardado a las ${c.at}</p></div></div>
       <div class="chips"><span class="chip">Estrés ${c.stress}/10</span><span class="chip">Ansiedad ${c.anx}/10</span><span class="chip">Energía ${c.energy}/10</span><span class="chip">Concentración ${c.focus}/10</span><span class="chip">${ic('moon', 13)} ${n1(+c.sleep)} h · ${c.quality.toLowerCase()}</span></div>
       ${c.note ? `<p class="muted small" style="margin-top:10px">“${esc(c.note)}”</p>` : ''}
-      ${high ? `<div class="nudge"><p><b>Hoy vienes con mucha carga.</b> Hablarlo ayuda a ordenarlo. Pulso te acompaña paso a paso.</p><button class="btn small" data-act="chat-prefill" data-text="Hoy tengo mucho estrés y no sé por dónde empezar.">Hablar con Pulso</button></div>` : ''}
+      ${high ? `<div class="nudge"><p><b>Hoy vienes con mucha carga.</b> Hablarlo ayuda a ordenarlo. Nubi te acompaña paso a paso.</p><button class="btn small" data-act="chat-prefill" data-text="Hoy tengo mucho estrés y no sé por dónde empezar.">Hablar con Nubi</button></div>` : ''}
     </section>`;
   } else {
     const d = draft;
@@ -1565,10 +1566,10 @@ function renderMental() {
   ${reasonsBlock()}
   <button class="card row-btn" data-act="breathe"><span class="ico">${ic('wind', 22)}</span><span><b>Respira 1 minuto</b><small>Inhala 4 segundos y exhala 6. Baja la tensión en el momento.</small></span>${ic('chevron', 18)}</button>
   <section class="card" id="chat-card">
-    <div class="chat-head">${mascot('happy', 84)}<div><h2 class="h2">Habla con Pulso</h2><p class="muted small">Te acompaña con estrés, ansiedad, burnout y enfoque. No sustituye a un psicólogo.</p></div></div>
+    <div class="chat-head">${mascot('happy', 84)}<div><h2 class="h2">Habla con Nubi</h2><p class="muted small">Te acompaña con estrés, ansiedad, burnout y enfoque. No sustituye a un psicólogo.</p></div></div>
     <div class="chat" id="chat" aria-live="polite"></div>
     <div class="starters">${STARTERS.map(s => `<button class="chip-btn" data-act="chat-starter" data-text="${esc(s)}">${esc(s)}</button>`).join('')}</div>
-    <form class="chat-form" id="chat-form"><label class="sr" for="chat-in">Escribe a Pulso</label><input id="chat-in" autocomplete="off" maxlength="600" placeholder="Cuéntame qué pasó hoy…"><button class="send" id="chat-send" aria-label="Enviar">${ic('send', 18)}</button></form>
+    <form class="chat-form" id="chat-form"><label class="sr" for="chat-in">Escribe a Nubi</label><input id="chat-in" autocomplete="off" maxlength="600" placeholder="Cuéntame qué pasó hoy…"><button class="send" id="chat-send" aria-label="Enviar">${ic('send', 18)}</button></form>
     <p class="ai-note" id="ai-note">${aiNote()}</p>
   </section>
   <p class="crisis-foot">${ic('shield', 16)}<span>¿Estás en peligro? Llama al 911. En México, Línea de la Vida: <b>800 911 2000</b>, gratis y las 24 horas.</span></p>`;
@@ -1616,7 +1617,7 @@ function openBreath() {
 }
 function stopBreath() { clearTimeout(breathT); clearInterval(breathI); }
 
-/* ---------- Pulso (IA) ---------- */
+/* ---------- Nubi (IA) ---------- */
 let sample = null, aiState = 'checking', chatCtl = null, chatBusy = false;
 (async () => {
   try { sample = window.claude && window.claude.use ? await window.claude.use('sample') : null; } catch (e) { sample = null; }
@@ -1627,10 +1628,10 @@ function aiNote() {
     : aiState === 'demo' ? 'Modo demostración: respuestas de ejemplo. En la app final responde la IA.' : 'Conectando con la IA…';
 }
 function chatMsgs() {
-  const greet = `<div class="msg ai">Hola, ${esc(S.name)}. Soy Pulso. ¿Cómo te fue hoy? Puedes contarme qué te estresa o por qué no salió alguna rutina, y lo vemos paso a paso.</div>`;
+  const greet = `<div class="msg ai">Hola, ${esc(S.name)}. Soy Nubi. ¿Cómo te fue hoy? Puedes contarme qué te estresa o por qué no salió alguna rutina, y lo vemos paso a paso.</div>`;
   return greet + S.chat.map(m => m.role === 'crisis'
     ? `<div class="crisis"><p><b>No tienes que pasar por esto sin ayuda.</b></p><p>Si estás en peligro ahora, llama al <b>911</b>. En México puedes llamar gratis y a cualquier hora a la Línea de la Vida: <b>800 911 2000</b>. Si estás en otro país, llama a tu número de emergencias o busca ya a alguien de confianza.</p></div>`
-    : `<div class="msg ${m.role === 'user' ? 'user' : 'ai'} ${m.pending ? 'pending' : ''}">${esc(m.pending ? 'Pulso está pensando…' : m.content)}${m.demo ? '<span class="tag">Respuesta de ejemplo</span>' : ''}</div>`).join('');
+    : `<div class="msg ${m.role === 'user' ? 'user' : 'ai'} ${m.pending ? 'pending' : ''}">${esc(m.pending ? 'Nubi está pensando…' : m.content)}${m.demo ? '<span class="tag">Respuesta de ejemplo</span>' : ''}</div>`).join('');
 }
 function renderChat() { const c = $('#chat'); if (!c) return; c.innerHTML = chatMsgs(); c.scrollTop = c.scrollHeight; }
 const clean = s => String(s).replace(/\*\*(.+?)\*\*/g, '$1').replace(/^#+\s*/gm, '').trim();
@@ -1659,7 +1660,7 @@ async function sendChat(text) {
   if (aiState !== 'live') { await wait(900); reply.content = demoReply(text); reply.demo = true; finish(); return; }
   const ctl = new AbortController(); chatCtl = ctl;
   const turns = S.chat.filter(m => (m.role === 'user' || m.role === 'assistant') && !m.pending && !m.err && !m.demo && m.content).slice(-12).map(m => ({role:m.role, content:m.content}));
-  const input = [{role:'user', content:`${RULES}${isEN() ? '\n\nIMPORTANT: the person uses the app in English. Always reply in natural English (same rules, same limits; crisis line: 911, or in Mexico Línea de la Vida 800 911 2000).' : ''}\n\nContexto de hoy, tomado de la app: ${aiContext()}\n\nResponde como Pulso al siguiente mensaje.`}, ...turns];
+  const input = [{role:'user', content:`${RULES}${isEN() ? '\n\nIMPORTANT: the person uses the app in English. Always reply in natural English (same rules, same limits; crisis line: 911, or in Mexico Línea de la Vida 800 911 2000).' : ''}\n\nContexto de hoy, tomado de la app: ${aiContext()}\n\nResponde como Nubi al siguiente mensaje.`}, ...turns];
   try {
     const r = await sample(input, {cache:false, signal:ctl.signal, effort:'low', onText:({text:t}) => {
       reply.content = t; if (reply.pending) { reply.pending = false; renderChat(); }
@@ -1670,7 +1671,7 @@ async function sendChat(text) {
     const code = e && e.code;
     if (code === 'cancelled') reply.content = e.text ? clean(e.text) : 'Respuesta detenida.';
     else if (['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(code)) { aiState = 'demo'; $('#ai-note').textContent = aiNote(); reply.content = demoReply(text); reply.demo = true; }
-    else if (code === 'rate_limited') { reply.content = 'Pulso necesita una pausa. Inténtalo de nuevo en un momento.'; reply.err = true; }
+    else if (code === 'rate_limited') { reply.content = 'Nubi necesita una pausa. Inténtalo de nuevo en un momento.'; reply.err = true; }
     else if (code === 'refused') reply.content = 'Prefiero no responder a eso. ¿Me cuentas cómo te sientes hoy?';
     else { reply.content = (e && e.text ? clean(e.text) + '\n\n' : '') + 'No pude responder ahora. Vuelve a intentarlo.'; reply.err = true; }
   }
@@ -1799,11 +1800,11 @@ function renderTrain() {
 
 /* ---------- render: perfil ---------- */
 function aboutHTML() {
-  const ok = ['Hábitos con recompensas, niveles y logros','Pomodoro con sonido y vibración','Registro mental, señales de burnout y por qué no cumpliste','Nutrición: IMC, cintura, calorías y macros','Rutina con series, descansos y caminatas','Pulso, la IA de acompañamiento'];
+  const ok = ['Hábitos con recompensas, niveles y logros','Pomodoro con sonido y vibración','Registro mental, señales de burnout y por qué no cumpliste','Nutrición: IMC, cintura, calorías y macros','Rutina con series, descansos y caminatas','Nubi, la IA de acompañamiento'];
   const sim = ['Avisos en el reloj','Conexión con relojes y anillos','Conexión con tu coach','Fotos de platillos y videos de ejercicios'];
   return `<h3>Funciona de verdad</h3><ul>${ok.map(t => `<li>${ic('check', 16)}<span>${t}</span></li>`).join('')}</ul>
     <h3>Simulado por ahora</h3><ul>${sim.map(t => `<li class="sim">${ic('sparkle', 16)}<span>${t}</span></li>`).join('')}</ul>
-    <p class="fine">Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. En esta versión de prueba, Pulso responde con ejemplos; en la app final responderá con IA.</p>`;
+    <p class="fine">Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. En esta versión de prueba, Nubi responde con ejemplos; en la app final responderá con IA.</p>`;
 }
 function renderPerfil() {
   const into = S.xp % 100, un = BADGES.filter(b => S.badges[b.id]).length;
@@ -2010,8 +2011,8 @@ const A = {
   'delete-no': () => { $('#del-confirm').hidden = true; },
   'delete-yes': () => { S = defaults(); save(); draft = null; editing = false; restEnd = 0; current = ''; go('inicio'); renderTop(); toast('Listo. Volviste a los datos de ejemplo.'); },
 };
-/* Pulso comes alive: eyes follow the pointer (or glance around on their own when idle) and a tap makes it jump. */
-const POKE = ['¡Hey! Sigo entrenando el cerebro.','¿Una pausa de respiración?','¡Vamos por ese hábito!','Tu mente también se entrena.','¡Me haces cosquillas!'];
+/* Nubi comes alive: eyes follow the pointer (or glance around on their own when idle) and a tap makes it jump. */
+const POKE = ['¡Hey! Aquí sigo, flotando y entrenando.','¿Una pausa de respiración?','¡Vamos por ese hábito!','Tu mente también se entrena.','¡Me haces cosquillas!'];
 let lookIdle = 0, lookRaf = 0;
 function lookAt(x, y) {
   document.querySelectorAll('.mascot').forEach(m => {
@@ -2028,7 +2029,7 @@ if (!RM) {
 }
 document.addEventListener('click', e => {
   const pm = e.target.closest('.mascot');
-  if (pm && !e.target.closest('[data-act]')) { tapPulso(pm); return; }
+  if (pm && !e.target.closest('[data-act]')) { tapNubi(pm); return; }
   const t = e.target.closest('[data-act]'); if (!t) return;
   const f = A[t.dataset.act]; if (!f) return;
   e.preventDefault(); const inBub = t.closest('#pbub'); f(t, e); if (inBub) hideSay();
@@ -2070,16 +2071,16 @@ document.addEventListener('keydown', e => {
 const EN = {
 // shell
 'Prototipo · Fase 1':'Prototype · Phase 1',
-'Hábitos, enfoque y bienestar en una sola app. Pruébala como si fuera tuya: marca hábitos, inicia un pomodoro, haz tu registro mental y habla con Pulso.':'Habits, focus and wellbeing in one app. Try it as if it were yours: check off habits, start a pomodoro, log how you feel and talk with Pulso.',
+'Hábitos, enfoque y bienestar en una sola app. Pruébala como si fuera tuya: marca hábitos, inicia un pomodoro, haz tu registro mental y habla con Nubi.':'Habits, focus and wellbeing in one app. Try it as if it were yours: check off habits, start a pomodoro, log how you feel and talk with Nubi.',
 'Prototipo':'Prototype','Sobre el prototipo':'About the prototype','Ver tu nivel y logros':'See your level and badges','Probar un recordatorio':'Try a reminder',
 'Secciones':'Sections','Agregar rápido':'Quick add','Recorrido por la app':'App tour','Hecho':'Done','Posponer 10 min':'Snooze 10 min','Opciones':'Options','Seguir':'Continue',
 'Inicio':'Home','Mental':'Mind','Nutrición':'Nutrition','Entrenamiento':'Training','Entreno':'Training','Perfil':'Profile','Idioma':'Language','Idioma / Language':'Language / Idioma',
 'Funciona de verdad':'Works for real','Simulado por ahora':'Simulated for now',
 'Hábitos con recompensas, niveles y logros':'Habits with rewards, levels and badges','Pomodoro con sonido y vibración':'Pomodoro with sound and vibration',
 'Registro mental, señales de burnout y por qué no cumpliste':'Mood check-in, burnout signals and why you missed a habit','Nutrición: IMC, cintura, calorías y macros':'Nutrition: BMI, waist, calories and macros',
-'Rutina con series, descansos y caminatas':'Workouts with sets, rest timers and walks','Pulso, la IA de acompañamiento':'Pulso, your AI companion',
+'Rutina con series, descansos y caminatas':'Workouts with sets, rest timers and walks','Nubi, la IA de acompañamiento':'Nubi, your AI companion',
 'Avisos en el reloj':'Watch notifications','Conexión con relojes y anillos':'Watch and ring sync','Conexión con tu coach':'Coach connection','Fotos de platillos y videos de ejercicios':'Meal photos and exercise videos',
-'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. Pulso usa la cuenta de Claude de quien abre el prototipo.':'Names and past days are sample data. What you do is saved only in this browser. Pulso uses the Claude account of whoever opens the prototype.',
+'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. Nubi usa la cuenta de Claude de quien abre el prototipo.':'Names and past days are sample data. What you do is saved only in this browser. Nubi uses the Claude account of whoever opens the prototype.',
 // reminder
 '· ahora':'· now','Cerrar aviso':'Close notification','También vibra en tu reloj':'Also vibrates on your watch','Solo en el teléfono':'Phone only',
 // celebrations
@@ -2094,7 +2095,7 @@ const EN = {
 'Cansancio':'Tired','Falta de tiempo':'No time','Estrés':'Stress','Se me olvidó':'I forgot','Sin ganas':'Not in the mood','Otro motivo':'Other reason',
 'Anotado. Descansar también cuenta. Mañana lo movemos a una hora con más energía.':'Noted. Rest counts too. Tomorrow we’ll move it to a time when you have more energy.',
 'Anotado. Mañana prueba la versión mini: 5 minutos también cuentan.':'Noted. Tomorrow try the mini version: 5 minutes counts too.',
-'Anotado. Si quieres, habla con Pulso o respira 1 minuto en Mental.':'Noted. If you like, talk with Pulso or breathe for 1 minute in Mind.',
+'Anotado. Si quieres, habla con Nubi o respira 1 minuto en Mental.':'Noted. If you like, talk with Nubi or breathe for 1 minute in Mind.',
 'Anotado. Mañana te avisamos también en el reloj.':'Noted. Tomorrow we’ll remind you on your watch too.','Anotado. Pasa. Mañana empieza por lo más fácil.':'Noted. It happens. Tomorrow start with the easiest part.',
 'Anotado. Mañana es otra oportunidad.':'Noted. Tomorrow is another chance.',
 'Mueve los hábitos que piden más energía a la mañana y revisa tu sueño: varias noches dormiste menos de 6.5 horas.':'Move your most demanding habits to the morning and check your sleep: several nights you slept under 6.5 hours.',
@@ -2102,7 +2103,7 @@ const EN = {
 'Antes del hábito, haz 1 minuto de respiración. Bajar la tensión te ayuda a empezar.':'Before the habit, breathe for 1 minute. Lowering tension helps you start.',
 'Ata el hábito a algo que ya haces, por ejemplo después del café, y deja activo el aviso en tu reloj.':'Tie the habit to something you already do, like after your coffee, and keep the watch reminder on.',
 'Empieza por lo más fácil y celebra el inicio, no solo el final.':'Start with the easiest part and celebrate starting, not just finishing.',
-'Anota qué pasó en tu registro mental. Con eso Pulso y tu coach pueden ayudarte mejor.':'Write what happened in your check-in. That helps Pulso and your coach support you better.',
+'Anota qué pasó en tu registro mental. Con eso Nubi y tu coach pueden ayudarte mejor.':'Write what happened in your check-in. That helps Nubi and your coach support you better.',
 'Nuevo hábito':'New habit','¿Qué quieres hacer?':'What do you want to do?','Ej.: Estirar 5 minutos':'E.g. Stretch for 5 minutes','Hora del aviso':'Reminder time','Área':'Area','Crear hábito':'Create habit','Escribe el nombre del hábito.':'Write the habit name.',
 'Salud':'Health','Mente':'Mind','Enfoque':'Focus','Cuerpo':'Body','Sueño':'Sleep',
 'Hábito “2 pomodoros de trabajo profundo” cumplido.':'Habit “2 deep-work pomodoros” done.','Hábito “Caminar 20 minutos” cumplido.':'Habit “Walk 20 minutes” done.',
@@ -2126,20 +2127,20 @@ const EN = {
 'Ya lo hice':'I did it','Un vaso ahora te ayuda a concentrarte mejor.':'A glass now helps you focus better.','Tomé uno':'I had one','Este pendiente sigue abierto. ¿Ya quedó?':'This to-do is still open. Is it done?',
 'Listo':'Done','Un bloque de enfoque':'A focus block','25 minutos sin distracciones. Yo te aviso al terminar.':'25 minutes without distractions. I’ll let you know when it’s over.',
 'Empezar pomodoro':'Start pomodoro','Respira un minuto':'Breathe for a minute','Una pausa corta baja el estrés y te ayuda a seguir.':'A short pause lowers stress and helps you keep going.','Respirar':'Breathe','Otra idea':'Another idea',
-'¿Qué quieres registrar?':'What do you want to log?','Vaso de agua':'Glass of water','Tarea':'Task','Hábito':'Habit','Cómo me siento':'How I feel','Caminar 10 min':'Walk 10 min','Respirar 1 min':'Breathe 1 min','Hablar con Pulso':'Talk with Pulso',
+'¿Qué quieres registrar?':'What do you want to log?','Vaso de agua':'Glass of water','Tarea':'Task','Hábito':'Habit','Cómo me siento':'How I feel','Caminar 10 min':'Walk 10 min','Respirar 1 min':'Breathe 1 min','Hablar con Nubi':'Talk with Nubi',
 'Ya llevas tus 8 vasos de hoy. ¡Muy bien!':'You already had your 8 glasses today. Great job!','Pomodoro en marcha. ¡A enfocarte!':'Pomodoro running. Time to focus!','Caminata de 10 minutos en marcha.':'10-minute walk started.',
 // tour
-'¡Hola! Soy Pulso':'Hi! I’m Pulso','Te enseño Nubeltia en 30 segundos. Cada cosa que logres la celebramos juntos.':'Let me show you Nubeltia in 30 seconds. We’ll celebrate everything you achieve together.',
+'¡Hola! Soy Nubi':'Hi! I’m Nubi','Te enseño Nubeltia en 30 segundos. Cada cosa que logres la celebramos juntos.':'Let me show you Nubeltia in 30 seconds. We’ll celebrate everything you achieve together.',
 'Aquí te digo qué conviene hacer ahora. Un toque y listo. Si no te late, pide otra idea.':'Here I tell you what’s best to do right now. One tap and done. Not feeling it? Ask for another idea.',
 'Tus hábitos':'Your habits','Toca el círculo para cumplirlo, o desliza a la derecha. Desliza a la izquierda si hoy no pudiste.':'Tap the circle to complete it, or swipe right. Swipe left if you couldn’t today.',
 'Agrega en un toque':'Add in one tap','Con el botón + registras agua, tareas, hábitos, un pomodoro y más, desde cualquier pantalla.':'With the + button you log water, tasks, habits, a pomodoro and more, from any screen.',
 'Registra cómo te sientes, mira tus señales de burnout y habla conmigo cuando lo necesites.':'Log how you feel, see your burnout signals and talk with me whenever you need.',
 'Tus calorías, tu plan de comidas y el agua del día.':'Your calories, your meal plan and today’s water.','Pasos, caminatas y tu rutina con descansos.':'Steps, walks and your workout with rest timers.',
 'Logros, relojes y anillos, tu coach y los planes.':'Badges, watches and rings, your coach and plans.','¡Listo para empezar!':'Ready to start!','Empieza con tu primer hábito del día. Yo te acompaño.':'Start with your first habit of the day. I’ve got you.',
-'¡Bienvenida! Toca a Pulso cuando quieras.':'Welcome! Tap Pulso anytime.','Saltar':'Skip','¡Empezar!':'Let’s go!','Vamos':'Let’s go','Siguiente':'Next',
+'¡Bienvenida! Toca a Nubi cuando quieras.':'Welcome! Tap Nubi anytime.','Saltar':'Skip','¡Empezar!':'Let’s go!','Vamos':'Let’s go','Siguiente':'Next',
 // mental
 'Registro de hoy':'Today’s check-in','Editar':'Edit','Muy mal':'Very bad','Mal':'Bad','Normal':'Normal','Bien':'Good','Muy bien':'Very good',
-'Hoy vienes con mucha carga.':'You’re carrying a lot today.','Hablarlo ayuda a ordenarlo. Pulso te acompaña paso a paso.':'Talking helps you sort it out. Pulso guides you step by step.',
+'Hoy vienes con mucha carga.':'You’re carrying a lot today.','Hablarlo ayuda a ordenarlo. Nubi te acompaña paso a paso.':'Talking helps you sort it out. Nubi guides you step by step.',
 'Hoy tengo mucho estrés y no sé por dónde empezar.':'I’m really stressed today and don’t know where to start.','Toma 1 minuto':'Takes 1 minute','¿Cómo te sientes?':'How do you feel?',
 'Ansiedad':'Anxiety','Energía':'Energy','Concentración':'Focus','Nada':'None','Mucho':'A lot','Mucha':'A lot','Agotado':'Drained','A tope':'Full','Disperso':'Scattered','Enfocado':'Focused',
 'Horas de sueño':'Hours of sleep','Dato de tu reloj':'From your watch','Calidad':'Quality','Mala':'Poor','Regular':'Fair','Buena':'Good',
@@ -2158,10 +2159,10 @@ const EN = {
 'Dormir bien es el primer hábito de alto rendimiento.':'Good sleep is the first high-performance habit.','Pequeños pasos todos los días cambian todo en un año.':'Small steps every day change everything in a year.',
 'Tu energía es limitada. Úsala en lo que de verdad importa.':'Your energy is limited. Spend it on what truly matters.',
 'Tu semana':'Your week','Días anteriores: ejemplo':'Past days: sample data','Ánimo':'Mood','Hoy':'Today','¿Por qué no cumpliste?':'Why did you miss it?',
-'Respira 1 minuto':'Breathe for 1 minute','Inhala 4 segundos y exhala 6. Baja la tensión en el momento.':'Inhale for 4 seconds and exhale for 6. Eases tension right away.','Habla con Pulso':'Talk with Pulso',
+'Respira 1 minuto':'Breathe for 1 minute','Inhala 4 segundos y exhala 6. Baja la tensión en el momento.':'Inhale for 4 seconds and exhale for 6. Eases tension right away.','Habla con Nubi':'Talk with Nubi',
 'Te acompaña con estrés, ansiedad, burnout y enfoque. No sustituye a un psicólogo.':'Helps with stress, anxiety, burnout and focus. Not a substitute for a psychologist.',
 'Tengo mucho estrés hoy':'I’m very stressed today','Siento ansiedad y no sé por qué':'I feel anxious and don’t know why','No cumplí mi rutina':'I didn’t do my routine','Me cuesta concentrarme':'I can’t concentrate',
-'Escribe a Pulso':'Write to Pulso','Cuéntame qué pasó hoy…':'Tell me what happened today…','Enviar':'Send','Detener respuesta':'Stop reply',
+'Escribe a Nubi':'Write to Nubi','Cuéntame qué pasó hoy…':'Tell me what happened today…','Enviar':'Send','Detener respuesta':'Stop reply',
 '¿Estás en peligro? Llama al 911. En México, Línea de la Vida:':'In danger? Call 911. In Mexico, Línea de la Vida:',', gratis y las 24 horas.':', free, 24 hours.',
 'Inhala mientras el círculo crece y exhala mientras se encoge.':'Inhale as the circle grows and exhale as it shrinks.','Prepárate…':'Get ready…','Inhala':'Inhale','Exhala':'Exhale','Terminar':'Finish',
 'Bien hecho. Ese minuto fue para ti.':'Well done. That minute was for you.',
@@ -2170,7 +2171,7 @@ const EN = {
 'No tienes que pasar por esto sin ayuda.':'You don’t have to go through this alone.','Si estás en peligro ahora, llama al':'If you’re in danger right now, call',
 '. En México puedes llamar gratis y a cualquier hora a la Línea de la Vida:':'. In Mexico you can call Línea de la Vida for free, any time:',
 '. Si estás en otro país, llama a tu número de emergencias o busca ya a alguien de confianza.':'. If you’re in another country, call your local emergency number or reach out to someone you trust right now.',
-'Pulso está pensando…':'Pulso is thinking…','Respuesta de ejemplo':'Sample reply',
+'Nubi está pensando…':'Nubi is thinking…','Respuesta de ejemplo':'Sample reply',
 'Gracias por decírmelo. Lo que sientes importa y no tienes que pasarlo sin ayuda. Por favor llama ahora al 911 o, en México, a la Línea de la Vida 800 911 2000. ¿Hay alguien de confianza que pueda estar contigo ahora?':'Thank you for telling me. What you feel matters and you don’t have to go through it alone. Please call 911 now or, in Mexico, Línea de la Vida at 800 911 2000. Is there someone you trust who can be with you right now?',
 'Gracias por contármelo. El estrés suele aparecer cuando sentimos que hay más cosas que tiempo. Hagamos algo pequeño: 1 minuto de respiración y luego eliges una sola tarea para un pomodoro de 25 minutos. ¿Qué es lo que más te pesa ahora mismo?':'Thanks for telling me. Stress often shows up when it feels like there’s more to do than time. Let’s do something small: 1 minute of breathing, then pick a single task for a 25-minute pomodoro. What’s weighing on you most right now?',
 'Te entiendo. La ansiedad muchas veces es la mente adelantándose a lo que podría pasar. Prueba esto: nombra 3 cosas que ves y 2 que escuchas a tu alrededor. Te ayuda a volver al presente. ¿Desde qué momento del día te sientes así?':'I understand. Anxiety is often the mind racing ahead to what might happen. Try this: name 3 things you see and 2 things you hear around you. It brings you back to the present. Since what time of day have you felt like this?',
@@ -2178,7 +2179,7 @@ const EN = {
 'Pasa mucho, sobre todo con el celular cerca. Te propongo un pomodoro de 25 minutos con el teléfono en otra habitación y una sola tarea escrita en un papel. ¿Qué tarea elegirías?':'That happens a lot, especially with your phone nearby. Try a 25-minute pomodoro with your phone in another room and a single task written on paper. Which task would you pick?',
 'Suena a que llevas tiempo dando más de lo que recuperas. Hoy la meta no es rendir más, es descansar mejor: elige lo esencial y deja lo demás para mañana. ¿Cuántas horas dormiste anoche?':'It sounds like you’ve been giving more than you recover for a while. Today the goal isn’t doing more, it’s resting better: pick the essentials and leave the rest for tomorrow. How many hours did you sleep last night?',
 'Te escucho. Cuéntame con tus palabras qué pasó hoy y cómo te hizo sentir. Lo vemos paso a paso.':'I’m listening. Tell me in your own words what happened today and how it made you feel. We’ll take it step by step.',
-'Respuesta detenida.':'Reply stopped.','Pulso necesita una pausa. Inténtalo de nuevo en un momento.':'Pulso needs a break. Try again in a moment.',
+'Respuesta detenida.':'Reply stopped.','Nubi necesita una pausa. Inténtalo de nuevo en un momento.':'Nubi needs a break. Try again in a moment.',
 'Prefiero no responder a eso. ¿Me cuentas cómo te sientes hoy?':'I’d rather not answer that. Will you tell me how you feel today?','No pude responder ahora. Vuelve a intentarlo.':'I couldn’t reply right now. Please try again.',
 'Elige primero cómo te sientes.':'First choose how you feel.','Registro guardado.':'Check-in saved.',
 // nutrition
@@ -2217,8 +2218,8 @@ const EN = {
 // profile
 'Tu nombre':'Your name','Gratis':'Free','Planes':'Plans','Pago mensual · MXN':'Monthly · MXN','Para empezar a crear hábitos.':'To start building habits.','Todo personalizado para ti.':'Everything tailored to you.',
 'Con un coach de nuestra consultoría.':'With a coach from our consultancy.','Más popular':'Most popular','Acompañamiento':'Coaching',
-'Hábitos, metas y recordatorios':'Habits, goals and reminders','Pomodoro y temporizadores':'Pomodoro and timers','Registro mental diario':'Daily mood check-in','5 mensajes al día con Pulso':'5 messages a day with Pulso',
-'Todo lo del plan Gratis':'Everything in Free','Pulso sin límite de mensajes':'Unlimited Pulso messages','Plan de comidas personalizado':'Personalized meal plan','Rutinas completas y progreso':'Full workouts and progress',
+'Hábitos, metas y recordatorios':'Habits, goals and reminders','Pomodoro y temporizadores':'Pomodoro and timers','Registro mental diario':'Daily mood check-in','5 mensajes al día con Nubi':'5 messages a day with Nubi',
+'Todo lo del plan Gratis':'Everything in Free','Nubi sin límite de mensajes':'Unlimited Nubi messages','Plan de comidas personalizado':'Personalized meal plan','Rutinas completas y progreso':'Full workouts and progress',
 'Relojes y anillos conectados':'Connected watches and rings','Estadísticas de cada semana':'Weekly stats','Todo lo del plan Pro':'Everything in Pro','Coach de alto rendimiento asignado':'Dedicated high-performance coach',
 'Plan de comidas y entreno hecho por tu coach':'Meal and training plan made by your coach','Revisión de tu avance cada semana':'Weekly progress review','Mensajes directos con tu coach':'Direct messages with your coach',
 'Tu plan':'Your plan','MXN al mes':'MXN / month','para siempre':'forever','Cambiar a Gratis':'Switch to Free','Cancela cuando quieras. Precios de ejemplo para el prototipo.':'Cancel anytime. Sample prices for the prototype.',
@@ -2244,21 +2245,21 @@ const EN = {
 'Borrar mi cuenta':'Delete my account','En la app real esto borra tu cuenta y todos tus datos para siempre. En el prototipo vuelves a los datos de ejemplo.':'In the real app this deletes your account and all your data forever. In the prototype you go back to the sample data.',
 'Sí, borrar':'Yes, delete','En la app real recibirás un archivo con todos tus datos.':'In the real app you’ll get a file with all your data.','Listo. Volviste a los datos de ejemplo.':'Done. You’re back to the sample data.',
 'Ayuda':'Help','¿Quieres ver otra vez cómo funciona la app?':'Want to see how the app works again?','Ver el recorrido':'Take the tour','Sobre este prototipo':'About this prototype',
-'¡Hey! Sigo entrenando el cerebro.':'Hey! Still training my brain.','¿Una pausa de respiración?':'Breathing break?','¡Vamos por ese hábito!':'Let’s get that habit!','Tu mente también se entrena.':'Your mind needs training too.','¡Me haces cosquillas!':'That tickles!',
+'¡Hey! Aquí sigo, flotando y entrenando.':'Hey! Still here, floating and training.','¿Una pausa de respiración?':'Breathing break?','¡Vamos por ese hábito!':'Let’s get that habit!','Tu mente también se entrena.':'Your mind needs training too.','¡Me haces cosquillas!':'That tickles!',
 };
-Object.assign(EN, {'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. En esta versión de prueba, Pulso responde con ejemplos; en la app final responderá con IA.':'Names and past days are sample data. What you do is saved only in this browser. In this test version Pulso gives sample replies; in the final app it will answer with AI.'});
+Object.assign(EN, {'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. En esta versión de prueba, Nubi responde con ejemplos; en la app final responderá con IA.':'Names and past days are sample data. What you do is saved only in this browser. In this test version Nubi gives sample replies; in the final app it will answer with AI.'});
 Object.assign(EN, {'Estilo':'Style','Yoga':'Yoga','Correr':'Run','Patineta':'Skateboard','Karate':'Karate','Bici':'Bike','Pintar':'Paint','Cocinar':'Cook','DJ':'DJ','Espacio':'Space',
   'Gorro de fiesta':'Party hat','Gorro de invierno':'Beanie','Sombrero vaquero':'Cowboy hat','Gorro de chef':'Chef hat','Aureola':'Halo','Mochila':'Backpack','Jetpack':'Jetpack','Alas':'Wings','Tenis violeta':'Violet sneakers',
   'Lentes de corazón':'Heart glasses','Visor futurista':'Future visor','Corbata':'Tie','Cadena de oro':'Gold chain','Pesas rosas':'Pink dumbbells','Pesas violetas':'Violet dumbbells',
-  'Piel hielo':'Ice skin','Piel fuego':'Fire skin','Piel galaxia':'Galaxy skin','Aura cian':'Cyan aura','Aura violeta':'Violet aura','Orbe de energía':'Energy orb','Mini Pulso':'Mini Pulso'});
-Object.assign(EN, {'Tus monedas y la tienda de Pulso':'Your coins and Pulso’s shop','Ganaste 50 monedas y cosas nuevas para Pulso.':'You earned 50 coins and new things for Pulso.',
-  'Acciones':'Actions','Ropa':'Clothes','Accesorios':'Accessories','Tienda de Pulso':'Pulso’s shop','Acciones especiales':'Special actions','Cómo ganar monedas':'How to earn coins',
+  'Piel hielo':'Ice skin','Piel fuego':'Fire skin','Piel galaxia':'Galaxy skin','Aura cian':'Cyan aura','Aura violeta':'Violet aura','Orbe de energía':'Energy orb','Mini Nubi':'Mini Nubi'});
+Object.assign(EN, {'Tus monedas y la tienda de Nubi':'Your coins and Nubi’s shop','Ganaste 50 monedas y cosas nuevas para Nubi.':'You earned 50 coins and new things for Nubi.',
+  'Acciones':'Actions','Ropa':'Clothes','Accesorios':'Accessories','Tienda de Nubi':'Nubi’s shop','Acciones especiales':'Special actions','Cómo ganar monedas':'How to earn coins',
   'Leer':'Read','Manejar':'Drive','Guitarra':'Guitar','Cinta cian':'Cyan headband','Gorra neón':'Neon cap','Audífonos':'Headphones','Bufanda':'Scarf','Tenis neón':'Neon sneakers','Botas doradas':'Gold boots',
   'Lentes de sol':'Sunglasses','Moño':'Bow tie','Medalla':'Medal','Pesas doradas':'Gold dumbbells','Piel rosa':'Pink skin','Piel menta':'Mint skin','Piel dorada':'Gold skin',
   'Puesto':'Wearing','Usar':'Wear','Toca lo que ya tienes para ponérselo o quitárselo.':'Tap what you own to put it on or take it off.',
   'Pendiente':'To-do','Serie':'Set','Rutina completa':'Full workout','Comida del plan':'Planned meal','Plan de comidas':'Meal plan','Meta cumplida':'Goal reached','Subir de nivel':'Level up'});
-Object.assign(EN, {'Jugar con Pulso':'Play with Pulso','Arrastra para girarlo · Toca para que salte':'Drag to spin him · Tap to make him jump','Pesas':'Curls','Brincar':'Jump','Bailar':'Dance','Saludar':'Wave',
-  'Meditar':'Meditate','Dormir':'Sleep','Tus avances le dan energía a Pulso.':'Your progress powers Pulso.','Accesorios':'Gear','Cinta cian':'Cyan headband','Capa violeta':'Violet cape','Corona':'Crown','Desbloqueado':'Unlocked',
+Object.assign(EN, {'Jugar con Nubi':'Play with Nubi','Arrastra para girarlo · Toca para que salte':'Drag to spin him · Tap to make him jump','Pesas':'Curls','Brincar':'Jump','Bailar':'Dance','Saludar':'Wave',
+  'Meditar':'Meditate','Dormir':'Sleep','Tus avances le dan energía a Nubi.':'Your progress powers Nubi.','Accesorios':'Gear','Cinta cian':'Cyan headband','Capa violeta':'Violet cape','Corona':'Crown','Desbloqueado':'Unlocked',
   'El modo 3D no está disponible en este navegador.':'3D mode isn’t available in this browser.'});
 Object.assign(EN, {'¡Eso es!':'That’s it!','¡Bien hecho!':'Well done!','¡Vas con todo!':'You’re on fire!','¡Un paso más!':'One more step!','¡Así se hace!':'That’s how it’s done!',
   '¡De vuelta! Vamos por tu siguiente paso.':'Welcome back! Let’s take your next step.','Aquí cuidamos tu mente. ¿Cómo te sientes hoy?':'This is where we care for your mind. How are you feeling today?',
@@ -2305,7 +2306,7 @@ const ENP = [
   [/^(.+) h · (mala|regular|buena)$/, (m, h, q) => `${h} h · ${QUAL[q]}`],
   [/^¿Cómo estás hoy, (.+)\?$/, 'How are you today, $1?'],
   [/^(Ánimo|Estrés|Sueño) de los últimos 7 días$/, (m, k) => `${enT(k)} over the last 7 days`],
-  [/^Hola, (.+)\. Soy Pulso\. ¿Cómo te fue hoy\? Puedes contarme qué te estresa o por qué no salió alguna rutina, y lo vemos paso a paso\.$/, 'Hi, $1. I’m Pulso. How was your day? Tell me what’s stressing you or why a routine didn’t happen, and we’ll work through it step by step.'],
+  [/^Hola, (.+)\. Soy Nubi\. ¿Cómo te fue hoy\? Puedes contarme qué te estresa o por qué no salió alguna rutina, y lo vemos paso a paso\.$/, 'Hi, $1. I’m Nubi. How was your day? Tell me what’s stressing you or why a routine didn’t happen, and we’ll work through it step by step.'],
   [/^Metabolismo basal: (.+) kcal$/, 'Basal metabolism: $1 kcal'],
   [/^Proteína (\d+)%, carbohidratos (\d+)%, grasas (\d+)%$/, 'Protein $1%, carbs $2%, fat $3%'],
   [/^(.+) kcal · P (.+) g · C (.+) g · G (.+) g$/, '$1 kcal · P $2 g · C $3 g · F $4 g'],
@@ -2383,16 +2384,16 @@ function langSheet() {
     <div class="lang-opts">${[['es', 'Español', 'Toda la app en español'], ['en', 'English', 'The whole app in English']].map(([k, n, d]) => `<button class="lang-opt ${cur === k ? 'on' : ''}" data-act="lang-set" data-l="${k}" aria-pressed="${cur === k}"><span class="lang-code">${k.toUpperCase()}</span><span><b>${n}</b><small>${d}</small></span>${cur === k ? ic('check', 20) : ''}</button>`).join('')}</div>`);
 }
 
-/* ---------- Pulso 3D: a real-time avatar (three.js) ----------
-   One WebGL canvas moves between "slots": the Inicio header and the "Jugar con Pulso" sheet. The SVG Pulso stays
+/* ---------- Nubi 3D: a real-time avatar (three.js) ----------
+   One WebGL canvas moves between "slots": the Inicio header and the "Jugar con Nubi" sheet. The SVG Nubi stays
    inside each slot as the fallback until three.js loads (or if WebGL is unavailable).
-   Rig: root (hips) -> pivot (squash) -> brain (lobes, face, arms) ; legs hang from root.
+   Rig: root (hips) -> pivot (squash) -> brain group = the cloud (puffs, face, arms) ; legs hang from root.
    Every joint is a critically-damped-ish spring chasing a target pose, so moves blend with weight, overshoot and follow-through.
    Clips are small pose functions of time; idle cycles through breathing, curls, a press and a look-around on its own. */
 var P3 = (() => {
   let T = null, R = null, scene, cam, canvas, root, pivot, brain, band, shadow, zz = [], A = {}, LG = {}, EY = [], mouth = {};
   const W = {}, PR = {}, MT = {}, notes = []; let lastProp = '', curNoDb = false, curX = 0;
-  const SKINS = {violet:{base:'#a47bff', line:'#4c1d95', em:0x5b21b6, limb:0x8b5cf6}, 'skin-pink':{base:'#ff9bd2', line:'#9d174d', em:0x9d174d, limb:0xf472b6},
+  const SKINS = {violet:{base:'#eef1ff', line:'#8b96ec', em:0x3a3fb0, limb:0x9d8cff}, 'skin-pink':{base:'#ff9bd2', line:'#9d174d', em:0x9d174d, limb:0xf472b6},
     'skin-mint':{base:'#7af5dc', line:'#0f766e', em:0x0d9488, limb:0x2dd4bf}, 'skin-gold':{base:'#ffd66e', line:'#92400e', em:0x92400e, limb:0xf5b72a},
     'skin-ice':{base:'#cdeeff', line:'#2563eb', em:0x1d4ed8, limb:0x93c5fd}, 'skin-fire':{base:'#ff9a4d', line:'#b91c1c', em:0xb91c1c, limb:0xfb923c},
     'skin-galaxy':{base:'#3b2a8f', line:'#0b0f3a', em:0x312e81, limb:0x4338ca, stars:true}};
@@ -2453,9 +2454,12 @@ var P3 = (() => {
 
   function foldTex(base, line, lw, stars) {
     const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d');
-    g.fillStyle = base; g.fillRect(0, 0, 256, 256); g.strokeStyle = line; g.lineWidth = lw; g.lineCap = 'round'; g.lineJoin = 'round';
+    g.fillStyle = base; g.fillRect(0, 0, 256, 256);
     let seed = 11; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    for (let i = 0; i < 30; i++) { g.beginPath(); let x = rnd() * 256, y = rnd() * 256; g.moveTo(x, y); for (let j = 0; j < 6; j++) { const cx = x + (rnd() - .5) * 80, cy = y + (rnd() - .5) * 80; x += (rnd() - .5) * 64; y += (rnd() - .5) * 64; g.quadraticCurveTo(cx, cy, x, y); } g.stroke(); }
+    /* soft cloud texture: gentle shade and light puffs, no hard lines */
+    const blob = (x, y, r, col, a) => { const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, col); gr.addColorStop(1, col + '00'); g.globalAlpha = a; g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); g.globalAlpha = 1; };
+    for (let i = 0; i < 26; i++) blob(rnd() * 256, rnd() * 256, 20 + rnd() * 50, line, .26);
+    for (let i = 0; i < 40; i++) blob(rnd() * 256, rnd() * 256, 14 + rnd() * 40, '#ffffff', .38);
     if (stars) for (let i = 0; i < 140; i++) { g.fillStyle = i % 5 ? 'rgba(255,255,255,.85)' : '#7DF3FF'; g.beginPath(); g.arc(rnd() * 256, rnd() * 256, rnd() * 1.8 + .4, 0, 7); g.fill(); }
     const t = new T.CanvasTexture(c); t.wrapS = t.wrapT = T.RepeatWrapping; return t;
   }
@@ -2466,7 +2470,7 @@ var P3 = (() => {
   function zTex() { const c = document.createElement('canvas'); c.width = c.height = 64; const g = c.getContext('2d'); g.fillStyle = '#39E1FF'; g.font = '800 48px sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('Z', 32, 34); return new T.CanvasTexture(c); }
 
   function build() {
-    T = window.THREE; canvas = document.createElement('canvas'); canvas.setAttribute('aria-label', 'Pulso');
+    T = window.THREE; canvas = document.createElement('canvas'); canvas.setAttribute('aria-label', 'Nubi');
     R = new T.WebGLRenderer({canvas, antialias:true, alpha:true, powerPreference:'low-power'});
     R.setPixelRatio(Math.min(2, window.devicePixelRatio || 1)); R.setClearColor(0x000000, 0);
     R.outputEncoding = T.sRGBEncoding; R.toneMapping = T.ACESFilmicToneMapping; R.toneMappingExposure = 1.12;
@@ -2477,10 +2481,10 @@ var P3 = (() => {
     const rc = new T.PointLight(0x39e1ff, 1.6, 12); rc.position.set(-3, 2.4, -1.8); scene.add(rc);
     const rv = new T.PointLight(0xa855f7, 1.4, 12); rv.position.set(3, 1.6, -2.2); scene.add(rv);
     const fl = new T.PointLight(0x8e5cf7, .55, 10); fl.position.set(0, .6, 3); scene.add(fl);
-    const col = foldTex('#a47bff', '#4c1d95', 6); col.encoding = T.sRGBEncoding;
+    const col = foldTex('#eef1ff', '#8b96ec', 6); col.encoding = T.sRGBEncoding;
     SKINS.violet.tex = col;
-    const mBrain = new T.MeshStandardMaterial({color:0xffffff, map:col, bumpMap:foldTex('#ffffff', '#000000', 8), bumpScale:.04, roughness:.5, metalness:.04, emissive:0x5b21b6, emissiveIntensity:.15});
-    const mLimb = new T.MeshStandardMaterial({color:0x8b5cf6, roughness:.45, emissive:0x3b0f7a, emissiveIntensity:.22});
+    const mBrain = new T.MeshStandardMaterial({color:0xffffff, map:col, roughness:.82, metalness:0, emissive:0x3a3fb0, emissiveIntensity:.15});
+    const mLimb = new T.MeshStandardMaterial({color:0x9d8cff, roughness:.45, emissive:0x3b0f7a, emissiveIntensity:.22});
     const mCyan = new T.MeshStandardMaterial({color:0x00e5f5, emissive:0x00c8e0, emissiveIntensity:.5, roughness:.22, metalness:.55});
     const mChrome = new T.MeshStandardMaterial({color:0xdffcff, roughness:.18, metalness:.9});
     const mLeg = new T.MeshStandardMaterial({color:0x7df3ff, roughness:.38, emissive:0x00a5b5, emissiveIntensity:.25});
@@ -2499,7 +2503,7 @@ var P3 = (() => {
     root = new T.Group(); scene.add(root);
     pivot = new T.Group(); root.add(pivot);
     brain = new T.Group(); brain.position.y = .64; pivot.add(brain);
-    const L = [[.4,.18,.08,.52],[.5,-.12,.05,.47],[.3,.38,-.12,.46],[.55,.08,-.32,.44],[.28,-.22,.32,.42],[.3,.28,.3,.4],[.22,-.02,-.42,.42],[.6,-.2,-.15,.38],[.15,.45,.15,.36]];
+    const L = [[0,.36,0,.56],[.5,.24,-.04,.46],[.8,-.06,0,.38],[.92,-.3,.02,.28],[.46,-.28,.22,.42],[.14,-.3,.3,.42],[.16,.02,.3,.46],[.4,.1,-.32,.46],[.56,-.14,.1,.4]];
     [-1, 1].forEach(sd => L.forEach(([x, y, z, r]) => { const m = sph(mBrain, r, sd * x, y, z); m.rotation.set(x * 3 + sd, y * 5, z * 4); brain.add(m); }));
     band = new T.Mesh(new T.TorusGeometry(1, .05, 12, 64), mCyan); band.rotation.x = Math.PI / 2; band.scale.set(.97, .82, 1); band.position.y = .3; brain.add(band);
     // face
@@ -2515,7 +2519,7 @@ var P3 = (() => {
       brain.add(sph(mPink, [.09, .05, .03], sd * .47, -.16, .67));
     });
     const bridge = cyl(.018, .018, .11, mCyan); bridge.rotation.z = Math.PI / 2; bridge.position.set(0, .1, .9); brain.add(bridge);
-    /* mouth: a D-shaped open smile that reads on the violet brain — light lip outline, dark inside, pink tongue */
+    /* mouth: a D-shaped open smile that reads on the cloud — light lip outline, dark inside, pink tongue */
     mouth.g = new T.Group(); mouth.g.position.set(0, -.26, .86); brain.add(mouth.g);
     const mLip = new T.MeshStandardMaterial({color:0xffe4f7, emissive:0xffd6f5, emissiveIntensity:.45, roughness:.35});
     const mIn = new T.MeshBasicMaterial({color:0x12041f, side:T.DoubleSide});
@@ -2660,7 +2664,7 @@ var P3 = (() => {
     W.buddy = new T.Group(); scene.add(W.buddy);
     { [[-.07, .03, .0, .12], [.07, .03, .0, .12], [0, .09, -.04, .1], [-.05, -.05, .03, .09], [.05, -.05, .03, .09]].forEach(([x, y, z, r]) => W.buddy.add(sph(mBrain, r, x, y, z)));
       [-1, 1].forEach(sd => { W.buddy.add(sph(mWhite, .045, sd * .05, .02, .13)); W.buddy.add(sph(mDark, .022, sd * .05, .02, .17)); }); W.buddy.add(sph(mGlow, [.04, .015, .01], 0, -.05, .15)); }
-    // props: world group follows Pulso's turn and slide
+    // props: world group follows Nubi's turn and slide
     PR.world = new T.Group(); scene.add(PR.world);
     PR.skate = new T.Group(); PR.world.add(PR.skate);
     { const bd = new T.Mesh(new T.BoxGeometry(1.15, .05, .38), mViolet); bd.position.y = .12; PR.skate.add(bd); const grip = new T.Mesh(new T.BoxGeometry(1.1, .01, .34), mDark); grip.position.y = .15; PR.skate.add(grip);
@@ -2708,7 +2712,7 @@ var P3 = (() => {
   }
   function tap() {
     if (inSheet) { play(['jump', 'wave', 'dance', 'cheer'][Math.floor(Math.random() * 4)]); SND.check(); buzz(15); return; }
-    play('jump'); if (typeof tapPulso === 'function') tapPulso(slot);
+    play('jump'); if (typeof tapNubi === 'function') tapNubi(slot);
   }
   function step(dt) {
     const now = performance.now() / 1000;
@@ -2821,7 +2825,7 @@ var P3 = (() => {
   return {init, mount, play, dress, ok:() => ok, talk:ms => { talkUntil = performance.now() / 1000 + Math.min(ms, 3500) / 1000; }, sad:ms => { sadUntil = performance.now() / 1000 + ms / 1000; }, rest:() => { if (back !== 'idle' && !(S.pomo.running && S.pomo.mode === 'focus')) play('idle'); }};
 })();
 
-/* ---------- Pulso's world: coins, shop, wardrobe, unlockable actions ---------- */
+/* ---------- Nubi's world: coins, shop, wardrobe, unlockable actions ---------- */
 const BASE_ACTS = [['curl','Pesas','train','var(--brand)'],['press','Press','star','var(--brand)'],['jump','Brincar','sparkle','var(--gold)'],['dance','Bailar','heart','var(--mental)'],['wave','Saludar','user','var(--food)'],['meditate','Meditar','mind','var(--mental)'],['walk','Caminar','steps','var(--train)'],['sleep','Dormir','moon','var(--water)']];
 const SPECIAL = [
   {id:'read', n:'Leer', ic:'book', c:'var(--mental)', p:60, lv:2},
@@ -2874,7 +2878,7 @@ const SHOP_RAW = [
   {id:'aura-cyan', cat:'estilo', slot:'aura', n:'Aura cian', p:200, lv:6, sw:'#39E1FF', ic:'sparkle'},
   {id:'aura-violet', cat:'estilo', slot:'aura', n:'Aura violeta', p:350, lv:12, sw:'#A855F7', ic:'sparkle'},
   {id:'orb', cat:'estilo', slot:'pet', n:'Orbe de energía', p:260, lv:8, sw:'#39E1FF', ic:'sparkle'},
-  {id:'buddy', cat:'estilo', slot:'pet', n:'Mini Pulso', p:500, lv:15, sw:'#8B5CF6', ic:'mind'},
+  {id:'buddy', cat:'estilo', slot:'pet', n:'Mini Nubi', p:500, lv:15, sw:'#8B5CF6', ic:'mind'},
 ];
 const SHOP = SHOP_RAW.slice().sort((a, b) => a.lv - b.lv || a.p - b.p);
 const EARN = [['Hábito',5],['Pendiente',3],['Serie',1],['Rutina completa',15],['Comida del plan',3],['Plan de comidas',10],['Pomodoro',13],['Registro mental',8],['Meta cumplida',25],['Subir de nivel',50]];
@@ -2884,7 +2888,7 @@ function statsHTML() {
   const tot = S.habits.length || 1, en = S.habits.filter(h => h.state === 'done').length / tot;
   const mood = S.check ? S.check.mood / 5 : .6, str = setsTotal ? setsDone() / setsTotal : 0, foc = Math.min(1, S.pomo.today / 4);
   const stat = (l, v, c) => `<div class="stat-row"><span class="stat-top"><span>${l}</span><b>${Math.round(v * 100)}%</b></span><div class="bar" style="--acc:${c}"><i style="width:${Math.max(4, v * 100)}%"></i></div></div>`;
-  return `<p class="label" style="margin-top:6px">Tus avances le dan energía a Pulso.</p><div class="stats">${stat('Energía', en, 'var(--brand)')}${stat('Ánimo', mood, 'var(--mental)')}${stat('Fuerza', str, 'var(--train)')}${stat('Enfoque', foc, 'var(--gold)')}</div>`;
+  return `<p class="label" style="margin-top:6px">Tus avances le dan energía a Nubi.</p><div class="stats">${stat('Energía', en, 'var(--brand)')}${stat('Ánimo', mood, 'var(--mental)')}${stat('Fuerza', str, 'var(--train)')}${stat('Enfoque', foc, 'var(--gold)')}</div>`;
 }
 function panelHTML() {
   const lv = level(), W = S.wardrobe;
@@ -2909,10 +2913,10 @@ function refreshShop() { const p = $('#p3-panel'); if (p) p.innerHTML = panelHTM
 function playSheet(tab) {
   if (tab) shopTab = tab;
   const tabs = [['acts', 'Acciones'], ['ropa', 'Ropa'], ['acc', 'Accesorios'], ['estilo', 'Estilo']];
-  openSheet(`<div class="game-head"><div><h3 class="h2">Jugar con Pulso</h3><p class="muted small">Nivel ${level()} · ${nf(S.xp)} XP</p></div><span class="coins-big"><span class="coin"></span><b id="coins-sheet">${nf(S.coins || 0)}</b></span></div>
+  openSheet(`<div class="game-head"><div><h3 class="h2">Jugar con Nubi</h3><p class="muted small">Nivel ${level()} · ${nf(S.xp)} XP</p></div><span class="coins-big"><span class="coin"></span><b id="coins-sheet">${nf(S.coins || 0)}</b></span></div>
     <div class="p3-slot p3-big" id="p3-stage">${mascot('happy', 190)}</div>
     <p class="hint" style="justify-content:center;margin:-2px 0 0">Arrastra para girarlo · Toca para que salte</p>
-    <div class="seg shop-seg" role="tablist" aria-label="Tienda de Pulso">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${shopTab === k}" data-act="shop-tab" data-tab="${k}">${l}</button>`).join('')}</div>
+    <div class="seg shop-seg" role="tablist" aria-label="Tienda de Nubi">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${shopTab === k}" data-act="shop-tab" data-tab="${k}">${l}</button>`).join('')}</div>
     <div id="p3-panel">${panelHTML()}</div>`);
   P3.mount();
 }
@@ -2922,7 +2926,7 @@ function buyItem(id, btn) {
   if ((S.coins || 0) < it.p) { toast(`Te faltan ${it.p - S.coins} monedas. Cumple hábitos y rutinas para ganar más.`); SND.miss(); return; }
   S.coins -= it.p; S.wardrobe.owned[id] = true; S.wardrobe.eq[it.slot] = id; save();
   P3.dress(S.wardrobe.eq); P3.ok() && P3.play('cheer'); SND.cheer(); if (btn) { const pos = relPos(btn); burst(pos.x, pos.y, 40, .9); }
-  toast(`¡Listo! Pulso estrena: ${it.n}.`); refreshShop();
+  toast(`¡Listo! Nubi estrena: ${it.n}.`); refreshShop();
 }
 function equipItem(id) {
   const it = SHOP.find(x => x.id === id); if (!it) return; const eq = S.wardrobe.eq;
@@ -2940,7 +2944,7 @@ function buyAct(id, btn) {
 
 ENP.unshift([/^(\d+) de (\d+) en tu colección$/, '$1 of $2 in your collection'], [/^Acciones especiales · (\d+) de (\d+)$/, 'Special actions · $1 of $2']);
 ENP.unshift([/^Se desbloquea en el nivel (\d+)\.$/, 'Unlocks at level $1.'], [/^Te faltan (\d+) monedas\. Cumple hábitos y rutinas para ganar más\.$/, 'You need $1 more coins. Complete habits and routines to earn more.'],
-  [/^¡Listo! Pulso estrena: (.+)\.$/, (m, n) => `Done! Pulso is wearing: ${enT(n)}.`], [/^¡Nueva acción desbloqueada: (.+)!$/, (m, n) => `New action unlocked: ${enT(n)}!`]);
+  [/^¡Listo! Nubi estrena: (.+)\.$/, (m, n) => `Done! Nubi is wearing: ${enT(n)}.`], [/^¡Nueva acción desbloqueada: (.+)!$/, (m, n) => `New action unlocked: ${enT(n)}!`]);
 ENP.unshift([/^Desde nivel (\d+)$/, 'From level $1'], [/^Nivel (\d+) · (.+) XP$/, 'Level $1 · $2 XP']);
 
 /* ---------- boot ---------- */
