@@ -830,6 +830,16 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .lv-hint li{line-height:1.42}
 .lv-hint .warn-b{color:var(--gold);font-weight:700}
 .lv-hint-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+
+/* sound settings and live heartbeat */
+.snd-box{display:flex;flex-direction:column;gap:10px;padding:4px 0 12px}
+.vol-row{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.vol-row input{flex:1;accent-color:var(--brand)}
+.snd-cats .chip-btn[aria-pressed="false"]{opacity:.55;text-decoration:line-through}
+.snd-box .btn{align-self:flex-start}
+.lv-hb{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);cursor:pointer}
+.lv-hb small{display:flex;align-items:center;gap:3px;font:700 10.5px var(--f-body)}
+.lv-hb[aria-pressed="true"] small{color:var(--danger)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1218,6 +1228,7 @@ if (!S.tasks) S.tasks = defTasks();
 if (S.coins === undefined) S.coins = 150;
 if (!S.wardrobe) S.wardrobe = {owned:{band:true}, eq:{head:'band'}, acts:{}};
 if (S.chests === undefined) S.chests = 1;
+S.settings.sfx = Object.assign({ui:true, reward:true, nubi:true, focus:true}, S.settings.sfx || {}); if (S.settings.vol == null) S.settings.vol = .7;
 DEVICES.forEach(d => { if (d.ble) S.devices[d.id] = false; });
 if (S.asst) S.asst = S.asst.filter(m => !m.pending && m.content);
 function rollover() {
@@ -1238,53 +1249,17 @@ let draft = null, editing = false, current = '', notifHabit = null, restEnd = 0;
 
 /* ---------- feedback: sound, vibration, fx ---------- */
 let actx = null;
-function tone(fs, dur = .18, type = 'sine', gap = .1, vol = .12) {
-  if (!S.settings.sound) return;
-  try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-    if (actx.state === 'suspended') actx.resume();
-    const t0 = actx.currentTime;
-    fs.forEach((f, i) => {
-      const o = actx.createOscillator(), g = actx.createGain(), st = t0 + i * gap;
-      o.type = type; o.frequency.value = f;
-      g.gain.setValueAtTime(.0001, st); g.gain.exponentialRampToValueAtTime(vol, st + .02); g.gain.exponentialRampToValueAtTime(.0001, st + dur);
-      o.connect(g).connect(actx.destination); o.start(st); o.stop(st + dur + .05);
-    });
-  } catch (e) {}
-}
-/* play(): a small sequencer, each note [freq, start s, length s, wave, volume]; pop() is a short filtered-noise burst for the confetti cannon. */
-function play(seq) {
-  if (!S.settings.sound) return;
-  try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-    if (actx.state === 'suspended') actx.resume();
-    const t0 = actx.currentTime + .01;
-    seq.forEach(([f, st, dur, type = 'triangle', vol = .1]) => {
-      const o = actx.createOscillator(), g = actx.createGain(), t = t0 + st;
-      o.type = type; o.frequency.value = f;
-      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
-      o.connect(g).connect(actx.destination); o.start(t); o.stop(t + dur + .05);
-    });
-  } catch (e) {}
-}
-function pop(vol = .18) {
-  if (!S.settings.sound) return;
-  try {
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-    const n = actx.sampleRate * .12, buf = actx.createBuffer(1, n, actx.sampleRate), d = buf.getChannelData(0);
-    for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 3);
-    const src = actx.createBufferSource(), f = actx.createBiquadFilter(), g = actx.createGain();
-    f.type = 'bandpass'; f.frequency.value = 1800; f.Q.value = .7; g.gain.value = vol;
-    src.buffer = buf; src.connect(f).connect(g).connect(actx.destination); src.start();
-  } catch (e) {}
-}
+/* tone()/play()/pop() keep their old signatures; they now play through the mixer in the sound engine below */
+function tone(fs, dur = .18, type = 'sine', gap = .1, vol = .12) { fs.forEach((f, i) => note(f, i * gap, dur, {type, vol, cat:'reward', wet:.22})); }
+function play(seq) { seq.forEach(([f, st, dur, type = 'triangle', vol = .1]) => note(f, st, dur, {type, vol, cat:'reward', wet:.22, attack:.015})); }
+function pop(vol = .18) { noise(0, .12, {f:1800, q:.7, vol:vol * .6, cat:'reward', wet:.08}); }
 const SND = {
   cheer:() => { pop(.1); play([[784,0,.16],[988,.07,.16],[1319,.14,.32],[2637,.2,.12,'sine',.03],[3136,.27,.16,'sine',.025]]); },
   party:() => { pop(.22); setTimeout(() => pop(.16), 140); play([[523,0,.15],[659,.1,.15],[784,.2,.15],[1047,.3,.6],[659,.3,.6,'triangle',.06],[784,.3,.6,'triangle',.06],[1319,.62,.18,'triangle',.08],[1568,.72,.5,'triangle',.08],[2093,.45,.1,'sine',.03],[2637,.55,.1,'sine',.03],[3136,.65,.12,'sine',.03],[4186,.78,.18,'sine',.02]]); },
-  check:() => tone([660, 990], .16, 'sine', .07, .1),
+  check:() => SFX.habit(),
   done:() => tone([523, 659, 784, 1047], .38, 'triangle', .12, .12),
   bell:() => tone([880, 660, 880], .45, 'sine', .22, .11),
-  miss:() => tone([392, 330], .22, 'sine', .1, .07),
+  miss:() => SFX.undo(),
 };
 function buzz(p) { if (!S.settings.vibrate) return; try { navigator.vibrate && navigator.vibrate(p); } catch (e) {} }
 
@@ -1353,6 +1328,7 @@ function addXP(n, pos) {
   if (n > 0) { const now = Date.now(); combo = now - lastGainAt < 90000 ? Math.min(5, combo + 1) : 1; lastGainAt = now; bonus = combo > 1 ? (combo - 1) * 2 : 0; }
   S.xp = Math.max(0, S.xp + n); S.coins = Math.max(0, (S.coins || 0) + c + bonus);
   if (n > 0) floatTxt(pos, `+${n} XP <span class="coin"></span>+${c}`);
+  if (n > 0) SFX.coin(Math.min(4, combo - 1));
   if (bonus) { const k = combo; setTimeout(() => comboPop(k, bonus), 420); }
   if (level() > before) { S.coins += 50; S.chests = (S.chests || 0) + 1; }
   save(); renderTop();
@@ -1386,8 +1362,8 @@ function celebrate(kind, data) {
 function closeCeleb() { $('#celeb').classList.remove('show'); P3 && P3.mount(); const n = celebQ.shift(); if (n) setTimeout(() => celebrate(...n), 350); }
 
 /* ---------- sheet + notification ---------- */
-function openSheet(html, mode) { $('#sheet-body').innerHTML = html; $('#sheet').classList.toggle('tall', mode === 'tall'); $('#backdrop').classList.add('show'); $('#sheet').classList.add('show'); setTimeout(() => { const f = $('#sheet button, #sheet input'); f && f.focus({preventScroll:true}); $('.phone').scrollTop = 0; }, 60); }
-function closeSheet() { const fb = $('#fab'); fb && fb.classList.remove('open'); stopBreath(); $('#backdrop').classList.remove('show'); const wasPlay = !!$('#sheet.show .p3-slot'); $('#sheet').classList.remove('show'); if (P3) { P3.mount(); if (wasPlay) P3.rest(); } }
+function openSheet(html, mode) { if (!$('#sheet').classList.contains('show')) SFX.open(); $('#sheet-body').innerHTML = html; $('#sheet').classList.toggle('tall', mode === 'tall'); $('#backdrop').classList.add('show'); $('#sheet').classList.add('show'); setTimeout(() => { const f = $('#sheet button, #sheet input'); f && f.focus({preventScroll:true}); $('.phone').scrollTop = 0; }, 60); }
+function closeSheet() { if ($('#sheet').classList.contains('show')) SFX.close(); const fb = $('#fab'); fb && fb.classList.remove('open'); stopBreath(); $('#backdrop').classList.remove('show'); const wasPlay = !!$('#sheet.show .p3-slot'); $('#sheet').classList.remove('show'); if (P3) { P3.mount(); if (wasPlay) P3.rest(); } }
 let notifT = 0;
 function testReminder() {
   const pend = S.habits.filter(h => !h.state);
@@ -1466,8 +1442,8 @@ const pomoLeft = () => S.pomo.running ? Math.max(0, Math.ceil((S.pomo.endAt - Da
 function setMode(m) { Object.assign(S.pomo, {mode:m, running:false, left:PMODES[m].min*60, total:PMODES[m].min*60}); }
 function pomoToggle() {
   const p = S.pomo;
-  if (p.running) { p.left = pomoLeft(); p.running = false; P3 && P3.play('idle'); }
-  else { if (p.left <= 0) p.left = p.total; p.endAt = Date.now() + p.left*1000; p.running = true; tone([520], .12, 'sine', 0, .06); if (p.mode === 'focus') { P3 && P3.play('meditate'); setTimeout(() => nubi('pomoStart'), 250); } }
+  if (p.running) { p.left = pomoLeft(); p.running = false; P3 && P3.play('idle'); SFX.pause(); }
+  else { if (p.left <= 0) p.left = p.total; p.endAt = Date.now() + p.left*1000; p.running = true; SFX.start(); if (p.mode === 'focus') { P3 && P3.play('meditate'); setTimeout(() => nubi('pomoStart'), 250); } }
   save(); updatePomo(); topTimer();
 }
 function pomoComplete(counted) {
@@ -1489,10 +1465,12 @@ function pomoComplete(counted) {
   }
   save(); if (current === 'inicio') rerender(); topTimer();
 }
+let lastTickS = -1;
 function updatePomo() {
   const t = $('#pomo-time'); if (!t) return;
   const p = S.pomo, l = pomoLeft(), tot = p.total || PMODES[p.mode].min*60;
   t.textContent = fmt(l);
+  if (p.running && l > 0 && l <= 3 && l !== lastTickS) { lastTickS = l; SFX.tick(); }
   $('#pomo-ring').style.strokeDashoffset = PC * (1 - l / tot);
   const b = $('#pomo-toggle');
   if (b.dataset.state !== String(p.running)) { b.dataset.state = String(p.running); b.innerHTML = ic(p.running ? 'pause' : 'play', 28); b.setAttribute('aria-label', p.running ? 'Pausar' : 'Iniciar'); }
@@ -1766,13 +1744,13 @@ function say(text, o = {}) {
     sayM = b.querySelector('.mascot');
   }
   if (sayM) { sayM.classList.add('talk'); if (o.sad) sayM.classList.add('sad'); if (sayM.classList.contains('p3-slot') && P3) { P3.talk(o.ms || 3000); if (o.sad) P3.sad(o.ms || 4000); } }
-  void b.offsetWidth; b.classList.add('show');
+  void b.offsetWidth; b.classList.add('show'); if (!o.quiet) SFX.talk(text);
   sayT = setTimeout(hideSay, o.ms || (o.act ? 8000 : 3800));
 }
 function tapNubi(pm) {
   if (pm.classList.contains('p3-slot') && P3 && P3.ok()) P3.play('jump');
   pm.classList.remove('poke', 'sleepy'); void pm.getBoundingClientRect(); pm.classList.add('poke'); setTimeout(() => pm.classList.remove('poke'), 800);
-  SND.check(); buzz(15);
+  SFX.poke(); buzz(15);
   const n = nextSteps()[0];
   say(pick1(POKE), {sub:n.t, desc:n.d, act:n.act, label:n.b, id:n.id});
 }
@@ -1823,7 +1801,7 @@ function nubi(ev, d = {}) {
       line = pickL([[`Anotado: "${d.t}". Lo sacamos juntos.`, `Noted: "${d.t}". We'll get it done together.`], ['Listo, lo agregué a tus pendientes. Tú puedes.', "Done, I added it to your to-dos. You've got this."]]); break;
     case 'goal': { const g = d.g, pct = Math.round(g.cur / g.target * 100); clip = 'clap'; pts = 1;
       line = tL(`"${g.name}": vas en ${pct}%. ¡Cada paso cuenta!`, `"${hn(g.name)}": you're at ${pct}%. Every step counts!`); break; }
-    case 'water': clip = 'cheer'; pts = 1;
+    case 'water': clip = 'cheer'; pts = 1; SFX.water();
       if (S.water >= 8) break;
       line = S.water >= 6 ? tL(`Vaso ${S.water} de 8. ¡Ya casi llegas!`, `Glass ${S.water} of 8. Almost there!`)
         : pickL([[`Vaso ${S.water} de 8. Tu cerebro te lo agradece.`, `Glass ${S.water} of 8. Your brain thanks you.`], [`¡Glup! Vaso ${S.water} de 8. Me encanta verte hidratado.`, `Gulp! Glass ${S.water} of 8. Love seeing you hydrated.`]]); break;
@@ -1998,7 +1976,7 @@ function openBreath() {
   const phase = inhale => {
     const c = $('#bc'); if (!c) return;
     if (Date.now() >= endAt - 300) { stopBreath(); closeSheet(); addXP(10); SND.done(); mindLog(1); setTimeout(() => nubi('breathDone'), 300); breathResult(); return; }
-    c.style.transitionDuration = (inhale ? 4 : 6) + 's'; c.classList.toggle('in', inhale);
+    c.style.transitionDuration = (inhale ? 4 : 6) + 's'; c.classList.toggle('in', inhale); SFX.breath(inhale, inhale ? 4 : 6);
     $('#bl').textContent = inhale ? 'Inhala' : 'Exhala';
     breathT = setTimeout(() => phase(!inhale), inhale ? 4000 : 6000);
   };
@@ -2045,8 +2023,8 @@ async function sendChat(text) {
   S.chat.push({role:'user', content:text});
   if (CRISIS.test(text.toLowerCase())) S.chat.push({role:'crisis'});
   const reply = {role:'assistant', content:'', pending:true}; S.chat.push(reply);
-  S.chat = S.chat.slice(-30); renderChat(); chatBusy = true; setSend(true); friendUp(2); P3 && P3.ok() && P3.play('think');
-  const finish = () => { reply.pending = false; chatBusy = false; chatCtl = null; setSend(false); renderChat(); save(); if (P3 && P3.ok()) { P3.play('idle'); P3.play('nod'); } };
+  S.chat = S.chat.slice(-30); SFX.send(); renderChat(); chatBusy = true; setSend(true); friendUp(2); P3 && P3.ok() && P3.play('think');
+  const finish = () => { reply.pending = false; chatBusy = false; chatCtl = null; setSend(false); renderChat(); save(); SFX.receive(); if (P3 && P3.ok()) { P3.play('idle'); P3.play('nod'); } };
   if (aiState !== 'live') { await wait(900); reply.content = demoReply(text); reply.demo = true; finish(); return; }
   const ctl = new AbortController(); chatCtl = ctl;
   const turns = S.chat.filter(m => (m.role === 'user' || m.role === 'assistant') && !m.pending && !m.err && !m.demo && m.content).slice(-12).map(m => ({role:m.role, content:m.content}));
@@ -2225,7 +2203,12 @@ function renderPerfil() {
       <form class="coach-form" id="coach-form"><label class="sr" for="coach-code">Código de tu coach</label><input id="coach-code" maxlength="12" placeholder="Ej.: FP-4821" autocomplete="off"><button class="btn small">Conectar</button></form><p class="err" id="coach-err"></p>`}
   </section>
   <section class="card"><h2 class="h2">Avisos</h2>
-    <div class="set-row" style="border-top:0"><div><b>Sonidos</b><span class="muted small">Al completar hábitos y pomodoros</span></div>${sw(S.settings.sound, 'setting', 'data-id="sound"', 'Sonidos')}</div>
+    <div class="set-row" style="border-top:0"><div><b>${tL('Sonidos', 'Sounds')}</b><span class="muted small">${tL('Al tocar, ganar premios, con Nubi y al enfocarte', 'On taps, rewards, with Nubi and while focusing')}</span></div>${sw(S.settings.sound, 'setting', 'data-id="sound"', tL('Sonidos', 'Sounds'))}</div>
+    <div class="snd-box" ${S.settings.sound ? '' : 'hidden'}>
+      <label class="vol-row"><span>${ic('mute', 16)}</span><input type="range" id="vol" min="0" max="100" step="1" value="${Math.round(S.settings.vol * 100)}" aria-label="${tL('Volumen', 'Volume')}"><span>${ic('sound', 16)}</span></label>
+      <div class="chips snd-cats">${[['ui', 'Toques y pantallas', 'Taps and screens'], ['reward', 'Premios y monedas', 'Rewards and coins'], ['nubi', 'Voz de Nubi', 'Nubi’s voice'], ['focus', 'Enfoque y respiración', 'Focus and breathing']].map(([k, es, en]) => `<button class="chip-btn" data-act="sfx-cat" data-k="${k}" aria-pressed="${!!S.settings.sfx[k]}">${tL(es, en)}</button>`).join('')}</div>
+      <button class="btn ghost small" data-act="sfx-demo">${ic('play', 14)} ${tL('Probar sonidos', 'Try sounds')}</button>
+    </div>
     <div class="set-row"><div><b>Vibración</b><span class="muted small">En teléfonos que la permiten</span></div>${sw(S.settings.vibrate, 'setting', 'data-id="vibrate"', 'Vibración')}</div>
     <div class="set-row"><div><b>Avisos en el reloj</b><span class="muted small">Los recordatorios llegan también a tu muñeca</span></div>${sw(S.settings.watch, 'setting', 'data-id="watch"', 'Avisos en el reloj')}</div>
     <div class="set-row"><div><b>Horas de silencio</b><span class="muted small">Sin avisos de 22:30 a 07:00</span></div></div>
@@ -2259,7 +2242,7 @@ function show(tab) {
   if (!R[tab]) tab = 'inicio';
   if (tab === current) return;
   const from = TABS.findIndex(([t]) => t === current), to = TABS.findIndex(([t]) => t === tab);
-  current = tab;
+  current = tab; if (from >= 0) SFX.tab(to);
   TABS.forEach(([t]) => { $('#s-' + t).hidden = t !== tab; });
   $$('.tab').forEach(b => b.toggleAttribute('aria-current', false));
   $(`.tab[data-tab="${tab}"]`).setAttribute('aria-current', 'page');
@@ -2302,7 +2285,7 @@ const A = {
   'asst-plan': () => { hideSay(); openAsst('hoy'); },
   'm-claim': t => {
     const m = MISSIONS.find(x => x.id === t.dataset.id), M = S.missions; if (!m || !M || M.claimed[m.id] || m.v() < m.goal) return;
-    M.claimed[m.id] = true; const pos = relPos(t); S.coins = (S.coins || 0) + m.c; addXP(m.xp, pos); cheer(pos, true); SND.cheer(); buzz([20, 30, 40]);
+    M.claimed[m.id] = true; const pos = relPos(t); S.coins = (S.coins || 0) + m.c; addXP(m.xp, pos); cheer(pos, true); SFX.claim(); buzz([20, 30, 40]);
     if (M.ids.every(id => M.claimed[id]) && !M.chest) { M.chest = true; S.chests = (S.chests || 0) + 1; save(); rerender();
       setTimeout(() => { nubiSay(tL('¡Completaste las 3 misiones de hoy! Te ganaste un cofre sorpresa.', 'You completed all 3 missions today! You earned a mystery chest.'), {act:'chest-open', label:tL('Abrir cofre', 'Open chest')}); P3 && P3.ok() && P3.play('celebrate'); }, 450); }
     else { save(); rerender(); nubiSay(pickL([[`¡+${m.c} monedas extra! Vamos por la siguiente.`, `+${m.c} bonus coins! On to the next one.`], ['¡Premio reclamado! Así se hace.', 'Reward claimed! That’s how it’s done.']])); P3 && P3.ok() && P3.play('cheer'); }
@@ -2424,6 +2407,9 @@ const A = {
   'ble-on': t => bleConnect(t.dataset.id),
   'ble-all': () => bleConnect('hrband', true),
   'live-open': () => openLive(),
+  'hb-toggle': t => { S.settings.hb = !S.settings.hb; save(); t.setAttribute('aria-pressed', S.settings.hb); t.querySelector('small').innerHTML = `${ic(S.settings.hb ? 'sound' : 'mute', 13)} ${tL('latido', 'beat')}`; toast(S.settings.hb ? tL('Escuchas tu latido en vivo.', 'You hear your live heartbeat.') : tL('Latido en silencio.', 'Heartbeat muted.')); heartLoop(); },
+  'sfx-cat': t => { const k = t.dataset.k; S.settings.sfx[k] = !S.settings.sfx[k]; save(); t.setAttribute('aria-pressed', S.settings.sfx[k]); if (S.settings.sfx[k]) SFX_DEMO[k](); },
+  'sfx-demo': () => { if (!S.settings.sound) { toast(tL('Activa los sonidos primero.', 'Turn sounds on first.')); return; } [['ui', 0], ['reward', 700], ['nubi', 1900], ['focus', 2900]].forEach(([k, t]) => setTimeout(() => SFX_DEMO[k](), t)); },
   'live-retry': () => { const h = BLE.hr; if (!h) return; live.kick = 0; h.re = 0; blog(tL('Reintento manual.', 'Manual retry.')); toast(tL('Reintentando la conexión…', 'Retrying the connection…')); try { h.dev.gatt.disconnect(); } catch (e) {} },
   'live-rescan': () => { const h = BLE.hr; if (h) { h.manual = true; clearInterval(h.tick); BLE.hr = null; try { h.dev.gatt.disconnect(); } catch (e) {} blog(tL('Buscando el reloj de nuevo…', 'Searching for the watch again…')); } bleConnect('hrband'); },
   'live-copy': () => {
@@ -2434,7 +2420,7 @@ const A = {
   'ble-off': t => bleOff(t.dataset.id),
   'go-mind': () => { closeSheet(); goScroll('mental', '#mind-dev'); },
   'share': t => { S.share[t.dataset.id] = !S.share[t.dataset.id]; save(); t.setAttribute('aria-checked', S.share[t.dataset.id]); },
-  'setting': t => { S.settings[t.dataset.id] = !S.settings[t.dataset.id]; save(); t.setAttribute('aria-checked', S.settings[t.dataset.id]); if (t.dataset.id === 'sound' && S.settings.sound) SND.check(); if (t.dataset.id === 'vibrate') buzz(60); },
+  'setting': t => { S.settings[t.dataset.id] = !S.settings[t.dataset.id]; save(); t.setAttribute('aria-checked', S.settings[t.dataset.id]); if (t.dataset.id === 'sound') { const bx = $('.snd-box'); if (bx) bx.hidden = !S.settings.sound; } if (t.dataset.id === 'sound' && S.settings.sound) SND.check(); if (t.dataset.id === 'vibrate') buzz(60); },
   'plan': t => { const p = PLANS.find(x => x.id === t.dataset.id);
     openSheet(`<h2 class="h2">${p.p ? 'Suscribirte a ' + p.n : 'Cambiar al plan Gratis'}</h2>
       <p class="muted" style="margin:8px 0 14px">${p.p ? `<b style="color:var(--ink)">$${p.p} MXN al mes</b>. Se renueva cada mes y puedes cancelar cuando quieras. En la app real se paga con App Store, Google Play o tarjeta en la web.` : 'Pierdes las funciones de pago al terminar tu periodo actual.'}</p>
@@ -2469,7 +2455,7 @@ document.addEventListener('click', e => {
   if (pm && !e.target.closest('[data-act]')) { tapNubi(pm); return; }
   const t = e.target.closest('[data-act]'); if (!t) return;
   const f = A[t.dataset.act]; if (!f) return;
-  e.preventDefault(); const inBub = t.closest('#pbub'); f(t, e); if (inBub) hideSay();
+  e.preventDefault(); const inBub = t.closest('#pbub'), sw0 = t.getAttribute('role') === 'switch' ? t.getAttribute('aria-checked') === 'true' : null; f(t, e); if (inBub) hideSay(); if (sw0 !== null && t.dataset.id !== 'sound') SFX.toggle(!sw0);
 });
 document.addEventListener('input', e => {
   const el = e.target, d = el.dataset;
@@ -3211,19 +3197,19 @@ var P3 = (() => {
     canvas.addEventListener('pointerdown', e => {
       drag = {x:e.clientX, y:e.clientY, lx:e.clientX, ly:e.clientY, t:performance.now(), moved:false, mode:null};
       try { canvas.setPointerCapture(e.pointerId); } catch (er) {}
-      clearTimeout(holdT); holdT = setTimeout(() => { if (drag && !drag.moved) { hugging = true; clip = 'hug'; clipT = 0; jig = Math.max(jig, .6); SND.check(); buzz(25); kick(); } }, 520);
+      clearTimeout(holdT); holdT = setTimeout(() => { if (drag && !drag.moved) { hugging = true; clip = 'hug'; clipT = 0; jig = Math.max(jig, .6); SFX.hug(); buzz(25); kick(); } }, 520);
     });
     canvas.addEventListener('pointermove', e => {
       if (!drag) { if (e.pointerType === 'mouse') petMove(e); return; }
       const dx = e.clientX - drag.lx, dy = e.clientY - drag.ly, tx = e.clientX - drag.x, ty = e.clientY - drag.y; drag.lx = e.clientX; drag.ly = e.clientY;
-      if (!drag.mode && Math.hypot(tx, ty) > 6) { drag.moved = true; drag.mode = (ty < -6 && Math.abs(ty) > Math.abs(tx) * 1.2) ? 'toss' : 'spin'; clearTimeout(holdT); if (hugging) endHug(false); }
+      if (!drag.mode && Math.hypot(tx, ty) > 6) { drag.moved = true; drag.mode = (ty < -6 && Math.abs(ty) > Math.abs(tx) * 1.2) ? 'toss' : 'spin'; if (drag.mode === 'spin') SFX.whoosh(); clearTimeout(holdT); if (hugging) endHug(false); }
       if (drag.mode === 'spin') { userYaw += dx * .013; yawVel = dx * .013; }
       else if (drag.mode === 'toss') { toss.on = true; toss.y = cl(-ty * .004, 0, .5); toss.v = -dy * .3; }
     });
     const up = () => {
       clearTimeout(holdT); if (!drag) return; const d = drag; drag = null;
       if (hugging) { endHug(true); return; }
-      if (d.mode === 'toss') { toss.on = false; toss.v = Math.max(0, toss.v) * 1.1 + .4; SND.check(); return; }
+      if (d.mode === 'toss') { toss.on = false; toss.v = Math.max(0, toss.v) * 1.1 + .4; SFX.whoosh(); return; }
       if (!d.moved && performance.now() - d.t < 450) tap();
     };
     canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', () => { clearTimeout(holdT); if (hugging) endHug(false); toss.on = false; drag = null; });
@@ -3238,21 +3224,21 @@ var P3 = (() => {
   }
   function endHug(release) {
     hugging = false;
-    if (release) { clip = 'cheer'; clipT = 0; happyUntil = performance.now() / 1000 + 1.8; spawn('heart', 6); SND.cheer && SND.cheer(); typeof friendUp === 'function' && friendUp(3); }
+    if (release) { clip = 'cheer'; clipT = 0; happyUntil = performance.now() / 1000 + 1.8; spawn('heart', 6); SFX.giggle(); typeof friendUp === 'function' && friendUp(3); }
     else { clip = back; clipT = 0; }
     kick();
   }
   function petMove(e) {
     const n = performance.now() / 1000; if (n - petT > 1.2) petDist = 0; petT = n;
     petDist += Math.abs(e.movementX || 0) + Math.abs(e.movementY || 0);
-    if (petDist > 450 && n > petCool) { petCool = n + 3; petDist = 0; happyUntil = n + 2.2; jig = Math.max(jig, .7); spawn('heart', 5); SND.check(); kick(); typeof friendUp === 'function' && friendUp(2); }
+    if (petDist > 450 && n > petCool) { petCool = n + 3; petDist = 0; happyUntil = n + 2.2; jig = Math.max(jig, .7); spawn('heart', 5); SFX.giggle(); kick(); typeof friendUp === 'function' && friendUp(2); }
   }
   function tap() {
     const n = performance.now() / 1000; taps = taps.filter(x => n - x < 1.3); taps.push(n);
     surpriseUntil = n + .45; jig = Math.max(jig, .8);
     if (n - lastTapPt > 15) { lastTapPt = n; typeof friendUp === 'function' && friendUp(1); }
-    if (taps.length >= 4) { taps = []; clip = 'dizzy'; clipT = 0; spawn('star', 5); SND.cheer && SND.cheer(); buzz([20, 30, 20]); if (!inSheet && typeof say === 'function') say('¡Me mareo!', {ms:1800}); kick(); return; }
-    if (inSheet) { play(['jump', 'wave', 'dance', 'cheer'][Math.floor(Math.random() * 4)]); SND.check(); buzz(15); return; }
+    if (taps.length >= 4) { taps = []; clip = 'dizzy'; clipT = 0; spawn('star', 5); SFX.dizzy(); buzz([20, 30, 20]); if (!inSheet && typeof say === 'function') say('¡Me mareo!', {ms:1800}); kick(); return; }
+    if (inSheet) { play(['jump', 'wave', 'dance', 'cheer'][Math.floor(Math.random() * 4)]); SFX.poke(); buzz(15); return; }
     play('jump'); if (typeof tapNubi === 'function') tapNubi(slot);
   }
   function step(dt) {
@@ -3272,7 +3258,7 @@ var P3 = (() => {
     // tossed up: legs dangle, arms flail, then a floaty fall with a squishy bounce
     if (!toss.on && (toss.y > 0 || toss.v > 0)) {
       toss.v -= 5.5 * dt; toss.v *= .995; toss.y = Math.min(.6, toss.y + toss.v * dt); if (toss.y >= .6) toss.v = Math.min(toss.v, 0);
-      if (toss.y <= 0) { toss.y = 0; if (toss.v < -1.1) { toss.v = -toss.v * .38; jig = Math.max(jig, Math.min(1.5, -toss.v)); spawn('spark', 3); } else { toss.v = 0; jig = Math.max(jig, .7); } }
+      if (toss.y <= 0) { toss.y = 0; if (toss.v < -1.1) { toss.v = -toss.v * .38; jig = Math.max(jig, Math.min(1.5, -toss.v)); spawn('spark', 3); SFX.boing(); } else { toss.v = 0; jig = Math.max(jig, .7); } }
     }
     if (toss.y > .04) { g.hL = .25 + .15 * Math.sin(now * 8); g.hR = .25 + .15 * Math.sin(now * 8 + 2); g.kL = g.kR = .55; g.aL = g.aR = 1.9 + .35 * Math.sin(now * 9); g.eL = g.eR = .3; g.mo = Math.max(g.mo, .65); g.bY += .05; }
     jig *= Math.exp(-dt * 2.6);
@@ -3503,10 +3489,11 @@ function buyItem(id, btn) {
   if (level() < it.lv) { toast(`Se desbloquea en el nivel ${it.lv}.`); SND.miss(); return; }
   if ((S.coins || 0) < it.p) { toast(`Te faltan ${it.p - S.coins} monedas. Cumple hábitos y rutinas para ganar más.`); SND.miss(); return; }
   S.coins -= it.p; S.wardrobe.owned[id] = true; S.wardrobe.eq[it.slot] = id; save();
-  P3.dress(S.wardrobe.eq); P3.ok() && P3.play('cheer'); SND.cheer(); if (btn) { const pos = relPos(btn); burst(pos.x, pos.y, 40, .9); }
+  P3.dress(S.wardrobe.eq); P3.ok() && P3.play('cheer'); SFX.buy(); if (btn) { const pos = relPos(btn); burst(pos.x, pos.y, 40, .9); }
   toast(tL(`¡Me encanta mi ${it.n}! Gracias, ${S.name || 'Ana'}.`, `I love my ${enT(it.n)}! Thank you, ${S.name || 'Ana'}.`)); friendUp(4); P3.ok() && P3.play('clap'); refreshShop();
 }
 function equipItem(id) {
+  SFX.equip();
   const it = SHOP.find(x => x.id === id); if (!it) return; const eq = S.wardrobe.eq;
   if (eq[it.slot] === id) delete eq[it.slot]; else eq[it.slot] = id;
   save(); P3.dress(eq); P3.ok() && P3.play(eq[it.slot] ? 'wave' : 'idle'); SND.check(); refreshShop();
@@ -3554,10 +3541,10 @@ function missionsToday() {
 function checkMissions() {
   const ms = missionsToday(), M = S.missions; M.ann = M.ann || {};
   ms.forEach(m => { if (!M.ann[m.id] && m.v() >= m.goal) { M.ann[m.id] = true; save();
-    setTimeout(() => { SND.cheer(); nubiSay(tL(`¡Misión cumplida: ${m.es}! Reclama tu premio.`, `Mission complete: ${m.en}! Claim your reward.`), {act:'goto-quests', label:tL('Reclamar', 'Claim')}); P3 && P3.ok() && P3.play('celebrate'); }, 2600); } });
+    setTimeout(() => { SFX.mission(); nubiSay(tL(`¡Misión cumplida: ${m.es}! Reclama tu premio.`, `Mission complete: ${m.en}! Claim your reward.`), {act:'goto-quests', label:tL('Reclamar', 'Claim')}); P3 && P3.ok() && P3.play('celebrate'); }, 2600); } });
 }
 function comboPop(n, bonus) {
-  const d = document.createElement('div'); d.className = 'combo'; d.innerHTML = `COMBO x${n}<small>+${bonus} <span class="coin"></span></small>`;
+  SFX.combo(n); const d = document.createElement('div'); d.className = 'combo'; d.innerHTML = `COMBO x${n}<small>+${bonus} <span class="coin"></span></small>`;
   phone.appendChild(d); setTimeout(() => d.remove(), 1500);
 }
 let chestN = 0;
@@ -3570,7 +3557,7 @@ function chestSVG(sz, open) {
     <rect x="49" y="56" width="22" height="19" rx="4" fill="#FFE08A" stroke="#8A5A00" stroke-width="2"/><circle cx="60" cy="64" r="3" fill="#8A5A00"/><path d="M28 30 l4 -6 M92 30 l-4 -6" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/></svg>`;
 }
 const RAR = {com:['Común', 'Common', '#8A93B8'], rare:['Raro', 'Rare', '#39E1FF'], epic:['Épico', 'Epic', '#B794FF'], leg:['Legendario', 'Legendary', '#F5C04A']};
-let chestRw = null;
+let chestRw = null, chestShakeT = 0;
 function openChest() {
   if (!(S.chests > 0)) { toast(tL('Aún no tienes cofres. Cumple misiones para ganar uno.', 'No chests yet. Complete missions to earn one.')); return; }
   closeSheet(); chestRw = null;
@@ -3578,7 +3565,8 @@ function openChest() {
   ov.innerHTML = `<div class="chest-card"><p class="eyebrow">${tL('Cofre sorpresa', 'Mystery chest')}</p><h2 class="h2">${tL('¡Toca el cofre para abrirlo!', 'Tap the chest to open it!')}</h2>
     <button class="chest-btn-big" data-act="chest-tap" aria-label="${tL('Abrir cofre', 'Open chest')}"><span class="chest-rays"></span>${chestSVG(170, false)}</button>
     <div class="chest-rw" id="chest-rw"></div><button class="btn full" id="chest-ok" data-act="chest-close" hidden>${tL('¡Genial!', 'Awesome!')}</button></div>`;
-  ov.classList.add('show'); SND.check(); buzz(15);
+  ov.classList.add('show'); SFX.open(); buzz(15);
+  clearInterval(chestShakeT); chestShakeT = setInterval(() => { if (!$('#chestov.show') || chestRw) { clearInterval(chestShakeT); return; } SFX.chestShake(); }, 1200); setTimeout(() => { if ($('#chestov.show') && !chestRw) SFX.chestShake(); }, 700);
 }
 function revealChest() {
   if (chestRw || !(S.chests > 0)) return;
@@ -3599,11 +3587,11 @@ function revealChest() {
     : `<span class="rw-coins"><span class="coin"></span>+${rw.coins}</span><b>${tL('monedas', 'coins')}${rw.xp ? ` + ${rw.xp} XP` : ''}</b>`;
   $('#chest-rw').innerHTML = `<div class="rw-card" style="--rc:${R[2]}"><span class="rar">${tL(R[0], R[1])}</span>${body}</div>`;
   $('#chest-ok').hidden = false;
-  cannons(rw.rar === 'com' ? 40 : 80); SND.party(); buzz([40, 50, 80]);
+  clearInterval(chestShakeT); cannons(rw.rar === 'com' ? 40 : 80); SFX.chestOpen(rw.rar); buzz([40, 50, 80]);
   P3 && P3.ok() && P3.play('celebrate');
 }
 function closeChest() {
-  $('#chestov').classList.remove('show');
+  $('#chestov').classList.remove('show'); clearInterval(chestShakeT); SFX.close();
   const rw = chestRw; chestRw = null; rerender();
   if (!rw) return;
   setTimeout(() => nubiSay(rw.item ? tL(`¡Me encanta! ¿Me pones ${rw.item.n}?`, `I love it! Will you put ${enT(rw.item.n)} on me?`) : rw.rar === 'leg' ? tL('¡LEGENDARIO! No lo puedo creer. ¡Qué suerte tienes!', "LEGENDARY! I can't believe it. You're so lucky!") : pickL([['¡Bien! Más monedas para tu colección.', 'Nice! More coins for your collection.'], ['¡Sigue así y caen más cofres!', 'Keep it up and more chests will drop!']]),
@@ -3798,9 +3786,9 @@ async function sendAsst(text) {
   if (asstTab !== 'chat' || !$('#asst-chat')) { asstTab = 'chat'; $$('.asst-seg button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === 'chat')); const p = $('#asst-panel'); if (p) p.innerHTML = asstPanel(); }
   S.asst = S.asst || []; S.asst.push({role:'user', content:text});
   const reply = {role:'assistant', content:'', pending:true}; S.asst.push(reply); S.asst = S.asst.slice(-30);
-  asstBusy = true; friendUp(1); refreshAsst(); P3 && P3.ok() && P3.play('think');
+  asstBusy = true; friendUp(1); SFX.send(); refreshAsst(); P3 && P3.ok() && P3.play('think');
   const acts = [];
-  const finish = () => { reply.pending = false; reply.acts = acts; asstBusy = false; save(); rerender(); renderTop(); refreshAsst(); if (P3 && P3.ok()) { P3.play('idle'); P3.play(acts.length ? 'clap' : 'nod'); } if (acts.length) SND.cheer(); };
+  const finish = () => { reply.pending = false; reply.acts = acts; asstBusy = false; save(); SFX.receive(); rerender(); renderTop(); refreshAsst(); if (P3 && P3.ok()) { P3.play('idle'); P3.play(acts.length ? 'clap' : 'nod'); } if (acts.length) SND.cheer(); };
   if (aiState !== 'live' || !sample) { await wait(700); reply.content = asstDemo(text, acts); finish(); return; }
   try {
     const hist = S.asst.filter(m => !m.pending && m !== reply).slice(-8).map(m => `${m.role === 'user' ? S.name : 'Nubi'}: ${m.content}`).join('\n');
@@ -4247,7 +4235,7 @@ function openLive() {
   const tile = (k, es, en, sub, opt) => `<div ${opt ? `data-optk="${k}" ${V[k] ? '' : 'hidden'}` : ''}><span>${tL(es, en)}</span><b data-live="${k}">${V[k]}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
   openSheet(`<div class="lv-head"><div><p class="eyebrow">${tL('Tu reloj en vivo', 'Your watch, live')}</p><h3 class="h2">${esc(BLE.hr.name || V.model)}</h3><p class="lv-status" data-live="status">${V.status}</p></div><button class="btn small ghost" data-act="ble-off" data-id="hrband">${tL('Desconectar', 'Disconnect')}</button></div>
     <div class="lv-hint" data-live-hint ${V.warn ? '' : 'hidden'}>${noDataHelp()}</div>
-    <div class="lv-hero"><span class="lv-heart">${HEART(56)}</span><div class="lv-num"><b data-live="hr">${V.hr}</b><span>lpm</span></div><em class="lv-zone" data-live="zone" data-zc>${V.zone}</em></div>
+    <div class="lv-hero"><button class="lv-hb" data-act="hb-toggle" aria-pressed="${!!S.settings.hb}" aria-label="${tL('Escuchar mi latido', 'Hear my heartbeat')}"><span class="lv-heart">${HEART(56)}</span><small>${ic(S.settings.hb ? 'sound' : 'mute', 13)} ${tL('latido', 'beat')}</small></button><div class="lv-num"><b data-live="hr">${V.hr}</b><span>lpm</span></div><em class="lv-zone" data-live="zone" data-zc>${V.zone}</em></div>
     <div class="lv-chart"><canvas id="lv-chart"></canvas><small class="muted">${tL('Tu pulso, últimos 2 minutos', 'Your heart rate, last 2 minutes')}</small></div>
     <div class="stats4"><div><b data-live="min">${V.min}</b><small>${tL('mínimo', 'lowest')}</small></div><div><b data-live="avg">${V.avg}</b><small>${tL('promedio', 'average')}</small></div><div><b data-live="max">${V.max}</b><small>${tL('máximo', 'highest')}</small></div><div><b data-live="dur">${V.dur}</b><small>${tL('conectado', 'connected')}</small></div></div>
     <div class="mind-tiles lv-tiles">${tile('hrv', 'VFC (RMSSD, ms)', 'HRV (RMSSD, ms)', `<span data-live="hrvsub">${V.hrvsub}</span>`)}${tile('kcal', 'Calorías', 'Calories', tL('Estimadas con tu pulso, peso y edad', 'Estimated from your HR, weight and age'))}
@@ -4259,7 +4247,7 @@ function openLive() {
     <details class="lv-tech"><summary>${tL('Detalles técnicos y diagnóstico', 'Technical details and diagnostics')}</summary>
       <dl><dt>${tL('Fabricante', 'Maker')}</dt><dd data-live="maker">${V.maker}</dd><dt>${tL('Modelo', 'Model')}</dt><dd data-live="model">${V.model}</dd><dt>Firmware</dt><dd data-live="fw">${V.fw}</dd><dt>${tL('Sensor en', 'Sensor on')}</dt><dd data-live="loc">${V.loc}</dd><dt>${tL('Lecturas recibidas', 'Readings received')}</dt><dd data-live="pk">${V.pk}</dd></dl>
       <pre id="lv-log"></pre><button class="btn small ghost" data-act="live-copy">${tL('Copiar diagnóstico', 'Copy diagnostics')}</button></details>`, 'tall');
-  setTimeout(() => { paintLive(true); drawLiveChart(); }, 60);
+  setTimeout(() => { paintLive(true); drawLiveChart(); heartLoop(); }, 60);
 }
 
 
@@ -4293,7 +4281,145 @@ function noDataHelp() {
     <div class="lv-hint-btns"><button class="btn small" data-act="live-rescan">${tL('Buscar de nuevo', 'Search again')}</button><button class="btn small ghost" data-act="live-retry">${tL('Reintentar', 'Retry')}</button><button class="btn small ghost" data-act="live-copy">${tL('Copiar diagnóstico', 'Copy diagnostics')}</button></div>`;
 }
 
+
+/* ---------- sound engine ----------
+   Everything is synthesized (no audio files): one mixer with volume, a gentle compressor and a small generated room reverb.
+   Sounds belong to four groups people can switch off: ui (taps, tabs, sheets), reward (coins, missions, chests), nubi (Nubi's voice and gestures), focus (timers, breathing, heartbeat).
+   Notes come from a C-major pentatonic scale so overlapping sounds stay consonant; small random detune keeps repeats from feeling mechanical. */
+let AU = null, NB = null;
+const RLs = {};
+const rl = (k, ms) => { const n = performance.now(); if (RLs[k] && n - RLs[k] < ms) return false; RLs[k] = n; return true; };
+const PENTA = [523.25, 587.33, 659.25, 783.99, 880, 1046.5, 1174.66, 1318.51, 1567.98, 1760];
+const jit = (f, p = .03) => f * (1 + (Math.random() * 2 - 1) * p);
+function au(cat) {
+  if (!S.settings.sound || (cat && S.settings.sfx && S.settings.sfx[cat] === false)) return null;
+  try {
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    if (!AU) {
+      const master = actx.createGain(), comp = actx.createDynamicsCompressor(), rev = actx.createConvolver(), wet = actx.createGain();
+      comp.threshold.value = -16; comp.knee.value = 12; comp.ratio.value = 3; comp.attack.value = .004; comp.release.value = .18;
+      const len = Math.floor(actx.sampleRate * 1.3), ir = actx.createBuffer(2, len, actx.sampleRate);
+      for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.4); }
+      rev.buffer = ir; wet.gain.value = .35;
+      master.connect(comp); comp.connect(actx.destination); rev.connect(wet); wet.connect(comp);
+      AU = {master, rev};
+    }
+    const v = Math.max(0, Math.min(1, S.settings.vol == null ? .7 : S.settings.vol));
+    AU.master.gain.setTargetAtTime(1.25 * Math.pow(v, 1.4), actx.currentTime, .01);
+    return actx;
+  } catch (e) { return null; }
+}
+function route(node, wet) { node.connect(AU.master); if (wet > 0) { const sg = actx.createGain(); sg.gain.value = wet; node.connect(sg); sg.connect(AU.rev); } }
+/* one oscillator note: f (Hz), at (s from now), dur (s); o: type, vol, f2 (glide), vib [rate, depth Hz], lp (low-pass Hz), attack, wet, cat */
+function note(f, at, dur, o = {}) {
+  if (!au(o.cat || 'reward')) return;
+  try {
+    const t = actx.currentTime + .005 + at, osc = actx.createOscillator(), g = actx.createGain();
+    osc.type = o.type || 'triangle'; osc.frequency.setValueAtTime(f, t);
+    if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t + dur * .9);
+    if (o.vib) { const l = actx.createOscillator(), lg = actx.createGain(); l.frequency.value = o.vib[0]; lg.gain.value = o.vib[1]; l.connect(lg); lg.connect(osc.frequency); l.start(t); l.stop(t + dur + .1); }
+    let src = osc;
+    if (o.lp) { const fl = actx.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = o.lp; osc.connect(fl); src = fl; }
+    const atk = Math.min(o.attack || .012, dur / 2), v = o.vol || .08;
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v, t + atk); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    src.connect(g); route(g, o.wet == null ? .18 : o.wet);
+    osc.start(t); osc.stop(t + dur + .06);
+  } catch (e) {}
+}
+/* filtered noise: breaths, whooshes, ticks, rattles */
+function noise(at, dur, o = {}) {
+  if (!au(o.cat || 'ui')) return;
+  try {
+    if (!NB) { const n = actx.sampleRate; NB = actx.createBuffer(1, n, actx.sampleRate); const d = NB.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1; }
+    const t = actx.currentTime + .005 + at, src = actx.createBufferSource(), fl = actx.createBiquadFilter(), g = actx.createGain();
+    src.buffer = NB; src.loop = true; fl.type = o.type || 'bandpass'; fl.Q.value = o.q || 1;
+    fl.frequency.setValueAtTime(o.f || 1500, t); if (o.f2) fl.frequency.exponentialRampToValueAtTime(o.f2, t + dur);
+    const atk = Math.min(o.attack || .008, dur / 2);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(o.vol || .05, t + atk); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    src.connect(fl); fl.connect(g); route(g, o.wet == null ? .1 : o.wet);
+    src.start(t, Math.random() * .8); src.stop(t + dur + .06);
+  } catch (e) {}
+}
+function sparkle(at, n, cat = 'reward') { for (let i = 0; i < n; i++) note(jit(PENTA[5 + Math.floor(Math.random() * 5)] * 2, .01), at + i * .045 + Math.random() * .03, .16, {type:'sine', vol:.018, wet:.6, cat}); }
+function coinRaw(k = 0, at = 0) { const b = 1 + k * .06; note(988 * b, at, .07, {type:'square', vol:.028, lp:3800, cat:'reward', wet:.1}); note(1319 * b, at + .065, .28, {type:'square', vol:.032, lp:4600, cat:'reward', wet:.3}); note(2637 * b, at + .065, .2, {type:'sine', vol:.016, cat:'reward', wet:.45}); }
+const SFX = {
+  /* interface */
+  tap:() => { if (!rl('tap', 45)) return; note(jit(1500, .06), 0, .045, {type:'sine', f2:1050, vol:.045, cat:'ui', wet:0}); noise(0, .018, {f:4200, q:1.4, vol:.018, cat:'ui', wet:0}); },
+  key:() => { if (!rl('key', 55)) return; noise(0, .02, {f:jit(3000, .2), q:3, vol:.02, cat:'ui', wet:0}); },
+  tab:i => { noise(0, .17, {f:450, f2:2600, q:.9, vol:.045, cat:'ui', wet:.08}); note(PENTA[((i || 0) % 5) + 2], .04, .2, {type:'sine', vol:.05, cat:'ui', wet:.35}); },
+  toggle:on => on ? (note(784, 0, .07, {vol:.06, cat:'ui', wet:.05}), note(1175, .06, .14, {vol:.06, cat:'ui', wet:.25})) : (note(659, 0, .07, {vol:.05, cat:'ui', wet:.05}), note(440, .06, .14, {vol:.045, cat:'ui', wet:.15})),
+  open:() => { if (!rl('open', 150)) return; noise(0, .22, {f:320, f2:1700, q:.8, vol:.04, cat:'ui', wet:.12}); note(330, 0, .22, {type:'sine', f2:523, vol:.035, cat:'ui', wet:.25}); },
+  close:() => { if (!rl('close', 150)) return; noise(0, .18, {f:1500, f2:280, q:.8, vol:.03, cat:'ui', wet:.08}); },
+  undo:() => { note(587, 0, .1, {type:'sine', vol:.055, cat:'ui'}); note(440, .08, .18, {type:'sine', vol:.045, cat:'ui'}); },
+  error:() => { note(220, 0, .12, {type:'triangle', vol:.06, cat:'ui'}); note(185, .13, .2, {type:'triangle', vol:.05, cat:'ui'}); },
+  send:() => note(480, 0, .13, {type:'sine', f2:1000, vol:.045, cat:'ui', wet:.15}),
+  receive:() => { note(880, 0, .1, {type:'sine', vol:.045, cat:'ui', wet:.3}); note(1318.5, .07, .18, {type:'sine', vol:.04, cat:'ui', wet:.4}); },
+  equip:() => noise(0, .13, {f:1800, f2:5200, q:1.1, vol:.045, cat:'ui', wet:.1}),
+  /* rewards */
+  habit:() => { note(783.99, 0, .12, {type:'triangle', vol:.075}); note(1174.66, .07, .32, {type:'triangle', vol:.075, wet:.35}); note(2349.3, .07, .26, {type:'sine', vol:.018, wet:.55}); },
+  coin:(k = 0) => { if (!rl('coin', 60)) return; coinRaw(k); },
+  coins:n => { for (let i = 0; i < n; i++) coinRaw(i * .4, i * .075); },
+  combo:n => { const base = Math.min(5, Math.max(0, n - 2)); [0, 2, 4].forEach((d, j) => note(PENTA[Math.min(9, base + d)], j * .065, j === 2 ? .3 : .14, {type:'triangle', vol:.065, wet:.35})); sparkle(.15, 2 + n); },
+  water:() => { note(250, 0, .1, {type:'sine', f2:820, vol:.085, cat:'reward', wet:.25}); note(400, .11, .09, {type:'sine', f2:1150, vol:.055, cat:'reward', wet:.3}); noise(.02, .14, {f:1100, f2:450, q:5, vol:.018, cat:'reward'}); },
+  mission:() => { [[659.25, 0], [783.99, .09], [987.77, .18], [1318.51, .27]].forEach(([f, t], j) => note(f, t, j === 3 ? .55 : .15, {type:'triangle', vol:.075, wet:.35})); sparkle(.32, 6); },
+  claim:() => { SFX.coins(6); note(1567.98, .42, .45, {type:'sine', vol:.035, wet:.55}); },
+  buy:() => { SFX.coins(3); note(1760, .22, .38, {type:'sine', vol:.045, wet:.45}); note(2637, .28, .42, {type:'sine', vol:.025, wet:.55}); },
+  chestShake:() => { [0, .085, .19].forEach(t => noise(t, .06, {f:jit(380, .25), q:2.5, vol:.07, cat:'reward', wet:.05})); note(98, 0, .26, {type:'sawtooth', f2:82, vol:.018, lp:500, cat:'reward', wet:0}); },
+  chestOpen:rar => {
+    note(140, 0, .32, {type:'sawtooth', f2:230, vol:.03, lp:700, wet:.05});
+    noise(.05, .3, {f:600, f2:3200, q:.7, vol:.05, cat:'reward', wet:.2});
+    const L = {com:[0, 2, 4], rare:[0, 2, 4, 5, 7], epic:[0, 2, 4, 5, 7, 9, 7], leg:[0, 2, 4, 5, 7, 9]}[rar] || [0, 2, 4];
+    L.forEach((k, j) => note(PENTA[k], .3 + j * .075, .22, {type:'triangle', vol:.065, wet:.4}));
+    const end = .3 + L.length * .075;
+    if (rar === 'rare' || rar === 'epic') note(PENTA[9], end, .7, {type:'sine', vol:.04, wet:.6});
+    if (rar === 'epic' || rar === 'leg') [261.63, 329.63, 392].forEach(f => note(f, end, 1.2, {type:'sawtooth', vol:.022, lp:1400, attack:.08, wet:.5}));
+    if (rar === 'leg') { [[1046.5, 0], [1318.51, .14], [1567.98, .28], [2093, .42]].forEach(([f, t]) => note(f, end + .1 + t, .5, {type:'triangle', vol:.06, wet:.45})); pop(.2); setTimeout(() => pop(.16), 160); }
+    sparkle(end, rar === 'com' ? 4 : rar === 'rare' ? 7 : 11);
+  },
+  /* Nubi */
+  talk:text => { if (!rl('talk', 700)) return; const n = Math.max(3, Math.min(9, Math.round(String(text || '').length / 10))); let t = 0;
+    for (let i = 0; i < n; i++) { const f = jit(PENTA[1 + Math.floor(Math.random() * 5)] * .85, .02), d = .05 + Math.random() * .045; note(f, t, d, {type:'triangle', vol:.04, vib:[26, 12], f2:f * (Math.random() < .35 ? 1.22 : .93), cat:'nubi', wet:.2, attack:.008}); t += d + .02 + Math.random() * .035; } },
+  poke:() => { if (!rl('poke', 90)) return; note(jit(520, .07), 0, .13, {type:'sine', f2:840, vol:.075, cat:'nubi', wet:.15}); },
+  boing:() => { if (!rl('boing', 200)) return; note(170, 0, .45, {type:'sine', f2:410, vib:[13, 38], vol:.08, cat:'nubi', wet:.2}); },
+  giggle:() => [0, .07, .14, .21, .3].forEach((t, j) => note(jit(880 + j * 85, .03), t, .06, {type:'triangle', vib:[30, 25], vol:.038, cat:'nubi', wet:.25})),
+  hug:() => { note(392, 0, .55, {type:'sine', vib:[6, 6], vol:.065, cat:'nubi', wet:.4, attack:.09}); note(523.25, .2, .65, {type:'sine', vib:[6, 6], vol:.055, cat:'nubi', wet:.45, attack:.09}); },
+  dizzy:() => note(900, 0, .95, {type:'triangle', f2:250, vib:[9, 70], vol:.045, cat:'nubi', wet:.3}),
+  whoosh:() => { if (!rl('whoosh', 260)) return; noise(0, .34, {f:280, f2:2500, q:.7, vol:.055, cat:'nubi', wet:.12}); },
+  /* focus */
+  start:() => { note(523.25, 0, .13, {type:'triangle', vol:.065, cat:'focus'}); note(783.99, .1, .3, {type:'triangle', vol:.065, cat:'focus', wet:.3}); },
+  pause:() => { note(783.99, 0, .12, {type:'triangle', vol:.055, cat:'focus'}); note(523.25, .1, .22, {type:'triangle', vol:.045, cat:'focus'}); },
+  tick:() => { noise(0, .03, {f:2300, q:7, vol:.06, cat:'focus', wet:.04}); note(1760, 0, .04, {type:'sine', vol:.02, cat:'focus', wet:0}); },
+  breath:(inhale, secs) => {
+    const d = secs * .92, base = inhale ? 196 : 174.61;
+    [1, 1.5, 2].forEach((m, j) => note(base * m, 0, d, {type:'sine', f2:base * m * (inhale ? 1.06 : .95), vol:[.045, .025, .012][j], attack:d * (inhale ? .55 : .15), cat:'focus', wet:.5}));
+    noise(0, d, {type:'lowpass', f:inhale ? 300 : 1400, f2:inhale ? 1400 : 260, q:.4, vol:.022, attack:d * (inhale ? .5 : .12), cat:'focus', wet:.3});
+  },
+  heart:() => { note(64, 0, .15, {type:'sine', f2:42, vol:.2, attack:.004, cat:'focus', wet:0}); note(56, .17, .16, {type:'sine', f2:38, vol:.13, attack:.004, cat:'focus', wet:0}); },
+};
+/* Nubi's 3D clips get a voice when the app asks for them (idle moves stay quiet) */
+const CLIP_SND = {wave:() => { note(659.25, 0, .09, {vol:.045, cat:'nubi', vib:[20, 10]}); note(880, .11, .14, {vol:.045, cat:'nubi', vib:[20, 10], wet:.3}); }, celebrate:() => sparkle(0, 8, 'nubi'), cheer:() => sparkle(0, 3, 'nubi'),
+  clap:() => [0, .17, .34].forEach(t => noise(t, .05, {f:1400, q:1, vol:.05, cat:'nubi', wet:.15})), think:() => note(330, 0, .55, {type:'triangle', f2:294, vib:[5, 8], vol:.04, cat:'nubi', wet:.25, attack:.08}),
+  sleep:() => note(520, 0, .95, {type:'sine', f2:250, vib:[5, 10], vol:.045, cat:'nubi', wet:.3, attack:.15}), dance:() => [0, 2, 4, 2, 7].forEach((k, j) => note(PENTA[k], j * .12, .1, {type:'triangle', vol:.04, cat:'nubi', wet:.25})),
+  hug:() => SFX.hug(), dizzy:() => SFX.dizzy()};
+const SFX_DEMO = {ui:() => { SFX.tap(); setTimeout(() => SFX.tab(2), 140); setTimeout(() => SFX.toggle(true), 420); },
+  reward:() => { SFX.coin(); setTimeout(() => SFX.combo(3), 250); setTimeout(() => SFX.water(), 750); },
+  nubi:() => { SFX.talk('¡Hola! Estos son mis sonidos'); setTimeout(() => SFX.giggle(), 650); },
+  focus:() => { SFX.start(); setTimeout(() => SFX.heart(), 450); setTimeout(() => SFX.heart(), 1250); }};
+/* every tap gets a soft click; typing gets light ticks */
+document.addEventListener('pointerdown', e => { const b = e.target.closest && e.target.closest('button, [data-act], a.btn, summary, .tab'); if (b && !b.disabled) SFX.tap(); }, true);
+document.addEventListener('keydown', e => { const el = e.target; if (e.key && e.key.length === 1 && el && el.matches && el.matches('input:not([type]), input[type=text], input[type=search], textarea')) SFX.key(); }, true);
+document.addEventListener('input', e => { if (e.target.id === 'vol') { S.settings.vol = +e.target.value / 100; save(); if (rl('volprev', 160)) coinRaw(0); } });
+/* live heartbeat: when turned on, beats at your real pulse while the live panel is open */
+let hbT = 0;
+function heartLoop() {
+  clearTimeout(hbT);
+  if (!S.settings.hb || !BLE.hr || !live.hr || !$('#sheet.show #lv-chart')) { if (S.settings.hb && BLE.hr) hbT = setTimeout(heartLoop, 1000); return; }
+  SFX.heart(); hbT = setTimeout(heartLoop, Math.max(300, 60000 / live.hr));
+}
+
 /* ---------- boot ---------- */
+if (P3 && P3.play && !P3._snd) { const p0 = P3.play; P3.play = (n, ...r) => { if (CLIP_SND[n] && P3.ok && P3.ok()) CLIP_SND[n](); return p0(n, ...r); }; P3._snd = true; }
 $('#tabbar').innerHTML = TABS.map(([t, l, i]) => `<button class="tab" data-act="tab" data-tab="${t}"><span class="tp">${ic(i, 22)}</span>${l}</button>`).join('');
 $('#bell-btn').innerHTML = ic('bell', 19);
 $('#rail-about').innerHTML = aboutHTML();
