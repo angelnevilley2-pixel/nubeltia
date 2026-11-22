@@ -824,6 +824,12 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .lc-stats{display:flex;gap:6px 14px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
 .lc-stats b{color:var(--ink);font-variant-numeric:tabular-nums}
 .live-card .lv-status{margin-top:8px}
+
+.lv-hint p{margin-top:4px}
+.lv-hint ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:7px}
+.lv-hint li{line-height:1.42}
+.lv-hint .warn-b{color:var(--gold);font-weight:700}
+.lv-hint-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2418,6 +2424,8 @@ const A = {
   'ble-on': t => bleConnect(t.dataset.id),
   'ble-all': () => bleConnect('hrband', true),
   'live-open': () => openLive(),
+  'live-retry': () => { const h = BLE.hr; if (!h) return; live.kick = 0; h.re = 0; blog(tL('Reintento manual.', 'Manual retry.')); toast(tL('Reintentando la conexión…', 'Retrying the connection…')); try { h.dev.gatt.disconnect(); } catch (e) {} },
+  'live-rescan': () => { const h = BLE.hr; if (h) { h.manual = true; clearInterval(h.tick); BLE.hr = null; try { h.dev.gatt.disconnect(); } catch (e) {} blog(tL('Buscando el reloj de nuevo…', 'Searching for the watch again…')); } bleConnect('hrband'); },
   'live-copy': () => {
     const txt = liveDiag(), done = () => toast(tL('Diagnóstico copiado. Pégalo en el chat con Claude.', 'Diagnostics copied. Paste it in the chat with Claude.'));
     const fall = () => { const pre = $('#lv-log'); if (pre) { pre.textContent = txt; const r = document.createRange(); r.selectNodeContents(pre); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); } toast(tL('Selecciona el texto y cópialo.', 'Select the text and copy it.')); };
@@ -3873,7 +3881,7 @@ function paintLive(force) {
   const V = liveVals();
   $$('[data-live]').forEach(el => { const k = el.dataset.live; if (k in V) el.textContent = V[k]; });
   $$('[data-live="status"]').forEach(el => el.classList.toggle('warn', V.warn));
-  $$('[data-live-hint]').forEach(el => { el.hidden = !V.warn; });
+  $$('[data-live-hint]').forEach(el => { el.hidden = !V.warn; const sig = `${live.kick}|${live.needBond}|${live.brand}`; if (V.warn && el.dataset.sig !== sig) { el.dataset.sig = sig; el.innerHTML = noDataHelp(); } });
   $$('[data-optk]').forEach(el => { el.hidden = !V[el.dataset.optk]; });
   const z = ZONES[zoneOf(live.hr)][2];
   $$('[data-zc]').forEach(el => { el.style.setProperty('--zc', z); el.hidden = !(BLE.hr && live.hr); });
@@ -3908,11 +3916,12 @@ const svcShort = u => parseInt(String(u).slice(4, 8), 16);
 /* requestDevice must run inside the tap: it is the first thing called */
 function hrConnect(all) {
   return navigator.bluetooth.requestDevice(all ? {acceptAllDevices:true, optionalServices:[0x180D, ...HR_OPT]} : {filters:[{services:[0x180D]}], optionalServices:HR_OPT}).then(async dev => {
-    Object.assign(live, {rr:[], hr:0, hrAt:0, pk:0, rrSeen:false, contact:null, kj:null, rsc:null, spo2:null, temp:null, info:{}, svcs:[], loc:null, bat:null, log:[], sess:newSess(), brand:'', warned:false});
+    Object.assign(live, {rr:[], hr:0, hrAt:0, pk:0, rrSeen:false, contact:null, kj:null, rsc:null, spo2:null, temp:null, info:{}, svcs:[], loc:null, bat:null, sess:newSess(), brand:brandOf(dev.name), warned:false, kick:0, needBond:false, subAt:0});
+    blog('———');
     blog(tL(`Conectando con ${dev.name || 'el dispositivo'}…`, `Connecting to ${dev.name || 'the device'}…`));
     try { await hrSetup(dev); } catch (e) { try { dev.gatt.disconnect(); } catch (x) {} throw e; }
     BLE.hr = {dev, name:dev.name || live.info.model || '', re:0, manual:false, tick:setInterval(liveTick, 1000)};
-    dev.addEventListener('gattserverdisconnected', onHrDisc);
+    dev.addEventListener('gattserverdisconnected', () => onHrDisc(dev));
     live.brand = brandOf(`${dev.name || ''} ${live.info.maker || ''} ${live.info.model || ''}`);
     blog(tL('Conectado. Escuchando tu pulso en vivo.', 'Connected. Listening to your live heart rate.'));
     return BLE.hr.name;
@@ -3926,12 +3935,15 @@ async function hrSetup(dev) {
   const get = u => svcs.find(x => svcShort(x.uuid) === u);
   let hrs = get(0x180D);
   if (!hrs) { try { hrs = await gatt.getPrimaryService(0x180D); live.svcs.push(0x180D); } catch (e) { const err = new Error('nohr'); err.name = 'NoHR'; throw err; } }
-  const ch = await hrs.getCharacteristic(0x2A37);
-  ch.addEventListener('characteristicvaluechanged', e => onHR(e.target.value));
-  await ch.startNotifications();
-  try { live.loc = (await (await hrs.getCharacteristic(0x2A38)).readValue()).getUint8(0); } catch (e) {}
+  const ch = await hrs.getCharacteristic(0x2A37), pr = ch.properties || {};
+  blog(tL('Característica de pulso', 'Heart-rate characteristic') + `: notify=${!!pr.notify} indicate=${!!pr.indicate} read=${!!pr.read}`);
+  if (!HR_HOOKED.has(ch)) { HR_HOOKED.add(ch); ch.addEventListener('characteristicvaluechanged', e => onHR(e.target.value)); }
+  try { await ch.startNotifications(); } catch (e) { blogErr(tL('activar el envío del pulso', 'enable heart-rate notifications'), e); throw e; }
+  live.hrCh = ch; live.subAt = Date.now(); live.kick = live.kick >= 2 ? 3 : 0;
+  blog(tL('Suscrito al pulso. Esperando datos del reloj…', 'Subscribed to heart rate. Waiting for data…'));
+  try { live.loc = (await (await hrs.getCharacteristic(0x2A38)).readValue()).getUint8(0); } catch (e) { if (e.name !== 'NotFoundError') blogErr(tL('leer la ubicación del sensor', 'read the sensor location'), e); }
   const bs = get(0x180F);
-  if (bs) { try { const c = await bs.getCharacteristic(0x2A19); live.bat = (await c.readValue()).getUint8(0); try { c.addEventListener('characteristicvaluechanged', e => { live.bat = e.target.value.getUint8(0); }); await c.startNotifications(); } catch (e) {} } catch (e) {} }
+  if (bs) { try { const c = await bs.getCharacteristic(0x2A19); live.bat = (await c.readValue()).getUint8(0); try { c.addEventListener('characteristicvaluechanged', e => { live.bat = e.target.value.getUint8(0); }); await c.startNotifications(); } catch (e) {} } catch (e) { blogErr(tL('leer la batería', 'read the battery'), e); } }
   const di = get(0x180A);
   if (di) { const td = new TextDecoder(); for (const [u, k] of [[0x2A29, 'maker'], [0x2A24, 'model'], [0x2A26, 'fw'], [0x2A27, 'hw']]) { try { live.info[k] = td.decode(await (await di.getCharacteristic(u)).readValue()).replace(/\0/g, '').trim(); } catch (e) {} } }
   const sub = async (u, chr, fn, label) => { const x = get(u); if (!x) return; try { const c = await x.getCharacteristic(chr); c.addEventListener('characteristicvaluechanged', e => fn(e.target.value)); await c.startNotifications(); blog(tL('Escuchando', 'Listening to') + ' ' + label); } catch (e) {} };
@@ -3944,13 +3956,13 @@ function onRSC(v) { const f = v.getUint8(0); const r = {speed:v.getUint16(1, tru
 const sfloat = (v, o) => { const r = v.getUint16(o, true); if (r >= 0x07FE && r <= 0x0802) return null; let m = r & 0x0FFF, e = r >> 12; if (m >= 0x800) m -= 0x1000; if (e >= 8) e -= 16; return m * Math.pow(10, e); };
 function onPLX(v) { const x = sfloat(v, 1); if (x != null && x > 50 && x <= 100) live.spo2 = x; }
 function onTemp(v) { const f = v.getUint8(0), raw = v.getUint32(1, true); let m = raw & 0xFFFFFF; const e = raw >> 24; if (m >= 0x800000) m -= 0x1000000; let t = m * Math.pow(10, e); if (f & 1) t = (t - 32) / 1.8; if (t > 25 && t < 45) live.temp = t; }
-function onHrDisc() {
-  const h = BLE.hr; if (!h) return;
+function onHrDisc(dev) {
+  const h = BLE.hr; if (!h || (dev && h.dev !== dev)) return;
   if (h.manual) { bleLost('hrband'); return; }
   h.re = (h.re || 0) + 1;
   if (h.re > 6) { blog(tL('No se pudo reconectar.', 'Could not reconnect.')); bleLost('hrband'); return; }
   blog(tL(`Se perdió la conexión. Reconectando (intento ${h.re})…`, `Connection lost. Reconnecting (attempt ${h.re})…`)); paintLive(true);
-  setTimeout(() => { if (BLE.hr !== h) return; hrSetup(h.dev).then(() => { h.re = 0; blog(tL('Reconectado.', 'Reconnected.')); paintLive(true); }).catch(() => onHrDisc()); }, Math.min(30000, 1000 * 2 ** (h.re - 1)));
+  setTimeout(() => { if (BLE.hr !== h) return; hrSetup(h.dev).then(() => { h.re = 0; blog(tL('Reconectado.', 'Reconnected.')); paintLive(true); }).catch(e => { blogErr(tL('reconectar', 'reconnecting'), e); onHrDisc(h.dev); }); }, Math.min(30000, 1000 * 2 ** (h.re - 1)));
 }
 /* Muse: service 0xfe8d, control 273e0001, EEG TP9/AF7/AF8/TP10 on 273e0003-0006; 12 samples of 12 bits per packet, 256 Hz */
 const MUSE_SVC = 0xfe8d, MU = n => `273e00${n}-4c4d-454d-96be-f03bac821358`;
@@ -4003,6 +4015,7 @@ function bleConnect(id, all) {
     if (id === 'hrband') { friendUp(3); P3 && P3.ok() && P3.play('celebrate'); setTimeout(openLive, 250); }
     else nubi('device', {d, real:true});
   }).catch(e => {
+    if (id === 'hrband' && !BLE.hr && S.devices.hrband) bleLost('hrband');
     if (e && e.name === 'NotFoundError') return;
     if (e && e.name === 'SecurityError') { toast(tL(...BLE_WHY.frame)); return; }
     if (e && e.name === 'NoHR') { toast(tL('Ese dispositivo no comparte su ritmo cardiaco por Bluetooth. Activa en él «transmitir frecuencia cardiaca» y vuelve a intentar.', "That device doesn't share its heart rate over Bluetooth. Turn on “broadcast heart rate” on it and try again.")); return; }
@@ -4175,6 +4188,16 @@ function liveTick() {
   const now = Date.now(), s = live.sess, ago = live.hrAt ? now - live.hrAt : now - s.start;
   if (ago > 10000 && !live.warned && !h.re) { live.warned = true; blog(tL('Sin datos de pulso desde hace 10 s.', 'No heart-rate data for 10 s.')); }
   if (ago < 3000) live.warned = false;
+  if (!live.pk && !h.re && live.subAt) {
+    const wt = now - live.subAt;
+    if (wt > 6000 && live.kick === 0) {
+      live.kick = 1; blog(tL('Sin datos todavía: vuelvo a pedirle el pulso al reloj…', 'No data yet: asking the watch again…'));
+      const c = live.hrCh; if (c) Promise.resolve().then(() => c.stopNotifications()).catch(() => {}).then(() => c.startNotifications()).then(() => blog(tL('Suscripción renovada.', 'Subscription renewed.')), e => blogErr(tL('renovar la suscripción', 'renew the subscription'), e));
+    } else if (wt > 16000 && live.kick === 1) {
+      live.kick = 2; blog(tL('Sigue sin datos: me reconecto con el reloj…', 'Still no data: reconnecting to the watch…'));
+      try { h.dev.gatt.disconnect(); } catch (e) {}
+    }
+  }
   const last = s.hist.filter(q => now - q[0] <= 60000);
   if (last.length >= 30 && now - last[0][0] >= 45000) { const a = Math.round(last.reduce((x, q) => x + q[1], 0) / last.length), D = hrDayGet(); D.low = D.low ? Math.min(D.low, a) : a; }
   if (now - live.savedAt > 30000) { live.savedAt = now; save(); }
@@ -4223,7 +4246,7 @@ function openLive() {
   const caps = [[0x180D, 'Ritmo cardiaco en vivo', 'Live heart rate'], ['rr', 'Intervalos entre latidos (para la VFC)', 'Beat-to-beat intervals (for HRV)'], [0x180F, 'Batería', 'Battery'], [0x180A, 'Marca, modelo y firmware', 'Brand, model and firmware'], [0x1814, 'Cadencia y velocidad al correr', 'Running cadence and speed'], [0x1822, 'Oxígeno en sangre', 'Blood oxygen'], [0x1809, 'Temperatura', 'Temperature']];
   const tile = (k, es, en, sub, opt) => `<div ${opt ? `data-optk="${k}" ${V[k] ? '' : 'hidden'}` : ''}><span>${tL(es, en)}</span><b data-live="${k}">${V[k]}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
   openSheet(`<div class="lv-head"><div><p class="eyebrow">${tL('Tu reloj en vivo', 'Your watch, live')}</p><h3 class="h2">${esc(BLE.hr.name || V.model)}</h3><p class="lv-status" data-live="status">${V.status}</p></div><button class="btn small ghost" data-act="ble-off" data-id="hrband">${tL('Desconectar', 'Disconnect')}</button></div>
-    <div class="lv-hint" data-live-hint ${V.warn ? '' : 'hidden'}>${tL('Tu reloj está conectado, pero no está mandando el pulso. Abre en el reloj la opción «transmitir frecuencia cardiaca» (o empieza una actividad) y déjalo con la pantalla activa.', 'Your watch is connected but isn’t sending heart rate. Open “broadcast heart rate” on the watch (or start an activity) and keep its screen on.')}</div>
+    <div class="lv-hint" data-live-hint ${V.warn ? '' : 'hidden'}>${noDataHelp()}</div>
     <div class="lv-hero"><span class="lv-heart">${HEART(56)}</span><div class="lv-num"><b data-live="hr">${V.hr}</b><span>lpm</span></div><em class="lv-zone" data-live="zone" data-zc>${V.zone}</em></div>
     <div class="lv-chart"><canvas id="lv-chart"></canvas><small class="muted">${tL('Tu pulso, últimos 2 minutos', 'Your heart rate, last 2 minutes')}</small></div>
     <div class="stats4"><div><b data-live="min">${V.min}</b><small>${tL('mínimo', 'lowest')}</small></div><div><b data-live="avg">${V.avg}</b><small>${tL('promedio', 'average')}</small></div><div><b data-live="max">${V.max}</b><small>${tL('máximo', 'highest')}</small></div><div><b data-live="dur">${V.dur}</b><small>${tL('conectado', 'connected')}</small></div></div>
@@ -4237,6 +4260,37 @@ function openLive() {
       <dl><dt>${tL('Fabricante', 'Maker')}</dt><dd data-live="maker">${V.maker}</dd><dt>${tL('Modelo', 'Model')}</dt><dd data-live="model">${V.model}</dd><dt>Firmware</dt><dd data-live="fw">${V.fw}</dd><dt>${tL('Sensor en', 'Sensor on')}</dt><dd data-live="loc">${V.loc}</dd><dt>${tL('Lecturas recibidas', 'Readings received')}</dt><dd data-live="pk">${V.pk}</dd></dl>
       <pre id="lv-log"></pre><button class="btn small ghost" data-act="live-copy">${tL('Copiar diagnóstico', 'Copy diagnostics')}</button></details>`, 'tall');
   setTimeout(() => { paintLive(true); drawLiveChart(); }, 60);
+}
+
+
+/* ---------- when a watch connects but sends nothing: log every error and guide the person ---------- */
+const HR_HOOKED = new WeakSet();
+function blogErr(what, e) {
+  const t = `${(e && e.name) || ''} ${(e && e.message) || e || ''}`.trim();
+  blog(`${tL('No pude', 'Could not')} ${what}: ${t}`);
+  if (/auth|encrypt|secur|bond|pair|insufficient|permit/i.test(t)) live.needBond = true;
+}
+function noDataHelp() {
+  const nm = esc((BLE.hr && BLE.hr.name) || tL('tu reloj', 'your watch')), b = live.brand;
+  const google = b === 'fitbit' || b === 'pixel' || /fitbit|pixel/i.test(nm);
+  const steps = google ? [
+    tL('En la app <b>Google Health</b> del teléfono donde está tu Fitbit: Conexiones → tu dispositivo → <b>Compartir frecuencia cardíaca</b>. Déjala abierta en «Esperando conexión».', 'In the <b>Google Health</b> app on the phone your Fitbit uses: Connections → your device → <b>Share heart rate</b>. Leave it on “Waiting to connect”.'),
+    tL('Revisa «Apps y equipos conectados»: si aparece otra app o equipo, desconéctalo. Tu Fitbit comparte el pulso con uno a la vez.', 'Check “Connected apps and equipment”: if another app or machine is there, disconnect it. Your Fitbit shares with one at a time.'),
+    tL('Toca <b>Buscar de nuevo</b> y elige tu Fitbit en la lista. Si este teléfono o la app Google Health te piden vincular o confirmar, acepta.', 'Tap <b>Search again</b> and pick your Fitbit. If this phone or the Google Health app asks to pair or confirm, accept.'),
+    tL('Si sigue igual: apaga y vuelve a prender «Compartir frecuencia cardíaca» y repite el paso 3.', 'If nothing changes: turn “Share heart rate” off and on and repeat step 3.')]
+  : b === 'garmin' ? [
+    tL('En el reloj, abre los controles o el menú de sensores y elige <b>Transmitir frecuencia cardiaca</b>. Déjalo en esa pantalla.', 'On the watch, open the controls or sensors menu and choose <b>Broadcast heart rate</b>. Stay on that screen.'),
+    tL('Cierra otras apps que usen el reloj como sensor (Zwift, Strava, etc.).', 'Close other apps using the watch as a sensor (Zwift, Strava, etc.).'),
+    tL('Toca <b>Buscar de nuevo</b> y elige tu reloj.', 'Tap <b>Search again</b> and pick your watch.')]
+  : [
+    tL('Activa en tu reloj o en su app la opción para <b>transmitir o compartir la frecuencia cardiaca</b> y déjala abierta.', 'Turn on <b>broadcast or share heart rate</b> on your watch or in its app and leave it open.'),
+    tL('Revisa que no esté conectado a otra app de entrenamiento: casi todos comparten con una sola a la vez.', 'Make sure it isn’t connected to another workout app: most share with only one at a time.'),
+    tL('Toca <b>Buscar de nuevo</b> y elige tu reloj.', 'Tap <b>Search again</b> and pick your watch.')];
+  return `<b>${tL(`${nm} está conectado, pero todavía no manda el pulso.`, `${nm} is connected but isn’t sending heart rate yet.`)}</b>
+    ${live.kick < 3 ? `<p class="small">${tL('Ya lo estoy reintentando solo. Mientras, revisa esto:', 'I’m already retrying on my own. Meanwhile, check this:')}</p>` : `<p class="small">${tL('Ya reintenté solo y no llegó nada. Sigue estos pasos:', 'I retried on my own and nothing arrived. Follow these steps:')}</p>`}
+    ${live.needBond ? `<p class="small warn-b">${tL('Tu reloj pide vincularse: acepta la solicitud de vinculación que aparece en este teléfono.', 'Your watch asks to pair: accept the pairing request on this phone.')}</p>` : ''}
+    <ol>${steps.map(x => `<li>${x}</li>`).join('')}</ol>
+    <div class="lv-hint-btns"><button class="btn small" data-act="live-rescan">${tL('Buscar de nuevo', 'Search again')}</button><button class="btn small ghost" data-act="live-retry">${tL('Reintentar', 'Retry')}</button><button class="btn small ghost" data-act="live-copy">${tL('Copiar diagnóstico', 'Copy diagnostics')}</button></div>`;
 }
 
 /* ---------- boot ---------- */
