@@ -631,6 +631,101 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .fr-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:13.5px}
 .fr-top small{color:var(--muted);font-size:12px;white-space:nowrap}
 .fr-b > small{font-size:11.5px}
+
+/* rewards: missions, chests, combos */
+.quest{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.q-hint + .quest{border-top:0}
+.q-hint{margin:-4px 0 4px}
+.q-count{font:800 13px var(--f-body);color:var(--gold);background:var(--gold-soft);border-radius:99px;padding:4px 10px;flex:none}
+.q-ic{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand);flex:none}
+.quest.done .q-ic{background:var(--gold-soft);color:var(--gold)}
+.q-b{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
+.q-top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.q-top b{font-size:14px}
+.q-top small{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;flex:none}
+.quest.claimed .q-b b{color:var(--muted)}
+.q-rw{display:flex;align-items:center;gap:4px;font:700 13px var(--f-body);color:var(--gold);flex:none}
+.q-ok{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--gold);color:var(--on-gold);flex:none}
+.q-claim{flex:none;animation:qpulse 1.3s ease-in-out infinite}
+@keyframes qpulse{50%{box-shadow:0 0 0 6px rgba(57,225,255,.2)}}
+.chest-row{display:flex;align-items:center;gap:12px;width:100%;margin-top:10px;padding:10px 12px;border-radius:18px;border:1px solid rgba(245,192,74,.4);background:linear-gradient(135deg,rgba(245,192,74,.16),rgba(142,92,247,.2));color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.chest-row>span{flex:1;display:flex;flex-direction:column;gap:2px}
+.chest-row small{color:var(--muted);font-size:12.5px}
+.chest-row .chest-svg{flex:none;animation:cwob 2.6s ease-in-out infinite}
+@keyframes cwob{0%,78%,100%{transform:none}82%{transform:rotate(-9deg)}86%{transform:rotate(8deg)}90%{transform:rotate(-5deg)}94%{transform:rotate(3deg)}}
+.chestov{position:absolute;inset:0;z-index:62;display:grid;place-items:center;padding:24px;background:rgba(2,3,20,.74);opacity:0;pointer-events:none;transition:opacity .25s}
+.chestov.show{opacity:1;pointer-events:auto}
+.chest-card{background:var(--surface);border-radius:30px;padding:22px 20px 18px;max-width:330px;width:100%;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:var(--shadow);border:1px solid rgba(183,148,255,.22)}
+.chest-btn-big{position:relative;border:0;background:none;padding:14px;cursor:pointer;display:grid;place-items:center}
+.chest-btn-big .chest-svg{position:relative;animation:cshake 1.2s ease-in-out infinite}
+.chest-btn-big:disabled{cursor:default}
+.chest-btn-big:disabled .chest-svg{animation:cpop .5s cubic-bezier(.2,.9,.3,1.5)}
+@keyframes cshake{0%,55%,100%{transform:none}62%{transform:rotate(-6deg) scale(1.04)}69%{transform:rotate(6deg) scale(1.06)}76%{transform:rotate(-4deg)}83%{transform:rotate(3deg)}}
+@keyframes cpop{0%{transform:scale(.75)}100%{transform:none}}
+.chest-svg .lid{transform-box:view-box;transform-origin:60px 46px;transition:transform .5s cubic-bezier(.2,.9,.3,1.4)}
+.chest-svg.open .lid{transform:translate(-6px,-16px) rotate(-26deg)}
+.chest-rays{position:absolute;inset:-14px;border-radius:50%;background:radial-gradient(circle,rgba(255,224,138,.4),transparent 62%)}
+.chest-rays.on{inset:-40px;background:repeating-conic-gradient(var(--rc) 0 9deg,transparent 9deg 30deg);-webkit-mask:radial-gradient(circle,#000 18%,transparent 68%);mask:radial-gradient(circle,#000 18%,transparent 68%);opacity:.55;animation:crot 9s linear infinite}
+@keyframes crot{to{transform:rotate(1turn)}}
+.chest-rw:empty{display:none}
+.rw-card{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 18px;border-radius:18px;border:1.5px solid var(--rc);background:rgba(255,255,255,.03);box-shadow:0 0 24px -6px var(--rc);min-width:210px;animation:cpop .45s cubic-bezier(.2,.9,.3,1.5)}
+.rw-card .rar{font:800 11px var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--rc)}
+.rw-card small{color:var(--muted);font-size:12.5px}
+.rw-coins{display:flex;align-items:center;gap:8px;font:800 36px/1 var(--f-display);color:var(--gold)}
+.rw-coins .coin{width:28px;height:28px}
+.rw-card .sw{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--sw);color:#050720}
+.combo{position:absolute;left:50%;top:36%;z-index:66;transform:translate(-50%,-50%);text-align:center;pointer-events:none;font:800 32px/1 var(--f-display);letter-spacing:-.01em;color:#fff;text-shadow:0 0 18px rgba(142,92,247,.9),0 0 4px rgba(57,225,255,.9);animation:combo 1.45s cubic-bezier(.2,.9,.3,1.3) forwards}
+.combo small{display:flex;justify-content:center;align-items:center;gap:4px;font:800 15px var(--f-body);color:var(--gold);text-shadow:none;margin-top:5px}
+@keyframes combo{0%{opacity:0;transform:translate(-50%,-50%) scale(.4)}22%{opacity:1;transform:translate(-50%,-50%) scale(1.18)}36%{transform:translate(-50%,-50%) scale(1)}78%{opacity:1}100%{opacity:0;transform:translate(-50%,-95%)}}
+/* Nubi assistant */
+.card.asst-card{background:linear-gradient(160deg,rgba(142,92,247,.26),rgba(57,225,255,.06) 70%),var(--surface);border:1px solid rgba(183,148,255,.28)}
+.asst-row{display:flex;gap:12px;align-items:center}
+.asst-ic{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;background:var(--grad);color:#050720;flex:none;box-shadow:var(--glow-v)}
+.asst-input{display:flex;align-items:center;gap:10px;width:100%;height:46px;margin:12px 0 10px;padding:0 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);font:500 14.5px var(--f-body);text-align:left;cursor:text}
+.asst-input .ic{color:var(--mental);flex:none}
+.sheet.tall{min-height:80%}
+.seg.asst-seg{grid-template-columns:repeat(4,1fr)}
+.asst-head{display:flex;gap:12px;align-items:center}
+.asst-head .p3-slot{flex:none}
+.asst-chat{max-height:300px;min-height:120px}
+.acts-done{display:block;margin-top:8px;padding-top:6px;border-top:1px solid var(--line);font:600 12px/1.5 var(--f-body);color:var(--food);white-space:normal}
+.acts-done .ic{vertical-align:-2px}
+.plan-sum{display:flex;align-items:center;gap:14px}
+.plan-sum>div:first-child{display:flex;flex-direction:column;flex:none}
+.plan-sum b{font:800 22px/1 var(--f-display)}
+.plan-sum small{color:var(--muted);font-size:12px}
+.plan-sum .bar{flex:1}
+.timeline{display:flex;flex-direction:column}
+.tl-item{display:grid;grid-template-columns:42px 34px minmax(0,1fr);align-items:center;gap:8px;min-height:46px;position:relative}
+.tl-item::before{content:"";position:absolute;left:66px;top:0;bottom:0;width:2px;background:var(--line)}
+.tl-item:first-child::before{top:50%}
+.tl-item:last-child::before{bottom:50%}
+.tl-t{font:700 12.5px var(--f-body);color:var(--muted);font-variant-numeric:tabular-nums}
+.tl-dot{position:relative;z-index:1;width:34px;height:34px;border-radius:50%;border:2px solid var(--line);background:var(--surface-2);color:var(--muted);display:grid;place-items:center;cursor:pointer;padding:0}
+.k-habit .tl-dot{color:var(--brand)}.k-meal .tl-dot{color:var(--food)}.k-workout .tl-dot{color:var(--train)}.k-pomo .tl-dot{color:var(--gold)}.k-task .tl-dot{color:var(--mental)}
+.tl-item.done .tl-dot{background:var(--brand);border-color:var(--brand);color:var(--brand-ink)}
+.tl-item.done .tl-l{color:var(--muted);text-decoration:line-through}
+.tl-l{font-size:14px;line-height:1.3}
+.wk-bars{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;height:120px}
+.wk-col{display:flex;flex-direction:column;align-items:center;gap:6px;min-height:0}
+.wk-bw{flex:1;width:100%;max-width:28px;border-radius:9px;background:var(--track);display:flex;align-items:flex-end;overflow:hidden}
+.wk-bw i{display:block;width:100%;background:var(--grad);border-radius:9px}
+.wk-col span{font:700 11px var(--f-body);color:var(--muted)}
+.wk-col.today span{color:var(--brand)}
+.stats4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.stats4>div{background:var(--surface-2);border-radius:14px;padding:10px 4px;text-align:center;display:flex;flex-direction:column;gap:3px}
+.stats4 b{font:800 18px/1 var(--f-display)}
+.stats4 small{font-size:11px;color:var(--muted);line-height:1.2}
+.challenge{background:var(--surface-2);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.challenge .q-top b{display:flex;align-items:center;gap:6px;color:var(--gold)}
+.challenge .btn{align-self:flex-start}
+.cal-head{display:flex;flex-direction:column;gap:2px}
+.cal-head b{font:800 18px var(--f-display)}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal-l{font:700 11px var(--f-body);color:var(--muted);text-align:center}
+.cal-d{aspect-ratio:1;border-radius:9px;display:grid;place-items:center;font:700 11.5px var(--f-body);color:var(--ink);background:rgb(142 92 247 / calc(.1 + var(--r) * .8))}
+.cal-d.future{background:transparent;border:1px dashed var(--line);color:var(--muted)}
+.cal-d.today{outline:2px solid var(--brand);outline-offset:1px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -688,6 +783,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
     <div class="celeb" id="celeb" role="dialog" aria-modal="true" aria-labelledby="celeb-title">
       <div class="celeb-card"><div id="celeb-mascot"></div><h2 id="celeb-title"></h2><p id="celeb-sub"></p><button class="btn full" data-act="celeb-close">Seguir</button></div>
     </div>
+    <div class="chestov" id="chestov" role="dialog" aria-modal="true" aria-label="Cofre sorpresa"></div>
     <canvas id="fx"></canvas>
     <div class="splash" id="splash" aria-hidden="true"><span class="nb-mark"></span><span class="nb-word"></span></div>
   </div>
@@ -979,6 +1075,8 @@ if (!S || S.v !== 1) S = defaults();
 if (!S.tasks) S.tasks = defTasks();
 if (S.coins === undefined) S.coins = 150;
 if (!S.wardrobe) S.wardrobe = {owned:{band:true}, eq:{head:'band'}, acts:{}};
+if (S.chests === undefined) S.chests = 1;
+if (S.asst) S.asst = S.asst.filter(m => !m.pending && m.content);
 function rollover() {
   if (S.day === todayKey()) return;
   S.week.push(S.check ? {mood:S.check.mood, stress:S.check.stress, sleep:S.check.sleep} : null);
@@ -1107,10 +1205,15 @@ function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.ad
 function addXP(n, pos) {
   /* every XP gain also pays coins (half, rounded up); undoing takes them back */
   const before = level(), c = Math.sign(n) * Math.ceil(Math.abs(n) / 2);
-  S.xp = Math.max(0, S.xp + n); S.coins = Math.max(0, (S.coins || 0) + c);
+  /* quick successive wins build a combo (up to x5) that pays bonus coins */
+  let bonus = 0;
+  if (n > 0) { const now = Date.now(); combo = now - lastGainAt < 90000 ? Math.min(5, combo + 1) : 1; lastGainAt = now; bonus = combo > 1 ? (combo - 1) * 2 : 0; }
+  S.xp = Math.max(0, S.xp + n); S.coins = Math.max(0, (S.coins || 0) + c + bonus);
   if (n > 0) floatTxt(pos, `+${n} XP <span class="coin"></span>+${c}`);
-  if (level() > before) S.coins += 50;
+  if (bonus) { const k = combo; setTimeout(() => comboPop(k, bonus), 420); }
+  if (level() > before) { S.coins += 50; S.chests = (S.chests || 0) + 1; }
   save(); renderTop();
+  if (n > 0) setTimeout(checkMissions, 60);
   if (level() > before) setTimeout(() => celebrate('level'), 650);
 }
 function unlock(id) {
@@ -1120,7 +1223,7 @@ function unlock(id) {
 }
 const CELEB = {
   day:() => ['¡Día completo!', 'Cumpliste todos tus hábitos de hoy. Ganaste 50 XP extra.'],
-  level:() => [`¡Subiste al nivel ${level()}!`, 'Ganaste 50 monedas y cosas nuevas para Nubi.'],
+  level:() => [`¡Subiste al nivel ${level()}!`, 'Ganaste 50 monedas, un cofre sorpresa y cosas nuevas para Nubi.'],
   workout:() => ['¡Entreno completado!', 'Terminaste tu rutina de hoy. Ganaste 30 XP.'],
   walk:m => ['¡Caminata completada!', `${m} minutos en movimiento. Ganaste 20 XP.`],
   goal:g => ['¡Meta cumplida!', `${g}. Ganaste 50 XP.`],
@@ -1140,7 +1243,7 @@ function celebrate(kind, data) {
 function closeCeleb() { $('#celeb').classList.remove('show'); P3 && P3.mount(); const n = celebQ.shift(); if (n) setTimeout(() => celebrate(...n), 350); }
 
 /* ---------- sheet + notification ---------- */
-function openSheet(html) { $('#sheet-body').innerHTML = html; $('#backdrop').classList.add('show'); $('#sheet').classList.add('show'); setTimeout(() => { const f = $('#sheet button, #sheet input'); f && f.focus({preventScroll:true}); $('.phone').scrollTop = 0; }, 60); }
+function openSheet(html, mode) { $('#sheet-body').innerHTML = html; $('#sheet').classList.toggle('tall', mode === 'tall'); $('#backdrop').classList.add('show'); $('#sheet').classList.add('show'); setTimeout(() => { const f = $('#sheet button, #sheet input'); f && f.focus({preventScroll:true}); $('.phone').scrollTop = 0; }, 60); }
 function closeSheet() { const fb = $('#fab'); fb && fb.classList.remove('open'); stopBreath(); $('#backdrop').classList.remove('show'); const wasPlay = !!$('#sheet.show .p3-slot'); $('#sheet').classList.remove('show'); if (P3) { P3.mount(); if (wasPlay) P3.rest(); } }
 let notifT = 0;
 function testReminder() {
@@ -1306,6 +1409,8 @@ function renderInicio() {
     <div class="p3-slot">${mascot(pct === 1 ? 'celebrate' : 'happy', 122)}<button class="p3-play" data-act="play-pulso" aria-label="Jugar con Nubi">${ic('game', 17)}</button></div>
   </header>
   ${nextCard()}
+  ${missionsCard()}
+  ${asstCard()}
   <div class="card today">
     ${ring(pct, 78, 'var(--brand)', `${done}/${total}`, 'hábitos')}
     <div class="today-info">
@@ -1400,7 +1505,7 @@ function nextCard() {
 /* ---------- quick add ---------- */
 const QA = [
   ['qa-water', 'drop', 'Vaso de agua', 'var(--water)'], ['qa-task', 'plus', 'Tarea', 'var(--brand)'], ['qa-habit', 'star', 'Hábito', 'var(--gold)'], ['qa-checkin', 'heart', 'Cómo me siento', 'var(--mental)'],
-  ['qa-pomo', 'clock', 'Pomodoro', 'var(--brand)'], ['qa-walk', 'steps', 'Caminar 10 min', 'var(--train)'], ['breathe', 'wind', 'Respirar 1 min', 'var(--food)'], ['qa-chat', 'send', 'Hablar con Nubi', 'var(--mental)'],
+  ['qa-pomo', 'clock', 'Pomodoro', 'var(--brand)'], ['qa-walk', 'steps', 'Caminar 10 min', 'var(--train)'], ['breathe', 'wind', 'Respirar 1 min', 'var(--food)'], ['asst', 'sparkle', 'Asistente Nubi', 'var(--mental)'],
 ];
 function quickSheet() {
   $('#fab').classList.add('open');
@@ -1442,6 +1547,8 @@ document.addEventListener('click', e => { if (swallow) { e.stopPropagation(); e.
 const TOUR = [
   {tab:'inicio', sel:null, t:'¡Hola! Soy Nubi', d:'Te enseño Nubeltia en 30 segundos. Cada cosa que logres la celebramos juntos.'},
   {tab:'inicio', sel:'#next', t:'Tu siguiente paso', d:'Aquí te digo qué conviene hacer ahora. Un toque y listo. Si no te late, pide otra idea.'},
+  {tab:'inicio', sel:'.quests', t:'Misiones y cofres', d:'Cada día tienes 3 misiones. Reclama su premio y, al completar las tres, ganas un cofre sorpresa.'},
+  {tab:'inicio', sel:'.asst-card', t:'Tu asistente personal', d:'Pídeme que planee tu día, organice tus pendientes o te dé el resumen de tu semana y de tu mes.'},
   {tab:'inicio', sel:'.habit', t:'Tus hábitos', d:'Toca el círculo para cumplirlo, o desliza a la derecha. Desliza a la izquierda si hoy no pudiste.'},
   {tab:'inicio', sel:'#fab', t:'Agrega en un toque', d:'Con el botón + registras agua, tareas, hábitos, un pomodoro y más, desde cualquier pantalla.'},
   {sel:'.tab[data-tab="mental"]', t:'Mental', d:'Registra cómo te sientes, mira tus señales de burnout y habla conmigo cuando lo necesites.'},
@@ -1568,7 +1675,7 @@ function nubi(ev, d = {}) {
     case 'task': { const left = (S.tasks || []).filter(x => !x.done).length; pts = 1; clip = 'nod';
       if (!left) break;
       line = pickL([[`¡Tachado! "${d.t}" ya es historia.`, `Crossed off! "${hn(d.t)}" is history.`], [`¡Uno menos! Te quedan ${left} pendientes.`, `One less! ${left} to-dos left.`]]); break; }
-    case 'taskAdd': clip = 'nod';
+    case 'taskAdd': clip = 'nod'; if (Math.random() < .5) o = {act:'asst-plan', label:tL('Ver mi plan', 'See my plan')};
       line = pickL([[`Anotado: "${d.t}". Lo sacamos juntos.`, `Noted: "${d.t}". We'll get it done together.`], ['Listo, lo agregué a tus pendientes. Tú puedes.', "Done, I added it to your to-dos. You've got this."]]); break;
     case 'goal': { const g = d.g, pct = Math.round(g.cur / g.target * 100); clip = 'clap'; pts = 1;
       line = tL(`"${g.name}": vas en ${pct}%. ¡Cada paso cuenta!`, `"${hn(g.name)}": you're at ${pct}%. Every step counts!`); break; }
@@ -1619,13 +1726,18 @@ function nubiWelcome() {
   P3 && P3.ok() && P3.play('wave');
   if (first) {
     const ph = S.habits.filter(h => !h.state).length, pt = (S.tasks || []).filter(x => !x.done).length, n = nextSteps()[0];
-    nubiSay(tL(`${greet}, ${name}! Hoy tienes ${ph} hábitos y ${pt} pendientes. ¿Empezamos por aquí?`, `${greet}, ${name}! Today you have ${ph} habits and ${pt} to-dos. Shall we start here?`), {sub:n.t, desc:n.d, act:n.act, id:n.id, label:n.b, ms:9000});
+    S.chests = (S.chests || 0) + 1; save(); rerender();
+    nubiSay(tL(`${greet}, ${name}! Te dejé un cofre sorpresa del día. Hoy tienes ${ph} hábitos y ${pt} pendientes.`, `${greet}, ${name}! I left you today's mystery chest. Today you have ${ph} habits and ${pt} to-dos.`), {act:'chest-open', label:tL('Abrir cofre', 'Open chest'), ms:9000});
   } else nubiSay(pickL([[`¡Qué gusto verte otra vez, ${name}!`, `So good to see you again, ${name}!`], [`¡Volviste! Te estaba esperando, ${name}.`, `You're back! I was waiting for you, ${name}.`]]));
 }
 /* a quiet moment: Nubi checks in with something useful for where you are */
 function nubiChatter() {
   const tab = current;
-  if (tab === 'inicio') { const n = nextSteps()[0]; nubiSay(pickL([['Oye, ¿y si hacemos esto?', 'Hey, what if we do this?'], ['Tengo una idea para ti:', 'I have an idea for you:']]), {sub:n.t, desc:n.d, act:n.act, id:n.id, label:n.b}); }
+  if (tab === 'inicio') { const ready = missionsToday().find(m => m.v() >= m.goal && !S.missions.claimed[m.id]);
+    if (ready) nubiSay(tL(`¡Tienes un premio sin reclamar: ${ready.es}!`, `You have an unclaimed reward: ${ready.en}!`), {act:'goto-quests', label:tL('Reclamar', 'Claim')});
+    else if (S.chests > 0) nubiSay(tL('Psst… tienes un cofre sorpresa sin abrir.', 'Psst… you have an unopened mystery chest.'), {act:'chest-open', label:tL('Abrir', 'Open')});
+    else if (Math.random() < .4) nubiSay(tL('¿Planeamos juntos lo que queda de tu día?', 'Shall we plan the rest of your day together?'), {act:'asst-plan', label:tL('Planear', 'Plan')});
+    else { const n = nextSteps()[0]; nubiSay(pickL([['Oye, ¿y si hacemos esto?', 'Hey, what if we do this?'], ['Tengo una idea para ti:', 'I have an idea for you:']]), {sub:n.t, desc:n.d, act:n.act, id:n.id, label:n.b}); } }
   else if (tab === 'mental') { if (Math.random() < .5) nubiSay(tL('Recuerda: está bien no estar bien. Aquí estoy contigo.', "Remember: it's okay not to be okay. I'm here with you."));
     else nubiSay(tL('¿Una pausa de respiración? Solo un minuto, conmigo.', 'A breathing break? Just one minute, with me.'), {act:'breathe', label:tL('Respirar', 'Breathe')}); }
   else if (tab === 'nutricion') { if (S.water < 8) nubiSay(tL(`¿Un vaso de agua? Llevas ${S.water} de 8.`, `A glass of water? You're at ${S.water} of 8.`), {act:'qa-water', label:tL('Tomé uno', 'I had one')}); else nubiSay(tL('¡Ya tomaste tus 8 vasos! Eres increíble.', "You've had all 8 glasses! You're amazing.")); }
@@ -1991,6 +2103,7 @@ function rerender() {
   if (current === 'mental') renderChat();
   sc.scrollTop = y;
   P3 && P3.mount();
+  refreshAsst(); checkMissions();
 }
 function show(tab) {
   if (!R[tab]) tab = 'inicio';
@@ -2032,6 +2145,33 @@ const A = {
   'qa-walk': () => { closeSheet(); go('entreno'); walkStart(10, false); toast('Caminata de 10 minutos en marcha.'); },
   'qa-chat': () => goScroll('mental', '#chat-in', true),
   'tour': () => startTour(),
+  'asst': () => openAsst('chat'),
+  'asst-tab': t => { asstTab = t.dataset.tab; $$('.asst-seg button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === asstTab)); $('#asst-panel').innerHTML = asstPanel(); const c = $('#asst-chat'); if (c) c.scrollTop = c.scrollHeight; P3 && P3.ok() && P3.play('nod'); },
+  'asst-chip': t => sendAsst(t.dataset.text),
+  'asst-go': t => { const tab = t.dataset.tab || 'chat', tx = t.dataset.text; hideSay(); openAsst(tab, tx || null); if (!tx && tab === 'chat') setTimeout(() => { const i = $('#asst-in'); i && i.focus({preventScroll:true}); }, 140); },
+  'asst-plan': () => { hideSay(); openAsst('hoy'); },
+  'm-claim': t => {
+    const m = MISSIONS.find(x => x.id === t.dataset.id), M = S.missions; if (!m || !M || M.claimed[m.id] || m.v() < m.goal) return;
+    M.claimed[m.id] = true; const pos = relPos(t); S.coins = (S.coins || 0) + m.c; addXP(m.xp, pos); cheer(pos, true); SND.cheer(); buzz([20, 30, 40]);
+    if (M.ids.every(id => M.claimed[id]) && !M.chest) { M.chest = true; S.chests = (S.chests || 0) + 1; save(); rerender();
+      setTimeout(() => { nubiSay(tL('¡Completaste las 3 misiones de hoy! Te ganaste un cofre sorpresa.', 'You completed all 3 missions today! You earned a mystery chest.'), {act:'chest-open', label:tL('Abrir cofre', 'Open chest')}); P3 && P3.ok() && P3.play('celebrate'); }, 450); }
+    else { save(); rerender(); nubiSay(pickL([[`¡+${m.c} monedas extra! Vamos por la siguiente.`, `+${m.c} bonus coins! On to the next one.`], ['¡Premio reclamado! Así se hace.', 'Reward claimed! That’s how it’s done.']])); P3 && P3.ok() && P3.play('cheer'); }
+  },
+  'chest-open': () => { hideSay(); openChest(); },
+  'chest-tap': () => revealChest(),
+  'chest-close': () => closeChest(),
+  'week-claim': () => {
+    const w = weekStats(); if (w.hab < 30 || (S.weekly && S.weekly.wk === w.wk && S.weekly.claimed)) return;
+    S.weekly = {wk:w.wk, claimed:true}; S.chests = (S.chests || 0) + 1; save(); refreshAsst(); rerender(); cannons(60); SND.party();
+    nubiSay(tL('¡Reto semanal superado! Te ganaste un cofre sorpresa.', 'Weekly challenge beaten! You earned a mystery chest.'), {act:'chest-open', label:tL('Abrir cofre', 'Open chest')});
+  },
+  'plan-meal': t => {
+    const id = t.dataset.id, on = !S.eaten[id]; S.eaten[id] = on; const pos = relPos(t);
+    if (on) { addXP(5, pos); if (MEALS.every(x => S.eaten[x.id]) && !S.mealsDone) { S.mealsDone = true; addXP(20); setTimeout(() => celebrate('meals'), 250); } else { cheer(pos); nubi('meal'); } }
+    save(); rerender();
+  },
+  'plan-go': t => { closeSheet(); go(t.dataset.tab); },
+  'goto-quests': () => { hideSay(); goScroll('inicio', '.quests'); },
   'pbub-close': () => hideSay(),
   'play-pulso': () => playSheet(),
   'shop-open': () => playSheet(),
@@ -2172,6 +2312,7 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('submit', e => {
   e.preventDefault();
+  if (e.target.id === 'asst-form') { const i = $('#asst-in'); const v = i.value; i.value = ''; sendAsst(v); return; }
   if (e.target.id === 'chat-form') { if (chatBusy) { chatCtl && chatCtl.abort(); return; } const i = $('#chat-in'); const v = i.value; i.value = ''; sendChat(v); }
   if (e.target.id === 'task-form') {
     const i = $('#task-in'), v = i.value.trim(); if (!v) return;
@@ -2187,6 +2328,7 @@ document.addEventListener('submit', e => {
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
   if (!$('#tour').hidden) { endTour(); return; }
+  if ($('#chestov').classList.contains('show')) { closeChest(); return; }
   if ($('#celeb').classList.contains('show')) closeCeleb(); else if ($('#sheet').classList.contains('show')) closeSheet(); else hideNotif();
 });
 
@@ -2379,7 +2521,7 @@ Object.assign(EN, {'Estilo':'Style','Yoga':'Yoga','Correr':'Run','Patineta':'Ska
   'Gorro de fiesta':'Party hat','Gorro de invierno':'Beanie','Sombrero vaquero':'Cowboy hat','Gorro de chef':'Chef hat','Aureola':'Halo','Mochila':'Backpack','Jetpack':'Jetpack','Alas':'Wings','Tenis violeta':'Violet sneakers',
   'Lentes de corazón':'Heart glasses','Visor futurista':'Future visor','Corbata':'Tie','Cadena de oro':'Gold chain','Pesas rosas':'Pink dumbbells','Pesas violetas':'Violet dumbbells',
   'Piel hielo':'Ice skin','Piel fuego':'Fire skin','Piel galaxia':'Galaxy skin','Aura cian':'Cyan aura','Aura violeta':'Violet aura','Orbe de energía':'Energy orb','Mini Nubi':'Mini Nubi'});
-Object.assign(EN, {'Tus monedas y la tienda de Nubi':'Your coins and Nubi’s shop','Ganaste 50 monedas y cosas nuevas para Nubi.':'You earned 50 coins and new things for Nubi.',
+Object.assign(EN, {'Tus monedas y la tienda de Nubi':'Your coins and Nubi’s shop','Ganaste 50 monedas, un cofre sorpresa y cosas nuevas para Nubi.':'You earned 50 coins, a mystery chest and new things for Nubi.',
   'Acciones':'Actions','Ropa':'Clothes','Accesorios':'Accessories','Tienda de Nubi':'Nubi’s shop','Acciones especiales':'Special actions','Cómo ganar monedas':'How to earn coins',
   'Leer':'Read','Manejar':'Drive','Guitarra':'Guitar','Cinta cian':'Cyan headband','Gorra neón':'Neon cap','Audífonos':'Headphones','Bufanda':'Scarf','Tenis neón':'Neon sneakers','Botas doradas':'Gold boots',
   'Lentes de sol':'Sunglasses','Moño':'Bow tie','Medalla':'Medal','Pesas doradas':'Gold dumbbells','Piel rosa':'Pink skin','Piel menta':'Mint skin','Piel dorada':'Gold skin',
@@ -3211,6 +3353,299 @@ ENP.unshift([/^(\d+) de (\d+) en tu colección$/, '$1 of $2 in your collection']
 ENP.unshift([/^Se desbloquea en el nivel (\d+)\.$/, 'Unlocks at level $1.'], [/^Te faltan (\d+) monedas\. Cumple hábitos y rutinas para ganar más\.$/, 'You need $1 more coins. Complete habits and routines to earn more.'],
   [/^¡Listo! Nubi estrena: (.+)\.$/, (m, n) => `Done! Nubi is wearing: ${enT(n)}.`], [/^¡Nueva acción desbloqueada: (.+)!$/, (m, n) => `New action unlocked: ${enT(n)}!`]);
 ENP.unshift([/^Desde nivel (\d+)$/, 'From level $1'], [/^Nivel (\d+) · (.+) XP$/, 'Level $1 · $2 XP']);
+
+/* ---------- rewards: daily missions, combos, mystery chests ----------
+   Healthy loop: small, frequent wins (combo coins, mission claims), a surprise chest with variable prizes,
+   weekly challenge and monthly medal. Nothing is ever taken away for a missed day. */
+var combo = 0, lastGainAt = 0;
+const MISSIONS = [
+  {id:'h3', ic:'check', es:'Cumple 3 hábitos', en:'Complete 3 habits', goal:3, xp:20, c:15, v:() => S.habits.filter(h => h.state === 'done').length},
+  {id:'h5', ic:'check', es:'Cumple 5 hábitos', en:'Complete 5 habits', goal:5, xp:30, c:25, v:() => S.habits.filter(h => h.state === 'done').length},
+  {id:'w6', ic:'drop', es:'Toma 6 vasos de agua', en:'Drink 6 glasses of water', goal:6, xp:15, c:12, v:() => S.water},
+  {id:'p2', ic:'clock', es:'Haz 2 pomodoros', en:'Do 2 pomodoros', goal:2, xp:20, c:15, v:() => S.pomo.today},
+  {id:'t2', ic:'star', es:'Tacha 2 pendientes', en:'Cross off 2 to-dos', goal:2, xp:15, c:12, v:() => (S.tasks || []).filter(x => x.done).length},
+  {id:'ck', ic:'heart', es:'Haz tu registro mental', en:'Do your mood check-in', goal:1, xp:15, c:10, v:() => S.check ? 1 : 0},
+  {id:'s6', ic:'train', es:'Completa 6 series', en:'Complete 6 sets', goal:6, xp:20, c:15, v:() => setsDone()},
+  {id:'m2', ic:'food', es:'Marca 2 comidas del plan', en:'Log 2 planned meals', goal:2, xp:15, c:12, v:() => MEALS.filter(m => S.eaten[m.id]).length},
+];
+function missionsToday() {
+  if (!S.missions || S.missions.day !== todayKey()) {
+    let h = 7; for (const ch of todayKey()) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const pick = []; for (let g = 0; pick.length < 3 && g < 200; g++) { h = (Math.imul(h, 1103515245) + 12345) >>> 0; const id = MISSIONS[(h >>> 16) % MISSIONS.length].id; if (!pick.includes(id) && !(id === 'h5' && pick.includes('h3')) && !(id === 'h3' && pick.includes('h5'))) pick.push(id); }
+    MISSIONS.forEach(m => { if (pick.length < 3 && !pick.includes(m.id) && m.id !== 'h5') pick.push(m.id); });
+    S.missions = {day:todayKey(), ids:pick, claimed:{}, ann:{}, chest:false};
+    pick.forEach(id => { const m = MISSIONS.find(x => x.id === id); if (m.v() >= m.goal) S.missions.ann[id] = true; });
+    save();
+  }
+  return S.missions.ids.map(id => MISSIONS.find(m => m.id === id));
+}
+function checkMissions() {
+  const ms = missionsToday(), M = S.missions; M.ann = M.ann || {};
+  ms.forEach(m => { if (!M.ann[m.id] && m.v() >= m.goal) { M.ann[m.id] = true; save();
+    setTimeout(() => { SND.cheer(); nubiSay(tL(`¡Misión cumplida: ${m.es}! Reclama tu premio.`, `Mission complete: ${m.en}! Claim your reward.`), {act:'goto-quests', label:tL('Reclamar', 'Claim')}); P3 && P3.ok() && P3.play('celebrate'); }, 2600); } });
+}
+function comboPop(n, bonus) {
+  const d = document.createElement('div'); d.className = 'combo'; d.innerHTML = `COMBO x${n}<small>+${bonus} <span class="coin"></span></small>`;
+  phone.appendChild(d); setTimeout(() => d.remove(), 1500);
+}
+let chestN = 0;
+function chestSVG(sz, open) {
+  const a = 'cgA' + (++chestN), b = 'cgB' + chestN;
+  return `<svg class="chest-svg ${open ? 'open' : ''}" viewBox="0 0 120 110" width="${sz}" height="${Math.round(sz * 110 / 120)}" aria-hidden="true"><defs><linearGradient id="${a}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#A97CFF"/><stop offset="1" stop-color="#4B1FC2"/></linearGradient><linearGradient id="${b}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE08A"/><stop offset="1" stop-color="#E0A21B"/></linearGradient></defs>
+    <ellipse cx="60" cy="104" rx="44" ry="5" fill="rgba(0,0,0,.35)"/>
+    <g class="lid"><path d="M14 46 Q14 16 60 16 Q106 16 106 46 Z" fill="url(#${a})" stroke="#2A1070" stroke-width="3"/><rect x="54" y="17" width="12" height="29" fill="url(#${b})"/></g>
+    <rect x="14" y="46" width="92" height="54" rx="6" fill="url(#${a})" stroke="#2A1070" stroke-width="3"/><rect x="15.5" y="47.5" width="89" height="8" fill="url(#${b})"/><rect x="54" y="46" width="12" height="54" fill="url(#${b})"/>
+    <rect x="49" y="56" width="22" height="19" rx="4" fill="#FFE08A" stroke="#8A5A00" stroke-width="2"/><circle cx="60" cy="64" r="3" fill="#8A5A00"/><path d="M28 30 l4 -6 M92 30 l-4 -6" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/></svg>`;
+}
+const RAR = {com:['Común', 'Common', '#8A93B8'], rare:['Raro', 'Rare', '#39E1FF'], epic:['Épico', 'Epic', '#B794FF'], leg:['Legendario', 'Legendary', '#F5C04A']};
+let chestRw = null;
+function openChest() {
+  if (!(S.chests > 0)) { toast(tL('Aún no tienes cofres. Cumple misiones para ganar uno.', 'No chests yet. Complete missions to earn one.')); return; }
+  closeSheet(); chestRw = null;
+  const ov = $('#chestov');
+  ov.innerHTML = `<div class="chest-card"><p class="eyebrow">${tL('Cofre sorpresa', 'Mystery chest')}</p><h2 class="h2">${tL('¡Toca el cofre para abrirlo!', 'Tap the chest to open it!')}</h2>
+    <button class="chest-btn-big" data-act="chest-tap" aria-label="${tL('Abrir cofre', 'Open chest')}"><span class="chest-rays"></span>${chestSVG(170, false)}</button>
+    <div class="chest-rw" id="chest-rw"></div><button class="btn full" id="chest-ok" data-act="chest-close" hidden>${tL('¡Genial!', 'Awesome!')}</button></div>`;
+  ov.classList.add('show'); SND.check(); buzz(15);
+}
+function revealChest() {
+  if (chestRw || !(S.chests > 0)) return;
+  S.chests--; const r = Math.random(), lv = level();
+  const pool = SHOP.filter(i => !S.wardrobe.owned[i.id] && i.p > 0 && i.lv <= lv + 3);
+  let rw;
+  if (r < .04) rw = {rar:'leg', coins:200, xp:50};
+  else if (r < .18 && pool.length) rw = {rar:'epic', item:pool[Math.floor(Math.random() * pool.length)]};
+  else if (r < .45) rw = {rar:'rare', coins:60 + Math.floor(Math.random() * 40)};
+  else rw = {rar:'com', coins:15 + Math.floor(Math.random() * 25)};
+  chestRw = rw;
+  if (rw.coins) S.coins = (S.coins || 0) + rw.coins;
+  if (rw.item) S.wardrobe.owned[rw.item.id] = true;
+  save(); if (rw.xp) addXP(rw.xp, {x:phone.clientWidth / 2, y:phone.clientHeight * .36}); renderTop();
+  const R = RAR[rw.rar], btn = $('.chest-btn-big');
+  btn.innerHTML = `<span class="chest-rays on" style="--rc:${R[2]}"></span>${chestSVG(170, true)}`; btn.disabled = true;
+  const body = rw.item ? `<span class="sw" style="--sw:${rw.item.sw}">${ic(rw.item.ic, 26)}</span><b>${tL('Nuevo para Nubi:', 'New for Nubi:')} ${tL(rw.item.n, enT(rw.item.n))}</b><small>${tL('Ya está en su armario. ¡Pónselo!', 'It’s in the wardrobe. Put it on!')}</small>`
+    : `<span class="rw-coins"><span class="coin"></span>+${rw.coins}</span><b>${tL('monedas', 'coins')}${rw.xp ? ` + ${rw.xp} XP` : ''}</b>`;
+  $('#chest-rw').innerHTML = `<div class="rw-card" style="--rc:${R[2]}"><span class="rar">${tL(R[0], R[1])}</span>${body}</div>`;
+  $('#chest-ok').hidden = false;
+  cannons(rw.rar === 'com' ? 40 : 80); SND.party(); buzz([40, 50, 80]);
+  P3 && P3.ok() && P3.play('celebrate');
+}
+function closeChest() {
+  $('#chestov').classList.remove('show');
+  const rw = chestRw; chestRw = null; rerender();
+  if (!rw) return;
+  setTimeout(() => nubiSay(rw.item ? tL(`¡Me encanta! ¿Me pones ${rw.item.n}?`, `I love it! Will you put ${enT(rw.item.n)} on me?`) : rw.rar === 'leg' ? tL('¡LEGENDARIO! No lo puedo creer. ¡Qué suerte tienes!', "LEGENDARY! I can't believe it. You're so lucky!") : pickL([['¡Bien! Más monedas para tu colección.', 'Nice! More coins for your collection.'], ['¡Sigue así y caen más cofres!', 'Keep it up and more chests will drop!']]),
+    rw.item ? {act:'shop-open', label:tL('Ver armario', 'See wardrobe')} : {}), 400);
+}
+function missionsCard() {
+  const ms = missionsToday(), M = S.missions, nc = ms.filter(m => M.claimed[m.id]).length;
+  return `<section class="card quests"><div class="sec-head"><h2 class="h2">${tL('Misiones de hoy', 'Today’s missions')}</h2><span class="q-count">${nc}/3</span></div>
+    <p class="muted small q-hint">${tL('Reclama cada premio y, si completas las 3, ganas un cofre sorpresa.', 'Claim each reward and, if you finish all 3, you win a mystery chest.')}</p>
+    ${ms.map(m => { const v = Math.min(m.goal, m.v()), done = v >= m.goal, cl = M.claimed[m.id];
+      return `<div class="quest ${done ? 'done' : ''} ${cl ? 'claimed' : ''}"><span class="q-ic">${ic(m.ic, 18)}</span><div class="q-b"><div class="q-top"><b>${tL(m.es, m.en)}</b><small>${v}/${m.goal}</small></div><div class="bar"><i style="width:${v / m.goal * 100}%"></i></div></div>
+        ${cl ? `<span class="q-ok">${ic('check', 16)}</span>` : done ? `<button class="btn small q-claim" data-act="m-claim" data-id="${m.id}">${tL('Reclamar', 'Claim')}</button>` : `<span class="q-rw"><span class="coin"></span>${m.c}</span>`}</div>`; }).join('')}
+    ${S.chests > 0 ? `<button class="chest-row" data-act="chest-open">${chestSVG(54, false)}<span><b>${tL(`¡Tienes ${S.chests} ${S.chests > 1 ? 'cofres' : 'cofre'} sorpresa!`, `You have ${S.chests} mystery ${S.chests > 1 ? 'chests' : 'chest'}!`)}</b><small>${tL('Ábrelo y descubre tu premio', 'Open it to see your prize')}</small></span>${ic('chevron', 18)}</button>` : ''}
+  </section>`;
+}
+function asstCard() {
+  const chips = [[tL('Planea mi día', 'Plan my day'), 'hoy', ''], [tL('Organiza mis pendientes', 'Organize my to-dos'), 'chat', tL('Organiza mis pendientes', 'Organize my to-dos')], [tL('Mi semana', 'My week'), 'semana', ''], [tL('Mi mes', 'My month'), 'mes', '']];
+  return `<section class="card asst-card"><div class="asst-row"><span class="asst-ic">${ic('sparkle', 20)}</span><div><h2 class="h2">${tL('Nubi, tu asistente', 'Nubi, your assistant')}</h2><p class="muted small">${tL('Organiza tu día, tus pendientes, tu semana y tu mes conmigo.', 'Organize your day, to-dos, week and month with me.')}</p></div></div>
+    <button class="asst-input" data-act="asst-go" data-tab="chat" data-text="">${ic('send', 16)}<span>${tL('Pídele algo a Nubi…', 'Ask Nubi anything…')}</span></button>
+    <div class="chips">${chips.map(([l, tab, txt]) => `<button class="chip-btn" data-act="asst-go" data-tab="${tab}" data-text="${esc(txt)}">${esc(l)}</button>`).join('')}</div></section>`;
+}
+
+/* ---------- history (sample for past days) for week and month views ---------- */
+const dkey = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+function dayHist(key) {
+  let h = 1779033703 ^ key.length; for (const ch of key) { h = Math.imul(h ^ ch.charCodeAt(0), 3432918353); h = h << 13 | h >>> 19; }
+  const r = n => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); h ^= h >>> 16; return (h >>> 0) / 4294967296 * n; };
+  const of = S.habits.length || 7;
+  return {habits:Math.min(of, 3 + Math.floor(r(5))), of, water:4 + Math.floor(r(5)), pomos:Math.floor(r(4)), workout:r(1) > .45, tasks:Math.floor(r(4))};
+}
+function todayHist() { return {habits:S.habits.filter(x => x.state === 'done').length, of:S.habits.length || 1, water:S.water, pomos:S.pomo.today, workout:!!S.workoutDone, tasks:(S.tasks || []).filter(x => x.done).length}; }
+function weekStats() {
+  const ti = (new Date().getDay() + 6) % 7, mon = new Date(Date.now() - ti * 864e5);
+  const W = Array.from({length:7}, (_, d) => { const dt = new Date(mon.getTime() + d * 864e5); return {dt, today:d === ti, h:d < ti ? dayHist(dkey(dt)) : d === ti ? todayHist() : null}; });
+  const H = W.filter(d => d.h), hab = H.reduce((a, d) => a + d.h.habits, 0), of = H.reduce((a, d) => a + d.h.of, 0);
+  const water = H.length ? H.reduce((a, d) => a + d.h.water, 0) / H.length : 0, pomos = H.reduce((a, d) => a + d.h.pomos, 0), wo = H.filter(d => d.h.workout).length, tasks = H.reduce((a, d) => a + d.h.tasks, 0);
+  return {W, hab, of, pct:of ? Math.round(hab / of * 100) : 0, water, pomos, wo, tasks, wk:dkey(mon),
+    summary:{habitos:`${hab}/${of}`, porcentaje:of ? Math.round(hab / of * 100) : 0, agua_promedio:Math.round(water * 10) / 10, pomodoros:pomos, entrenos:wo, pendientes_hechos:tasks, reto_semanal:`${hab}/30`}};
+}
+function monthStats() {
+  const now = new Date(), y = now.getFullYear(), mo = now.getMonth(), days = new Date(y, mo + 1, 0).getDate(), first = (new Date(y, mo, 1).getDay() + 6) % 7, td = now.getDate();
+  const D = Array.from({length:days}, (_, i) => { const dt = new Date(y, mo, i + 1), h = i + 1 < td ? dayHist(dkey(dt)) : i + 1 === td ? todayHist() : null; return {n:i + 1, today:i + 1 === td, h, r:h ? h.habits / h.of : null}; });
+  const done = D.filter(d => d.h), active = done.filter(d => d.r >= .5).length, perfect = done.filter(d => d.r >= 1).length;
+  let best = 0, run = 0; done.forEach(d => { run = d.r >= .5 ? run + 1 : 0; best = Math.max(best, run); });
+  return {D, first, active, perfect, best, wo:done.filter(d => d.h.workout).length, habits:done.reduce((a, d) => a + d.h.habits, 0), name:now.toLocaleDateString(S.lang === 'en' ? 'en-US' : 'es-MX', {month:'long'}),
+    summary:{mes:now.toLocaleDateString('es-MX', {month:'long'}), dias_activos:active, dias_perfectos:perfect, mejor_racha:best, entrenos:done.filter(d => d.h.workout).length, habitos:done.reduce((a, d) => a + d.h.habits, 0)}};
+}
+function planItems() {
+  const it = [];
+  S.habits.forEach(h => it.push({t:h.time, k:'habit', id:h.id, label:h.name, done:h.state === 'done', ic:'check'}));
+  MEALS.forEach(m => it.push({t:m.time, k:'meal', id:m.id, label:`${m.name} · ${mealTot(m).k} kcal`, done:!!S.eaten[m.id], ic:'food'}));
+  it.push({t:'18:30', k:'workout', label:tL('Rutina: fuerza tren inferior (40 min)', 'Workout: lower-body strength (40 min)'), done:!!S.workoutDone, ic:'train'});
+  ['09:30', '11:30'].forEach((t, i) => it.push({t, k:'pomo', label:tL(`Bloque de enfoque ${i + 1} (25 min)`, `Focus block ${i + 1} (25 min)`), done:S.pomo.today > i, ic:'clock'}));
+  const slots = ['10:15', '12:30', '16:00', '17:15', '19:45', '20:15'];
+  (S.tasks || []).forEach((x, i) => it.push({t:slots[i % slots.length], k:'task', id:x.id, label:x.t, done:x.done, ic:'star'}));
+  return it.sort((a, b) => toMin(a.t) - toMin(b.t));
+}
+
+/* ---------- Nubi, the AI assistant (tools act on the app; demo mode understands basic phrases) ---------- */
+let asstTab = 'chat', asstBusy = false;
+function overview() {
+  const r = calc();
+  return {fecha:dateLabel(), hora:nowHM(), nombre:S.name, nivel:level(), xp:S.xp, monedas:S.coins, racha:S.streak, cofres:S.chests || 0,
+    habitos:S.habits.map(h => ({nombre:h.name, hora:h.time, estado:h.state || 'pendiente', racha:h.streak})),
+    pendientes:(S.tasks || []).map(t => ({texto:t.t, hecho:t.done})),
+    metas:S.goals.map(g => ({nombre:g.name, avance:`${g.cur}/${g.target} ${g.unit}`, para:g.due})),
+    agua:`${S.water}/8`, comidas:MEALS.map(m => ({comida:m.name, hora:m.time, comido:!!S.eaten[m.id], kcal:mealTot(m).k})), meta_kcal:r ? r.target : null,
+    rutina:{series:`${setsDone()}/${setsTotal}`, ejercicios:EXS.map(e => e.n)}, pomodoros_hoy:S.pomo.today,
+    registro_animo:S.check ? {animo:MOODS[S.check.mood - 1], estres:S.check.stress, ansiedad:S.check.anx, sueno:S.check.sleep} : null,
+    misiones:missionsToday().map(m => ({mision:m.es, progreso:`${Math.min(m.goal, m.v())}/${m.goal}`, reclamada:!!S.missions.claimed[m.id]})),
+    semana:weekStats().summary, mes:monthStats().summary};
+}
+const ASST_RULES = () => `Eres Nubi, la mascota nube y asistente personal de la app Nubeltia. ${S.lang === 'en' ? 'Reply in natural English.' : 'Hablas en español neutro, de tú, cálido y motivador.'}
+Ayudas a organizar el día, la semana y el mes: hábitos, pendientes, entrenamiento, nutrición, enfoque (pomodoro) y metas.
+- Usa las herramientas para crear o completar pendientes y hábitos, registrar agua o iniciar un pomodoro cuando la persona lo pida. Después confirma en una frase lo que hiciste.
+- Para planear el día, ordena por hora usando sus hábitos, comidas, rutina y pendientes, y propone bloques de enfoque.
+- Para resúmenes semanales o mensuales usa los datos que recibes: celebra lo logrado y da 2 o 3 sugerencias concretas.
+- Motiva mencionando la recompensa más cercana (misión, nivel, cofre o reto semanal) cuando venga al caso.
+- Nutrición y entreno: sugerencias generales y seguras basadas en su plan; nada de dietas extremas ni diagnósticos.
+- Si menciona hacerse daño o estar en peligro: responde con empatía y pide llamar al 911 o, en México, a la Línea de la Vida 800 911 2000.
+- Máximo 120 palabras, frases cortas; puedes usar viñetas con guion. Sin títulos ni markdown.`;
+const findBy = (list, key, q) => { q = String(q || '').toLowerCase().trim(); return list.find(x => x[key].toLowerCase() === q) || list.find(x => x[key].toLowerCase().includes(q) || q.includes(x[key].toLowerCase())); };
+function asstTools(acts) {
+  const T = (name, description, props, req, fn) => ({name, description, inputSchema:{type:'object', properties:props, required:req}, execute:async inp => { const r = fn(inp || {}); save(); return r; }});
+  return [
+    T('get_overview', 'Lee los datos actuales del usuario: hábitos, pendientes, metas, agua, comidas, entreno, pomodoros, ánimo, misiones, semana y mes.', {}, [], () => overview()),
+    T('add_task', 'Agrega un pendiente a la lista del usuario.', {text:{type:'string', description:'Texto corto del pendiente'}}, ['text'], ({text}) => { const t = String(text).slice(0, 60); S.tasks.push({id:'t' + Date.now() + Math.random().toString(36).slice(2, 5), t, done:false}); S.tasksDone = false; acts.push(tL(`Pendiente agregado: ${t}`, `To-do added: ${t}`)); return {ok:true}; }),
+    T('complete_task', 'Marca como hecho un pendiente, buscándolo por su texto.', {text:{type:'string'}}, ['text'], ({text}) => { const x = findBy(S.tasks, 't', text); if (!x) return {ok:false, error:'no encontrado'}; if (!x.done) { x.done = true; addXP(5); acts.push(tL(`Pendiente hecho: ${x.t}`, `To-do done: ${x.t}`)); } return {ok:true}; }),
+    T('add_habit', 'Crea un hábito diario nuevo con su hora de aviso.', {name:{type:'string'}, time:{type:'string', description:'Hora HH:MM'}, area:{type:'string', enum:Object.keys(CATS)}}, ['name'], ({name, time, area}) => { const n = String(name).slice(0, 60); S.habits.push({id:'h' + Date.now(), name:n, time:/^\d{2}:\d{2}$/.test(time || '') ? time : '18:00', cat:CATS[area] ? area : 'salud', streak:0, state:null}); acts.push(tL(`Hábito creado: ${n}`, `Habit created: ${n}`)); return {ok:true}; }),
+    T('complete_habit', 'Marca un hábito de hoy como cumplido, buscándolo por su nombre.', {name:{type:'string'}}, ['name'], ({name}) => { const h = findBy(S.habits, 'name', name); if (!h) return {ok:false, error:'no encontrado'}; if (h.state !== 'done') { h.state = 'done'; h.streak++; addXP(10); acts.push(tL(`Hábito cumplido: ${h.name}`, `Habit done: ${h.name}`)); } return {ok:true}; }),
+    T('log_water', 'Registra vasos de agua tomados hoy.', {glasses:{type:'number'}}, ['glasses'], ({glasses}) => { S.water = Math.min(8, S.water + Math.max(1, Math.round(glasses || 1))); acts.push(tL(`Agua: ${S.water} de 8 vasos`, `Water: ${S.water} of 8 glasses`)); return {ok:true, agua:S.water}; }),
+    T('start_pomodoro', 'Inicia un pomodoro de enfoque de 25 minutos.', {}, [], () => { if (!S.pomo.running) { if (S.pomo.mode !== 'focus') setMode('focus'); pomoToggle(); } acts.push(tL('Pomodoro iniciado', 'Pomodoro started')); return {ok:true}; }),
+  ];
+}
+const bullets = a => a.map(x => '- ' + x).join('\n');
+function planText() {
+  const it = planItems().filter(x => !x.done && toMin(x.t) >= toMin(nowHM()) - 30).slice(0, 7);
+  if (!it.length) return tL('¡Ya hiciste todo lo de hoy! Descansa, te lo ganaste.', 'You did everything today! Rest, you earned it.');
+  return tL(`Este es tu plan para lo que queda del día, ${S.name}:`, `Here's your plan for the rest of the day, ${S.name}:`) + '\n' + bullets(it.map(x => `${x.t} · ${x.label}`)) + '\n' + tL('Lo tienes completo en la pestaña Hoy. ¡Vamos uno por uno!', 'You have it all in the Today tab. One at a time!');
+}
+function tasksText() {
+  const open = (S.tasks || []).filter(x => !x.done);
+  if (!open.length) return tL('No tienes pendientes abiertos. ¿Agregamos alguno? Escribe "agrega: …".', 'No open to-dos. Want to add one? Type "add: …".');
+  return tL('Te sugiero este orden (lo más rápido primero para ganar impulso):', 'I suggest this order (quickest first to build momentum):') + '\n' + bullets(open.slice().sort((a, b) => a.t.length - b.t.length).map((x, i) => `${i + 1}. ${x.t}`)) + '\n' + tL('Haz el primero en un pomodoro y cuenta como misión.', 'Do the first one in a pomodoro and it counts toward a mission.');
+}
+function weekText() {
+  const w = weekStats();
+  return tL(`Tu semana va así, ${S.name}:`, `Here's your week, ${S.name}:`) + '\n' + bullets([tL(`Hábitos: ${w.hab} de ${w.of} (${w.pct}%)`, `Habits: ${w.hab} of ${w.of} (${w.pct}%)`), tL(`Entrenos: ${w.wo} · Pomodoros: ${w.pomos}`, `Workouts: ${w.wo} · Pomodoros: ${w.pomos}`), tL(`Agua promedio: ${n1(w.water)} vasos`, `Average water: ${n1(w.water)} glasses`), tL(`Reto semanal: ${w.hab}/30 hábitos`, `Weekly challenge: ${w.hab}/30 habits`)]) + '\n' + (w.pct >= 70 ? tL('¡Gran semana! Mantén tus horarios.', 'Great week! Keep your schedule.') : tL('Para subir: mueve los hábitos difíciles a la mañana y haz versiones mini.', 'To improve: move hard habits to the morning and do mini versions.'));
+}
+function monthText() {
+  const m = monthStats();
+  return tL(`Tu ${m.name} hasta hoy:`, `Your ${m.name} so far:`) + '\n' + bullets([tL(`${m.active} días activos y ${m.perfect} perfectos`, `${m.active} active days and ${m.perfect} perfect ones`), tL(`Mejor racha: ${m.best} días`, `Best streak: ${m.best} days`), tL(`${m.habits} hábitos y ${m.wo} entrenos`, `${m.habits} habits and ${m.wo} workouts`), tL(`Medalla del mes: ${Math.min(20, m.active)}/20 días activos`, `Monthly medal: ${Math.min(20, m.active)}/20 active days`)]);
+}
+function trainText() { const left = setsTotal - setsDone(); return left ? tL(`Hoy toca fuerza de tren inferior: ${EXS.map(e => e.n).join(', ')}. Te faltan ${left} series. Empieza con la sentadilla y yo cuento los descansos.`, `Today is lower-body strength: ${EXS.map(e => enT(e.n)).join(', ')}. ${left} sets to go. Start with the squat and I'll time your rests.`) : tL('¡Ya completaste tu rutina! Hoy toca estirar 10 minutos o caminar.', "You've finished your workout! Today, stretch 10 minutes or go for a walk."); }
+function foodText() { const left = MEALS.filter(m => !S.eaten[m.id]), next = left.find(m => toMin(m.time) >= toMin(nowHM()) - 60) || left[left.length - 1]; const r = calc(); return next ? tL(`Tu siguiente comida es ${next.name.toLowerCase()} (${next.time}): ${next.items.map((o, i) => pick(next, i).n).join(', ')}. Tu meta es ${r ? nf(r.target) : '1,650'} kcal y vas en ${S.water} de 8 vasos de agua.`, `Your next meal is ${enT(next.name).toLowerCase()} (${next.time}): ${next.items.map((o, i) => enT(pick(next, i).n)).join(', ')}. Your target is ${r ? nf(r.target) : '1,650'} kcal and you're at ${S.water} of 8 glasses of water.`) : tL('¡Cumpliste tu plan de comidas de hoy! Si te da hambre, una fruta o yogur griego.', 'You completed today’s meal plan! If you get hungry, a fruit or Greek yogurt.'); }
+function asstDemo(text, acts) {
+  const s = text.toLowerCase(); let m;
+  const addTask = t => { t = t.replace(/^(que|to|de)\s+/i, '').replace(/[.!¡]+$/, '').trim().slice(0, 60); if (!t) return null; S.tasks.push({id:'t' + Date.now(), t:t.charAt(0).toUpperCase() + t.slice(1), done:false}); S.tasksDone = false; acts.push(tL(`Pendiente agregado: ${t}`, `To-do added: ${t}`)); return t; };
+  if (/h[aá]bito|habit/.test(s) && /(agrega|añade|crea|nuevo|add|new|create)/.test(s)) {
+    const tm = text.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i); let hh = tm ? +tm[1] : 18; if (tm && /pm/i.test(tm[3] || '') && hh < 12) hh += 12;
+    const time = `${pad(hh)}:${tm && tm[2] ? tm[2] : '00'}`, name = (text.split(/[:]/)[1] || text.replace(/.*h[aá]bito( de| para)?|.*habit( to| of)?/i, '')).replace(/\s*(a las|at)\s*\d.*$/i, '').trim().slice(0, 60);
+    if (name) { S.habits.push({id:'h' + Date.now(), name:name.charAt(0).toUpperCase() + name.slice(1), time, cat:'salud', streak:0, state:null}); acts.push(tL(`Hábito creado: ${name} (${time})`, `Habit created: ${name} (${time})`)); return tL(`¡Listo! Creé el hábito "${name}" y te aviso a las ${time}. Empieza con una versión mini y lo celebramos juntos.`, `Done! I created the habit "${name}" and I'll remind you at ${time}. Start with a mini version and we'll celebrate together.`); }
+  }
+  if ((m = text.match(/(?:agrega|añade|anota|apunta|add|note)\b(?:\s+(?:una|un|la|el|a|an))?(?:\s+(?:tarea|pendiente|task|to-?do))?\s*[:,-]?\s*(.+)/i))) { const t = addTask(m[1]); if (t) return tL(`Listo, agregué "${t}" a tus pendientes. ¿Lo hacemos en tu siguiente bloque de enfoque?`, `Done, I added "${t}" to your to-dos. Shall we do it in your next focus block?`); }
+  if ((m = text.match(/(?:recu[eé]rdame|remind me)(?:\s+(?:que|to))?\s+(.+)/i))) { const t = addTask(m[1]); if (t) return tL(`Anotado: "${t}". Te lo recuerdo en tu plan de hoy.`, `Noted: "${t}". It's in today's plan.`); }
+  if (/agua|vaso|water|glass/.test(s) && /(tom[eé]|registra|log|drank|had|\+)/.test(s)) { S.water = Math.min(8, S.water + 1); acts.push(tL(`Agua: ${S.water} de 8`, `Water: ${S.water} of 8`)); return tL(`¡Glup! Llevas ${S.water} de 8 vasos.`, `Gulp! ${S.water} of 8 glasses.`); }
+  if (/(inicia|empieza|start).*(pomodoro|enfoque|focus)/.test(s)) { if (!S.pomo.running) { if (S.pomo.mode !== 'focus') setMode('focus'); pomoToggle(); } acts.push(tL('Pomodoro iniciado', 'Pomodoro started')); return tL('¡Pomodoro en marcha! 25 minutos solo para lo importante. Yo cuido el tiempo.', 'Pomodoro running! 25 minutes for what matters. I’ll watch the clock.'); }
+  if (/(termin[eé]|hice|complet[eé]|ya qued[oó]|done|finished|did)\s+(.+)/i.test(text)) { const q = text.replace(/.*?(termin[eé]|hice|complet[eé]|ya qued[oó]|done|finished|did)\s+/i, ''); const h = findBy(S.habits, 'name', q), x = !h && findBy(S.tasks || [], 't', q);
+    if (h && h.state !== 'done') { h.state = 'done'; h.streak++; addXP(10); acts.push(tL(`Hábito cumplido: ${h.name}`, `Habit done: ${h.name}`)); return tL(`¡Eso! Marqué "${h.name}" como cumplido. Racha de ${h.streak}.`, `Yes! I marked "${h.name}" as done. ${h.streak}-day streak.`); }
+    if (x && !x.done) { x.done = true; addXP(5); acts.push(tL(`Pendiente hecho: ${x.t}`, `To-do done: ${x.t}`)); return tL(`¡Tachado "${x.t}"! Uno menos.`, `Crossed off "${x.t}"! One less.`); } }
+  if (/(plan|organiza|qu[eé] hago).*(d[ií]a|hoy)|plan my day|my day|today/.test(s)) return planText();
+  if (/pendiente|tarea|to-?do|prioriza|organiza/.test(s)) return tasksText();
+  if (/semana|week/.test(s)) return weekText();
+  if (/\bmes\b|month/.test(s)) return monthText();
+  if (/entren|rutina|ejercicio|gym|train|workout|pesas/.test(s)) return trainText();
+  if (/com(er|ida|o\b)|nutri|cena|desayuno|almuerzo|eat|meal|food|calor/.test(s)) return foodText();
+  return tL(`Puedo ayudarte con esto, ${S.name}:`, `I can help you with this, ${S.name}:`) + '\n' + bullets([tL('"Agrega: llamar al dentista"', '"Add: call the dentist"'), tL('"Crea el hábito estirar a las 7"', '"Create the habit stretch at 7"'), tL('"Planea mi día" o "organiza mis pendientes"', '"Plan my day" or "organize my to-dos"'), tL('"¿Qué como hoy?" o "¿qué entreno?"', '"What should I eat?" or "what should I train?"'), tL('"Resumen de la semana" o "del mes"', '"Weekly summary" or "monthly summary"')]);
+}
+const ASST_CHIPS = () => [tL('Planea mi día', 'Plan my day'), tL('Organiza mis pendientes', 'Organize my to-dos'), tL('Resumen de la semana', 'Weekly summary'), tL('¿Qué entreno hoy?', 'What should I train today?'), tL('¿Qué como hoy?', 'What should I eat today?'), tL('Agrega: llamar al dentista', 'Add: call the dentist')];
+function asstMsgsHTML() {
+  const greet = tL(`Hola, ${S.name}. Soy tu asistente: puedo planear tu día, organizar tus pendientes, crear hábitos y darte tu resumen de la semana o del mes. ¿Qué hacemos?`, `Hi, ${S.name}. I'm your assistant: I can plan your day, organize your to-dos, create habits and give you your weekly or monthly summary. What shall we do?`);
+  return `<div class="msg ai">${esc(greet)}</div>` + (S.asst || []).map(m => `<div class="msg ${m.role === 'user' ? 'user' : 'ai'} ${m.pending ? 'pending' : ''}">${esc(m.pending ? tL('Nubi está pensando…', 'Nubi is thinking…') : m.content)}${m.acts && m.acts.length ? `<span class="acts-done">${m.acts.map(a => ic('check', 12) + ' ' + esc(a)).join('<br>')}</span>` : ''}</div>`).join('');
+}
+function asstPanel() {
+  if (asstTab === 'chat') return `<div class="chat asst-chat" id="asst-chat">${asstMsgsHTML()}</div>
+    <div class="starters">${ASST_CHIPS().map(c => `<button class="chip-btn" data-act="asst-chip" data-text="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+    <form class="chat-form" id="asst-form"><label class="sr" for="asst-in">${tL('Escríbele a Nubi', 'Write to Nubi')}</label><input id="asst-in" autocomplete="off" maxlength="600" placeholder="${esc(tL('Ej.: agrega llamar al dentista', 'E.g. add call the dentist'))}"><button class="send" aria-label="${tL('Enviar', 'Send')}">${ic('send', 18)}</button></form>
+    <p class="ai-note">${aiState === 'live' ? tL('Nubi usa IA y puede crear y completar tareas y hábitos por ti.', 'Nubi uses AI and can create and complete tasks and habits for you.') : tL('Modo demostración: Nubi entiende frases básicas y sí crea tareas y hábitos. En la app final responderá con IA.', 'Demo mode: Nubi understands basic phrases and does create tasks and habits. The final app will answer with AI.')}</p>`;
+  if (asstTab === 'hoy') {
+    const it = planItems(), d = it.filter(x => x.done).length;
+    return `<div class="plan-sum"><div><b>${d}/${it.length}</b><small>${tL('de tu día listo', 'of your day done')}</small></div><div class="bar"><i style="width:${it.length ? d / it.length * 100 : 0}%"></i></div></div>
+      <div class="timeline">${it.map(x => { const act = x.k === 'habit' ? `data-act="habit-toggle" data-id="${x.id}"` : x.k === 'task' ? `data-act="task-toggle" data-id="${x.id}"` : x.k === 'meal' ? `data-act="plan-meal" data-id="${x.id}"` : x.k === 'workout' ? 'data-act="plan-go" data-tab="entreno"' : 'data-act="qa-pomo"';
+        return `<div class="tl-item ${x.done ? 'done' : ''} k-${x.k}"><span class="tl-t">${x.t}</span><button class="tl-dot" ${act} aria-label="${esc(x.label)}">${ic(x.done ? 'check' : x.ic, 15)}</button><span class="tl-l">${esc(x.label)}</span></div>`; }).join('')}</div>
+      <button class="btn ghost full" data-act="asst-go" data-tab="chat" data-text="${esc(tL('Planea mi día', 'Plan my day'))}">${ic('sparkle', 16)} ${tL('Que Nubi ajuste mi plan', 'Let Nubi adjust my plan')}</button>`;
+  }
+  if (asstTab === 'semana') {
+    const w = weekStats(), L = S.lang === 'en' ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : ['L', 'M', 'M', 'J', 'V', 'S', 'D'], claimed = S.weekly && S.weekly.wk === w.wk && S.weekly.claimed;
+    return `<div class="wk-bars">${w.W.map((d, i) => `<div class="wk-col ${d.today ? 'today' : ''}"><div class="wk-bw"><i style="height:${d.h ? Math.max(6, d.h.habits / d.h.of * 100) : 0}%"></i></div><span>${L[i]}</span></div>`).join('')}</div>
+      <div class="stats4"><div><b>${w.pct}%</b><small>${tL('hábitos', 'habits')}</small></div><div><b>${w.wo}</b><small>${tL('entrenos', 'workouts')}</small></div><div><b>${w.pomos}</b><small>pomodoros</small></div><div><b>${n1(w.water)}</b><small>${tL('vasos/día', 'glasses/day')}</small></div></div>
+      <div class="challenge"><div class="q-top"><b>${ic('trophy', 16)} ${tL('Reto semanal: 30 hábitos', 'Weekly challenge: 30 habits')}</b><small>${Math.min(30, w.hab)}/30</small></div><div class="bar gold"><i style="width:${Math.min(100, w.hab / 30 * 100)}%"></i></div>
+        ${claimed ? `<small class="muted">${tL('¡Reto completado! Cofre reclamado.', 'Challenge complete! Chest claimed.')}</small>` : w.hab >= 30 ? `<button class="btn small" data-act="week-claim">${tL('Reclamar cofre', 'Claim chest')}</button>` : `<small class="muted">${tL(`Te faltan ${30 - w.hab}. Premio: cofre sorpresa.`, `${30 - w.hab} to go. Prize: mystery chest.`)}</small>`}</div>
+      <p class="muted small">${tL('Días anteriores: datos de ejemplo.', 'Past days: sample data.')}</p>
+      <button class="btn full" data-act="asst-go" data-tab="chat" data-text="${esc(tL('Haz la revisión de mi semana', 'Review my week'))}">${ic('sparkle', 16)} ${tL('Revisión semanal con Nubi', 'Weekly review with Nubi')}</button>`;
+  }
+  const m = monthStats(), L = S.lang === 'en' ? ['M', 'T', 'W', 'T', 'F', 'S', 'S'] : ['L', 'M', 'M', 'J', 'V', 'S', 'D'];
+  return `<div class="cal-head"><b>${m.name.charAt(0).toUpperCase() + m.name.slice(1)}</b><small class="muted">${tL('Cada cuadro es un día; más brillo = más hábitos', 'Each square is a day; brighter = more habits')}</small></div>
+    <div class="cal">${L.map(l => `<span class="cal-l">${l}</span>`).join('')}${'<span></span>'.repeat(m.first)}${m.D.map(d => `<span class="cal-d ${d.today ? 'today' : ''} ${d.h ? '' : 'future'}" style="--r:${d.r == null ? 0 : d.r}">${d.n}</span>`).join('')}</div>
+    <div class="stats4"><div><b>${m.active}</b><small>${tL('días activos', 'active days')}</small></div><div><b>${m.perfect}</b><small>${tL('perfectos', 'perfect')}</small></div><div><b>${m.best}</b><small>${tL('mejor racha', 'best streak')}</small></div><div><b>${m.wo}</b><small>${tL('entrenos', 'workouts')}</small></div></div>
+    <div class="challenge"><div class="q-top"><b>${ic('star', 16)} ${tL('Medalla del mes: 20 días activos', 'Monthly medal: 20 active days')}</b><small>${Math.min(20, m.active)}/20</small></div><div class="bar gold"><i style="width:${Math.min(100, m.active / 20 * 100)}%"></i></div></div>
+    <p class="muted small">${tL('Días anteriores: datos de ejemplo.', 'Past days: sample data.')}</p>
+    <button class="btn full" data-act="asst-go" data-tab="chat" data-text="${esc(tL('Dame el resumen de mi mes', 'Give me my monthly summary'))}">${ic('sparkle', 16)} ${tL('Resumen del mes con Nubi', 'Monthly summary with Nubi')}</button>`;
+}
+function openAsst(tab, prompt) {
+  if (tab) asstTab = tab;
+  const tabs = [['chat', tL('Chat', 'Chat')], ['hoy', tL('Hoy', 'Today')], ['semana', tL('Semana', 'Week')], ['mes', tL('Mes', 'Month')]];
+  openSheet(`<div class="asst-head">${slot3d('happy', 70, 78, 86)}<div><h3 class="h2">${tL('Nubi, tu asistente', 'Nubi, your assistant')}</h3><p class="muted small">${tL('Hábitos, pendientes, entreno y nutrición, organizados contigo.', 'Habits, to-dos, training and nutrition, organized with you.')}</p></div></div>
+    <div class="seg asst-seg" role="tablist">${tabs.map(([k, l]) => `<button role="tab" aria-selected="${asstTab === k}" data-act="asst-tab" data-tab="${k}">${l}</button>`).join('')}</div>
+    <div id="asst-panel">${asstPanel()}</div>`, 'tall');
+  setTimeout(() => { const b = $('.asst-seg [aria-selected="true"]'); b && b.focus({preventScroll:true}); }, 70);
+  P3 && P3.mount();
+  const c = $('#asst-chat'); if (c) c.scrollTop = c.scrollHeight;
+  if (prompt) setTimeout(() => sendAsst(prompt), 350);
+}
+function refreshAsst() {
+  const p = $('#sheet.show #asst-panel'); if (!p) return;
+  if (asstTab === 'chat' && $('#asst-chat')) { const c = $('#asst-chat'); c.innerHTML = asstMsgsHTML(); c.scrollTop = c.scrollHeight; }
+  else p.innerHTML = asstPanel();
+}
+async function sendAsst(text) {
+  text = String(text || '').trim(); if (!text || asstBusy) return;
+  if (asstTab !== 'chat' || !$('#asst-chat')) { asstTab = 'chat'; $$('.asst-seg button').forEach(b => b.setAttribute('aria-selected', b.dataset.tab === 'chat')); const p = $('#asst-panel'); if (p) p.innerHTML = asstPanel(); }
+  S.asst = S.asst || []; S.asst.push({role:'user', content:text});
+  const reply = {role:'assistant', content:'', pending:true}; S.asst.push(reply); S.asst = S.asst.slice(-30);
+  asstBusy = true; friendUp(1); refreshAsst(); P3 && P3.ok() && P3.play('think');
+  const acts = [];
+  const finish = () => { reply.pending = false; reply.acts = acts; asstBusy = false; save(); rerender(); renderTop(); refreshAsst(); if (P3 && P3.ok()) { P3.play('idle'); P3.play(acts.length ? 'clap' : 'nod'); } if (acts.length) SND.cheer(); };
+  if (aiState !== 'live' || !sample) { await wait(700); reply.content = asstDemo(text, acts); finish(); return; }
+  try {
+    const hist = S.asst.filter(m => !m.pending && m !== reply).slice(-8).map(m => `${m.role === 'user' ? S.name : 'Nubi'}: ${m.content}`).join('\n');
+    const r = await sample(`${ASST_RULES()}\n\nDatos actuales de la app (JSON): ${JSON.stringify(overview())}\n\nConversación reciente:\n${hist}\n\nResponde como Nubi al último mensaje de ${S.name}.`,
+      {tools:asstTools(acts), onText:({text:t}) => { reply.content = clean(t); if (reply.pending) reply.pending = false; refreshAsst(); }});
+    reply.content = clean(r.text);
+  } catch (e) {
+    if (e && ['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(e.code)) aiState = 'demo';
+    reply.content = e && e.code === 'rate_limited' ? tL('Necesito una pausa. Inténtalo de nuevo en un momento.', 'I need a short break. Try again in a moment.') : (e && e.text ? clean(e.text) : asstDemo(text, acts));
+  }
+  finish();
+}
+
+Object.assign(EN, {'Asistente Nubi':'Nubi assistant', 'Misiones y cofres':'Missions and chests',
+  'Cada día tienes 3 misiones. Reclama su premio y, al completar las tres, ganas un cofre sorpresa.':'Every day you get 3 missions. Claim their rewards and, when you finish all three, you win a mystery chest.',
+  'Tu asistente personal':'Your personal assistant',
+  'Pídeme que planee tu día, organice tus pendientes o te dé el resumen de tu semana y de tu mes.':'Ask me to plan your day, organize your to-dos or give you your weekly and monthly summary.',
+  'Cofre sorpresa':'Mystery chest'});
 
 /* ---------- boot ---------- */
 $('#tabbar').innerHTML = TABS.map(([t, l, i]) => `<button class="tab" data-act="tab" data-tab="${t}"><span class="tp">${ic(i, 22)}</span>${l}</button>`).join('');
