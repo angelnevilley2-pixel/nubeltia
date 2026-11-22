@@ -726,6 +726,31 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .cal-d{aspect-ratio:1;border-radius:9px;display:grid;place-items:center;font:700 11.5px var(--f-body);color:var(--ink);background:rgb(142 92 247 / calc(.1 + var(--r) * .8))}
 .cal-d.future{background:transparent;border:1px dashed var(--line);color:var(--muted)}
 .cal-d.today{outline:2px solid var(--brand);outline-offset:1px}
+
+/* devices and apps */
+.dev-logo{background:color-mix(in srgb,var(--dc,var(--brand)) 18%,var(--surface-2));color:var(--dc,var(--ink));font-size:13.5px;letter-spacing:-.02em;border:1px solid color-mix(in srgb,var(--dc,var(--brand)) 35%,transparent)}
+.dev-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+.dev-tags i{font:600 10.5px var(--f-body);font-style:normal;color:var(--muted);background:var(--surface-2);border-radius:99px;padding:2px 7px}
+.dev.on .dev-tags i{color:var(--food);background:var(--food-soft)}
+.dev-sync{display:flex;align-items:center;gap:5px;font:600 11.5px var(--f-body);color:var(--food);margin-top:3px}
+.dev-sync::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--food);box-shadow:0 0 8px var(--food)}
+.dev-count{font:800 12px var(--f-body);color:var(--brand);background:var(--brand-soft);border-radius:99px;padding:4px 10px;flex:none}
+.dev-search{position:relative}
+.dev-search .ic{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.dev-search input{width:100%;height:44px;border-radius:14px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);padding:0 14px 0 40px;font:500 15px var(--f-body)}
+.dev-cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -18px;padding:0 18px 2px}
+.dev-cats::-webkit-scrollbar{display:none}
+.dev-cats .chip-btn{flex:none}
+.chip-btn[aria-pressed="true"]{background:var(--hero-fg);color:var(--hero);border-color:var(--hero-fg)}
+.dev-group{font:800 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--dc);margin:14px 0 2px}
+.dev-group:first-child{margin-top:2px}
+.dev-empty{padding:18px 4px;text-align:center}
+.mind-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.mind-tiles div{background:var(--surface-2);border-radius:14px;padding:11px 12px;display:flex;flex-direction:column;gap:2px}
+.mind-tiles span{font-size:11px;color:var(--muted);font-weight:700}
+.mind-tiles b{font:800 19px/1.15 var(--f-display);font-variant-numeric:tabular-nums}
+.mind-tiles small{font-size:11px;color:var(--mental)}
+.mind-pick{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -852,6 +877,7 @@ const I = {
   video:'<rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="M16 10.5l5-3v9l-5-3z"/>',
   dots:'<path d="M5.5 12h.01M12 12h.01M18.5 12h.01" stroke-width="3"/>',
   lock:'<rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
+  search:'<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
 };
 const ic = (n, s = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]||''}</svg>`;
 
@@ -973,12 +999,45 @@ const PLANS = [
   {id:'coach', n:'Pro + Coach', p:799, d:'Con un coach de nuestra consultoría.', tag:'Acompañamiento', f:['Todo lo del plan Pro','Coach de alto rendimiento asignado','Plan de comidas y entreno hecho por tu coach','Revisión de tu avance cada semana','Mensajes directos con tu coach']},
 ];
 const planOf = () => PLANS.find(p => p.id === (S.plan || 'gratis')) || PLANS[0];
+/* devices and apps people can connect (simulated in the prototype). data keys: see DEV_DATA */
+const DEV_CATS = [['salud', 'Plataformas de salud', 'Health platforms', 'var(--brand)'], ['reloj', 'Relojes y pulseras', 'Watches and bands', 'var(--train)'], ['anillo', 'Anillos', 'Rings', 'var(--gold)'],
+  ['mente', 'Meditación y mente', 'Meditation and mind', 'var(--mental)'], ['sueno', 'Sueño y báscula', 'Sleep and scales', 'var(--water)'], ['ejercicio', 'Ejercicio', 'Exercise', 'var(--food)']];
+const DEV_DATA = {sleep:['Sueño', 'Sleep'], hr:['Frecuencia cardiaca', 'Heart rate'], hrv:['VFC', 'HRV'], steps:['Pasos', 'Steps'], mind:['Minutos de meditación', 'Meditation minutes'], stress:['Estrés', 'Stress'],
+  eeg:['Ondas cerebrales', 'Brain activity'], breath:['Respiración', 'Breathing'], coh:['Coherencia cardiaca', 'Heart coherence'], weight:['Peso', 'Weight'], workouts:['Entrenos', 'Workouts'], focus:['Enfoque', 'Focus']};
 const DEVICES = [
-  {id:'apple', n:'Apple Salud', d:'Apple Watch y apps que sincronizan con Salud', l:'A'},
-  {id:'health', n:'Health Connect', d:'Samsung, Xiaomi, Fitbit y más, en Android', l:'H'},
-  {id:'oura', n:'Oura', d:'Anillo inteligente', l:'O'},
-  {id:'whoop', n:'Whoop', d:'Pulsera de recuperación', l:'W'},
-  {id:'garmin', n:'Garmin', d:'Relojes Garmin', l:'G'},
+  {id:'apple', cat:'salud', n:'Apple Salud', l:'A', d:'Apple Watch, AirPods y apps que guardan en Salud, incluidos tus minutos de atención plena', en:'Apple Watch, AirPods and apps that save to Health, including your mindful minutes', data:['sleep', 'hr', 'hrv', 'steps', 'mind', 'breath']},
+  {id:'health', cat:'salud', n:'Health Connect', l:'H', d:'El centro de salud de Android: Samsung, Xiaomi, Fitbit, Google Fit y más', en:'Android’s health hub: Samsung, Xiaomi, Fitbit, Google Fit and more', data:['sleep', 'hr', 'steps', 'mind', 'weight']},
+  {id:'gfit', cat:'salud', n:'Google Fit', l:'GF', d:'Pasos, Puntos Cardio y minutos de actividad; se conecta a través de Health Connect', en:'Steps, Heart Points and active minutes; it connects through Health Connect', data:['steps', 'hr', 'workouts']},
+  {id:'samsung', cat:'salud', n:'Samsung Health', l:'SH', d:'Galaxy Watch, Galaxy Ring y la app de Samsung, con estrés y meditación', en:'Galaxy Watch, Galaxy Ring and the Samsung app, with stress and meditation', data:['sleep', 'hr', 'stress', 'steps', 'mind']},
+  {id:'huawei', cat:'salud', n:'Huawei Health', l:'HW', d:'Relojes y pulseras Huawei', en:'Huawei watches and bands', data:['sleep', 'hr', 'stress', 'steps', 'breath']},
+  {id:'zepp', cat:'salud', n:'Zepp (Amazfit)', l:'Z', d:'Relojes y pulseras Amazfit', en:'Amazfit watches and bands', data:['sleep', 'hr', 'stress', 'steps']},
+  {id:'mifit', cat:'salud', n:'Mi Fitness (Xiaomi)', l:'Mi', d:'Xiaomi Smart Band y relojes Xiaomi', en:'Xiaomi Smart Band and Xiaomi watches', data:['sleep', 'hr', 'stress', 'steps']},
+  {id:'pixel', cat:'reloj', n:'Google Pixel Watch', l:'PW', d:'Sueño, estrés y pasos con Fitbit integrado', en:'Sleep, stress and steps with Fitbit built in', data:['sleep', 'hr', 'hrv', 'stress', 'steps']},
+  {id:'fitbit', cat:'reloj', n:'Fitbit', l:'F', d:'Pulseras y relojes Fitbit, con manejo del estrés y sesiones de relajación', en:'Fitbit bands and watches, with stress management and relax sessions', data:['sleep', 'hr', 'hrv', 'stress', 'steps', 'mind']},
+  {id:'galaxy', cat:'reloj', n:'Samsung Galaxy Watch', l:'GW', d:'Estrés, sueño y frecuencia cardiaca', en:'Stress, sleep and heart rate', data:['sleep', 'hr', 'stress', 'steps']},
+  {id:'garmin', cat:'reloj', n:'Garmin', l:'G', d:'Body Battery, estrés, respiración y sueño', en:'Body Battery, stress, breathing and sleep', data:['sleep', 'hr', 'hrv', 'stress', 'steps', 'breath', 'workouts']},
+  {id:'whoop', cat:'reloj', n:'Whoop', l:'W', d:'Recuperación, esfuerzo, estrés y sueño', en:'Recovery, strain, stress and sleep', data:['sleep', 'hr', 'hrv', 'stress', 'workouts']},
+  {id:'polar', cat:'reloj', n:'Polar', l:'P', d:'Recuperación nocturna, sueño y entrenos', en:'Nightly recharge, sleep and workouts', data:['sleep', 'hr', 'hrv', 'workouts']},
+  {id:'suunto', cat:'reloj', n:'Suunto', l:'S', d:'Entrenos, recuperación y sueño', en:'Workouts, recovery and sleep', data:['sleep', 'hr', 'workouts']},
+  {id:'coros', cat:'reloj', n:'Coros', l:'C', d:'Entrenos y carga de entrenamiento', en:'Workouts and training load', data:['sleep', 'hr', 'workouts']},
+  {id:'oura', cat:'anillo', n:'Oura', l:'O', d:'Sueño, preparación, estrés del día y sesiones de meditación', en:'Sleep, readiness, daytime stress and meditation sessions', data:['sleep', 'hr', 'hrv', 'stress', 'mind']},
+  {id:'galaxyring', cat:'anillo', n:'Samsung Galaxy Ring', l:'GR', d:'Sueño, estrés y frecuencia cardiaca', en:'Sleep, stress and heart rate', data:['sleep', 'hr', 'stress']},
+  {id:'ultrahuman', cat:'anillo', n:'Ultrahuman Ring', l:'U', d:'Sueño, recuperación y ritmo circadiano', en:'Sleep, recovery and circadian rhythm', data:['sleep', 'hr', 'hrv']},
+  {id:'ringconn', cat:'anillo', n:'RingConn', l:'RC', d:'Sueño, estrés y VFC sin suscripción', en:'Sleep, stress and HRV with no subscription', data:['sleep', 'hr', 'hrv', 'stress']},
+  {id:'muse', cat:'mente', n:'Muse', l:'M', d:'Diadema que lee tu actividad cerebral (EEG) mientras meditas', en:'Headband that reads your brain activity (EEG) while you meditate', data:['eeg', 'mind', 'hr', 'breath']},
+  {id:'heartmath', cat:'mente', n:'HeartMath Inner Balance', l:'HM', d:'Sensor de oreja que mide tu coherencia cardiaca al respirar', en:'Ear sensor that measures your heart coherence as you breathe', data:['coh', 'hrv', 'breath']},
+  {id:'neurable', cat:'mente', n:'Neurable', l:'N', d:'Audífonos con sensores que miden tu enfoque y te avisan cuándo descansar', en:'Headphones with sensors that measure your focus and tell you when to rest', data:['focus', 'eeg']},
+  {id:'focuscalm', cat:'mente', n:'FocusCalm', l:'FC', d:'Diadema EEG para entrenar la calma', en:'EEG headband to train calm', data:['eeg', 'mind']},
+  {id:'apollo', cat:'mente', n:'Apollo Neuro', l:'AN', d:'Pulsera de vibraciones suaves para relajarte', en:'Wearable with gentle vibrations to help you relax', data:['mind', 'hrv']},
+  {id:'calm', cat:'mente', n:'Calm', l:'Ca', d:'Meditaciones guiadas e historias para dormir', en:'Guided meditations and sleep stories', data:['mind']},
+  {id:'headspace', cat:'mente', n:'Headspace', l:'Hs', d:'Meditación guiada y ejercicios de enfoque', en:'Guided meditation and focus exercises', data:['mind']},
+  {id:'insight', cat:'mente', n:'Insight Timer', l:'IT', d:'Temporizador y miles de meditaciones gratis', en:'Timer and thousands of free meditations', data:['mind']},
+  {id:'withings', cat:'sueno', n:'Withings', l:'Wi', d:'Básculas, Sleep Analyzer y relojes híbridos', en:'Scales, Sleep Analyzer and hybrid watches', data:['weight', 'sleep', 'hr']},
+  {id:'eight', cat:'sueno', n:'Eight Sleep', l:'8', d:'Cubierta de colchón que mide tu sueño', en:'Mattress cover that tracks your sleep', data:['sleep', 'hr', 'hrv']},
+  {id:'sleepcycle', cat:'sueno', n:'Sleep Cycle', l:'SC', d:'Analiza tu sueño desde el celular', en:'Tracks your sleep from your phone', data:['sleep']},
+  {id:'renpho', cat:'sueno', n:'Renpho', l:'R', d:'Básculas inteligentes', en:'Smart scales', data:['weight']},
+  {id:'strava', cat:'ejercicio', n:'Strava', l:'St', d:'Carreras, bici y caminatas', en:'Runs, rides and walks', data:['workouts', 'hr']},
+  {id:'nrc', cat:'ejercicio', n:'Nike Run Club', l:'NR', d:'Carreras y entrenos guiados', en:'Runs and guided workouts', data:['workouts']},
 ];
 const MEALS = [
   {id:'desayuno', name:'Desayuno', time:'08:00', items:[
@@ -1400,7 +1459,7 @@ function renderInicio() {
   const total = S.habits.length, done = S.habits.filter(h => h.state === 'done').length, pct = total ? done / total : 0;
   const hr = new Date().getHours(), greet = hr < 12 ? 'Buenos días' : hr < 19 ? 'Buenas tardes' : 'Buenas noches';
   const into = S.xp % 100;
-  const sleep = anyDev() ? '7 h 12 min' : S.check ? `${n1(+S.check.sleep)} h` : '—';
+  const sleep = devHas('sleep') ? '7 h 12 min' : S.check ? `${n1(+S.check.sleep)} h` : '—';
   const pend = S.habits.filter(h => !h.state), m = toMin(nowHM());
   const up = [...pend.filter(h => toMin(h.time) >= m), ...pend.filter(h => toMin(h.time) < m)].slice(0, 3);
   return `
@@ -1554,7 +1613,7 @@ const TOUR = [
   {sel:'.tab[data-tab="mental"]', t:'Mental', d:'Registra cómo te sientes, mira tus señales de burnout y habla conmigo cuando lo necesites.'},
   {sel:'.tab[data-tab="nutricion"]', t:'Nutrición', d:'Tus calorías, tu plan de comidas y el agua del día.'},
   {sel:'.tab[data-tab="entreno"]', t:'Entreno', d:'Pasos, caminatas y tu rutina con descansos.'},
-  {sel:'.tab[data-tab="perfil"]', t:'Perfil', d:'Logros, relojes y anillos, tu coach y los planes.'},
+  {sel:'.tab[data-tab="perfil"]', t:'Perfil', d:'Logros, dispositivos y apps, tu coach y los planes.'},
   {tab:'inicio', sel:null, t:'¡Listo para empezar!', d:'Empieza con tu primer hábito del día. Yo te acompaño.'},
 ];
 let tourI = -1;
@@ -1701,6 +1760,11 @@ function nubi(ev, d = {}) {
       else { clip = 'nod'; line = tL('Gracias por contarme cómo estás. Aquí estoy para lo que necesites.', "Thanks for telling me how you are. I'm here for whatever you need."); }
       break; }
     case 'breathDone': P3 && P3.ok() && P3.play('idle'); clip = 'clap'; pts = 2; line = tL('¿Ves? Un minuto para ti hace la diferencia.', 'See? One minute for yourself makes a difference.'); break;
+    case 'device': { const dv = d.d, L = dv.data.slice(0, 3).map(k => tL(DEV_DATA[k][0], DEV_DATA[k][1]).toLowerCase()); clip = 'cheer'; pts = 2;
+      const list = L.length > 1 ? L.slice(0, -1).join(', ') + tL(' y ', ' and ') + L[L.length - 1] : L[0];
+      line = tL(`¡${dv.n} conectado! Ahora sincronizo ${list} por ti.`, `${dv.n} connected! Now I sync your ${list} for you.`);
+      if (dv.data.some(k => MIND_KEYS.includes(k))) o = {act:'go-mind', label:tL('Ver en Mental', 'See in Mental')};
+      break; }
     case 'name': clip = 'wave'; line = tL(`¡Mucho gusto, ${name}! Me encanta tu nombre.`, `Nice to meet you, ${name}! I love your name.`); break;
     case 'coach': clip = 'clap'; line = tL('¡Ahora somos equipo con tu coach! Vamos con todo.', "Now we're a team with your coach! Let's go."); break;
   }
@@ -1782,7 +1846,7 @@ function renderMental() {
       <div class="moods">${MOODS.map((m, i) => `<button class="mood ${d.mood === i + 1 ? 'on' : ''}" data-act="mood" data-v="${i + 1}" aria-pressed="${d.mood === i + 1}">${face(i)}<span>${m}</span></button>`).join('')}</div>
       ${rangeHTML('stress', 'Estrés', d.stress, 'Nada', 'Mucho')}${rangeHTML('anx', 'Ansiedad', d.anx, 'Nada', 'Mucha')}${rangeHTML('energy', 'Energía', d.energy, 'Agotado', 'A tope')}${rangeHTML('focus', 'Concentración', d.focus, 'Disperso', 'Enfocado')}
       <div class="form-grid" style="margin:4px 0 10px">
-        <div class="field"><label for="ck-sleep">Horas de sueño</label><input id="ck-sleep" type="number" inputmode="decimal" min="0" max="14" step="0.5" value="${d.sleep}" data-ck="sleep">${anyDev() ? '<span class="muted small">Dato de tu reloj</span>' : ''}</div>
+        <div class="field"><label for="ck-sleep">Horas de sueño</label><input id="ck-sleep" type="number" inputmode="decimal" min="0" max="14" step="0.5" value="${d.sleep}" data-ck="sleep">${devHas('sleep') ? `<span class="muted small">${tL('Dato de', 'From')} ${esc(devSrc('sleep'))}</span>` : ''}</div>
         <div class="field"><label for="ck-quality">Calidad</label><select id="ck-quality" data-ck="quality">${['Mala','Regular','Buena'].map(q => `<option value="${q}" ${d.quality === q ? 'selected' : ''}>${q}</option>`).join('')}</select></div>
       </div>
       <div class="field" style="margin-bottom:12px"><label for="ck-note">¿Qué pasó hoy? (opcional)</label><textarea id="ck-note" rows="2" maxlength="280" data-ck="note" placeholder="Ej.: mucha carga en el trabajo, dormí mal…">${esc(d.note)}</textarea></div>
@@ -1799,7 +1863,7 @@ function renderMental() {
   return `
   <header class="screen-head"><p class="eyebrow">Mental</p><h1 class="h1">¿Cómo estás hoy, ${esc(S.name)}?</h1></header>
   <div class="quote">${slot3d('calm', 112, 126, 142)}<div class="bubble"><p class="eyebrow" style="color:var(--mental);margin-bottom:4px">Frase del día</p><p class="quote-txt">${esc(phrase())}</p><button class="link" data-act="next-phrase">Otra frase</button></div></div>
-  ${ck}${bo}
+  ${ck}${bo}${mindDevCard()}
   <section><div class="sec-head"><h2 class="h2">Tu semana</h2><span class="muted small">Días anteriores: ejemplo</span></div>${weekCharts()}</section>
   ${reasonsBlock()}
   <button class="card row-btn" data-act="breathe"><span class="ico">${ic('wind', 22)}</span><span><b>Respira 1 minuto</b><small>Inhala 4 segundos y exhala 6. Baja la tensión en el momento.</small></span>${ic('chevron', 18)}</button>
@@ -1845,7 +1909,7 @@ function openBreath() {
   const endAt = Date.now() + 60800;
   const phase = inhale => {
     const c = $('#bc'); if (!c) return;
-    if (Date.now() >= endAt - 300) { stopBreath(); closeSheet(); addXP(10); SND.done(); setTimeout(() => nubi('breathDone'), 300); return; }
+    if (Date.now() >= endAt - 300) { stopBreath(); closeSheet(); addXP(10); SND.done(); mindLog(1); setTimeout(() => nubi('breathDone'), 300); return; }
     c.style.transitionDuration = (inhale ? 4 : 6) + 's'; c.classList.toggle('in', inhale);
     $('#bl').textContent = inhale ? 'Inhala' : 'Exhala';
     breathT = setTimeout(() => phase(!inhale), inhale ? 4000 : 6000);
@@ -2021,7 +2085,7 @@ function renderTrain() {
   return `
   <header class="hello screen-head"><div><p class="eyebrow">Entrenamiento</p><h1 class="h1">Muévete hoy</h1></div><div class="p3-slot">${mascot(S.workoutDone ? 'celebrate' : 'happy', 112)}</div></header>
   <section class="card steps-card">${ring(S.steps / 10000, 100, 'var(--train)', nf(S.steps), 'de 10,000')}
-    <div><h2 class="h2">Pasos de hoy</h2><p class="muted small">${anyDev() ? 'Sincronizado con tu reloj hace 5 min (ejemplo).' : 'Dato de ejemplo. Conecta tu reloj en Perfil.'}</p>
+    <div><h2 class="h2">Pasos de hoy</h2><p class="muted small">${devHas('steps') ? tL(`Sincronizado con ${devSrc('steps')} hace 5 min (ejemplo).`, `Synced with ${devSrc('steps')} 5 min ago (sample).`) : 'Dato de ejemplo. Conecta tu reloj en Perfil.'}</p>
     <p class="small">${S.steps >= 10000 ? '¡Meta de pasos cumplida!' : `Te faltan ${nf(10000 - S.steps)}. Caminar 20 minutos son unos 2,000 pasos.`}</p></div></section>
   <section class="card"><div class="sec-head"><h2 class="h2">Caminata guiada</h2><span class="muted small">Te avisa al terminar</span></div>${walkBlock()}</section>
   <section>
@@ -2062,10 +2126,7 @@ function renderPerfil() {
     <p class="muted small" style="margin-top:10px">Cancela cuando quieras. Precios de ejemplo para el prototipo.</p></section>
   <section><div class="sec-head"><h2 class="h2">Logros</h2><span class="muted small">${un} de ${BADGES.length}</span></div>
     <div class="badges">${BADGES.map(b => { const on = !!S.badges[b.id]; return `<button class="badge ${on ? '' : 'locked'}" data-act="badge" data-id="${b.id}"><span class="medal">${ic(on ? b.icon : 'lock', 24)}</span>${b.name}</button>`; }).join('')}</div></section>
-  <section class="card"><h2 class="h2">Relojes y anillos</h2><p class="muted small" style="margin:4px 0 8px">Conecta tu dispositivo para ver sueño, frecuencia cardiaca y pasos sin escribirlos.</p>
-    ${DEVICES.map(d => `<div class="dev"><span class="dev-logo">${d.l}</span><div><b>${d.n}</b><span class="muted small">${d.d}</span></div>${sw(S.devices[d.id], 'dev', `data-id="${d.id}"`, 'Conectar ' + d.n)}</div>`).join('')}
-    ${anyDev() ? `<p class="label" style="margin-top:12px">Anoche (ejemplo)</p><div class="bio"><div><span>Sueño</span><b>7 h 12 min</b></div><div><span>Profundo</span><b>1 h 05 min</b></div><div><span>REM</span><b>1 h 34 min</b></div><div><span>FC en reposo</span><b>58 lpm</b></div><div><span>VFC</span><b>46 ms</b></div><div><span>Pasos hoy</span><b>${nf(S.steps)}</b></div></div>` : ''}
-  </section>
+  ${devicesCard()}
   <section class="card"><h2 class="h2">Conectar con mi coach</h2>
     ${S.coach.connected ? `<div class="coach-on">${ic('link', 22)}<div><b>Coach conectado</b><p class="muted small">Código ${esc(S.coach.code)}. Tu coach puede cargarte planes de alimentación y entrenamiento.</p></div></div>
       <p class="label" style="margin-top:8px">Tu coach puede ver:</p>
@@ -2261,7 +2322,17 @@ const A = {
   'rest-skip': () => { restEnd = 0; updateRest(0); },
   'ex-video': () => toast('Aquí irá el video corto de la técnica.'),
   'badge': t => { const b = BADGES.find(x => x.id === t.dataset.id); toast(`${b.name}: ${b.desc}${S.badges[b.id] ? '' : ' (pendiente)'}`); },
-  'dev': t => { const d = DEVICES.find(x => x.id === t.dataset.id); S.devices[d.id] = !S.devices[d.id]; save(); rerender(); toast(S.devices[d.id] ? `${d.n} conectado (simulado).` : `${d.n} desconectado.`); },
+  'dev': t => {
+    const d = DEVICES.find(x => x.id === t.dataset.id); if (!d) return;
+    const on = !S.devices[d.id]; S.devices[d.id] = on; S.devXP = S.devXP || {};
+    if (on && !S.devXP[d.id]) { S.devXP[d.id] = true; addXP(10, relPos(t)); }
+    save(); rerender(); refreshDevSheet();
+    toast(on ? tL(`${d.n} conectado (simulado).`, `${d.n} connected (simulated).`) : tL(`${d.n} desconectado.`, `${d.n} disconnected.`));
+    if (on) nubi('device', {d}); else SND.miss();
+  },
+  'dev-all': t => openDevices(t.dataset.cat || 'todos'),
+  'dev-cat': t => { devCat = t.dataset.cat; $$('.dev-cats .chip-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.cat === devCat)); refreshDevSheet(); },
+  'go-mind': () => { closeSheet(); goScroll('mental', '#mind-dev'); },
   'share': t => { S.share[t.dataset.id] = !S.share[t.dataset.id]; save(); t.setAttribute('aria-checked', S.share[t.dataset.id]); },
   'setting': t => { S.settings[t.dataset.id] = !S.settings[t.dataset.id]; save(); t.setAttribute('aria-checked', S.settings[t.dataset.id]); if (t.dataset.id === 'sound' && S.settings.sound) SND.check(); if (t.dataset.id === 'vibrate') buzz(60); },
   'plan': t => { const p = PLANS.find(x => x.id === t.dataset.id);
@@ -2404,7 +2475,7 @@ const EN = {
 'Agrega en un toque':'Add in one tap','Con el botón + registras agua, tareas, hábitos, un pomodoro y más, desde cualquier pantalla.':'With the + button you log water, tasks, habits, a pomodoro and more, from any screen.',
 'Registra cómo te sientes, mira tus señales de burnout y habla conmigo cuando lo necesites.':'Log how you feel, see your burnout signals and talk with me whenever you need.',
 'Tus calorías, tu plan de comidas y el agua del día.':'Your calories, your meal plan and today’s water.','Pasos, caminatas y tu rutina con descansos.':'Steps, walks and your workout with rest timers.',
-'Logros, relojes y anillos, tu coach y los planes.':'Badges, watches and rings, your coach and plans.','¡Listo para empezar!':'Ready to start!','Empieza con tu primer hábito del día. Yo te acompaño.':'Start with your first habit of the day. I’ve got you.',
+'Logros, dispositivos y apps, tu coach y los planes.':'Badges, devices and apps, your coach and plans.','¡Listo para empezar!':'Ready to start!','Empieza con tu primer hábito del día. Yo te acompaño.':'Start with your first habit of the day. I’ve got you.',
 '¡Bienvenida! Toca a Nubi cuando quieras.':'Welcome! Tap Nubi anytime.','Saltar':'Skip','¡Empezar!':'Let’s go!','Vamos':'Let’s go','Siguiente':'Next',
 // mental
 'Registro de hoy':'Today’s check-in','Editar':'Edit','Muy mal':'Very bad','Mal':'Bad','Normal':'Normal','Bien':'Good','Muy bien':'Very good',
@@ -3366,6 +3437,7 @@ const MISSIONS = [
   {id:'t2', ic:'star', es:'Tacha 2 pendientes', en:'Cross off 2 to-dos', goal:2, xp:15, c:12, v:() => (S.tasks || []).filter(x => x.done).length},
   {id:'ck', ic:'heart', es:'Haz tu registro mental', en:'Do your mood check-in', goal:1, xp:15, c:10, v:() => S.check ? 1 : 0},
   {id:'s6', ic:'train', es:'Completa 6 series', en:'Complete 6 sets', goal:6, xp:20, c:15, v:() => setsDone()},
+  {id:'br', ic:'wind', es:'Haz 1 minuto de respiración', en:'Do 1 minute of breathing', goal:1, xp:15, c:10, v:() => S.mind && S.mind.day === todayKey() ? S.mind.min : 0},
   {id:'m2', ic:'food', es:'Marca 2 comidas del plan', en:'Log 2 planned meals', goal:2, xp:15, c:12, v:() => MEALS.filter(m => S.eaten[m.id]).length},
 ];
 function missionsToday() {
@@ -3502,7 +3574,8 @@ function overview() {
     rutina:{series:`${setsDone()}/${setsTotal}`, ejercicios:EXS.map(e => e.n)}, pomodoros_hoy:S.pomo.today,
     registro_animo:S.check ? {animo:MOODS[S.check.mood - 1], estres:S.check.stress, ansiedad:S.check.anx, sueno:S.check.sleep} : null,
     misiones:missionsToday().map(m => ({mision:m.es, progreso:`${Math.min(m.goal, m.v())}/${m.goal}`, reclamada:!!S.missions.claimed[m.id]})),
-    semana:weekStats().summary, mes:monthStats().summary};
+    semana:weekStats().summary, mes:monthStats().summary,
+    dispositivos:DEVICES.filter(d => S.devices[d.id]).map(d => d.n), datos_dispositivos:devMetrics().map(x => `${x.k}: ${x.v} (${x.src})`)};
 }
 const ASST_RULES = () => `Eres Nubi, la mascota nube y asistente personal de la app Nubeltia. ${S.lang === 'en' ? 'Reply in natural English.' : 'Hablas en español neutro, de tú, cálido y motivador.'}
 Ayudas a organizar el día, la semana y el mes: hábitos, pendientes, entrenamiento, nutrición, enfoque (pomodoro) y metas.
@@ -3646,6 +3719,81 @@ Object.assign(EN, {'Asistente Nubi':'Nubi assistant', 'Misiones y cofres':'Missi
   'Tu asistente personal':'Your personal assistant',
   'Pídeme que planee tu día, organice tus pendientes o te dé el resumen de tu semana y de tu mes.':'Ask me to plan your day, organize your to-dos or give you your weekly and monthly summary.',
   'Cofre sorpresa':'Mystery chest'});
+
+/* ---------- devices: catalog sheet, Perfil card, Mental card ---------- */
+const MIND_KEYS = ['mind', 'eeg', 'coh', 'focus', 'stress', 'hrv', 'breath'];
+const devCatOf = id => DEV_CATS.find(c => c[0] === id);
+const devHas = k => DEVICES.some(d => S.devices[d.id] && d.data.includes(k));
+const devSrc = k => (DEVICES.find(d => S.devices[d.id] && d.data.includes(k)) || {}).n || '';
+const devOn = () => DEVICES.filter(d => S.devices[d.id]);
+const fold = x => String(x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+let devCat = 'todos', devQ = '';
+function mindLog(min) {
+  if (!S.mind || S.mind.day !== todayKey()) S.mind = {day:todayKey(), min:0};
+  S.mind.min += min; save();
+  const hub = ['apple', 'health', 'samsung', 'fitbit', 'oura'].map(id => DEVICES.find(d => d.id === id)).find(d => S.devices[d.id]);
+  if (hub) setTimeout(() => toast(tL(`Guardé ${min} min de atención plena en ${hub.n}.`, `Saved ${min} mindful min to ${hub.n}.`)), 1600);
+}
+function devMetrics() {
+  const own = S.mind && S.mind.day === todayKey() ? S.mind.min : 0, M = [];
+  const add = (k, es, en, v, sub) => { if (devHas(k)) M.push({k:tL(es, en), v, sub, src:devSrc(k)}); };
+  add('mind', 'Meditación hoy', 'Meditation today', `${12 + own} min`, tL('7 días seguidos', '7 days in a row'));
+  add('eeg', 'Calma (EEG)', 'Calm (EEG)', '68 %', tL('9 min en calma profunda', '9 min of deep calm'));
+  add('focus', 'Enfoque', 'Focus', '74/100', tL('Mejor de 10:00 a 11:30', 'Best 10:00 to 11:30'));
+  add('coh', 'Coherencia', 'Coherence', tL('Alta · 3.8', 'High · 3.8'), tL('Sesión de 5 min', '5-min session'));
+  add('stress', 'Estrés del día', 'Daytime stress', tL('32 · bajo', '32 · low'), tL('Pico a las 13:00', 'Peak at 13:00'));
+  add('hrv', 'VFC', 'HRV', '46 ms', tL('+4 vs. tu promedio', '+4 vs. your average'));
+  add('breath', 'Respiración', 'Breathing', '13 rpm', tL('En reposo', 'At rest'));
+  return M;
+}
+function devRow(d) {
+  const on = !!S.devices[d.id], c = devCatOf(d.cat);
+  return `<div class="dev ${on ? 'on' : ''}"><span class="dev-logo" style="--dc:${c[3]}">${d.l}</span><div><b>${esc(d.n)}</b><span class="muted small">${esc(tL(d.d, d.en))}</span>
+    ${on ? `<span class="dev-sync">${tL('Sincronizado hace 5 min (simulado)', 'Synced 5 min ago (simulated)')}</span>` : ''}
+    <span class="dev-tags">${d.data.slice(0, 4).map(k => `<i>${tL(DEV_DATA[k][0], DEV_DATA[k][1])}</i>`).join('')}${d.data.length > 4 ? `<i>+${d.data.length - 4}</i>` : ''}</span></div>
+    ${sw(on, 'dev', `data-id="${d.id}"`, tL('Conectar ', 'Connect ') + d.n)}</div>`;
+}
+function devicesCard() {
+  const on = devOn(), list = on.length ? on : ['apple', 'health', 'gfit', 'fitbit', 'muse'].map(id => DEVICES.find(d => d.id === id));
+  const bio = [['sleep', 'Sueño', 'Sleep', '7 h 12 min'], ['sleep', 'Profundo', 'Deep', '1 h 05 min'], ['sleep', 'REM', 'REM', '1 h 34 min'], ['hr', 'FC en reposo', 'Resting HR', '58 lpm'], ['hrv', 'VFC', 'HRV', '46 ms'], ['steps', tL('Pasos hoy', 'Steps today'), '', nf(S.steps)], ['weight', 'Peso', 'Weight', `${S.profile.peso} kg`], ['stress', 'Estrés', 'Stress', tL('Bajo', 'Low')]].filter(x => devHas(x[0]));
+  return `<section class="card" id="devices"><div class="sec-head"><h2 class="h2">${tL('Dispositivos y apps', 'Devices and apps')}</h2><span class="dev-count">${on.length} ${tL(on.length === 1 ? 'conectado' : 'conectados', 'connected')}</span></div>
+    <p class="muted small" style="margin:4px 0 8px">${tL('Conecta relojes, anillos, diademas de meditación y apps para ver tu sueño, estrés y minutos de meditación sin escribirlos.', 'Connect watches, rings, meditation headbands and apps to see your sleep, stress and meditation minutes without typing them in.')}</p>
+    ${on.length ? '' : `<p class="label">${tL('Los más usados', 'Most popular')}</p>`}
+    ${list.map(devRow).join('')}
+    <button class="btn ghost full" style="margin-top:10px" data-act="dev-all">${ic('plus', 16)} ${tL(`Ver los ${DEVICES.length} dispositivos y apps`, `See all ${DEVICES.length} devices and apps`)}</button>
+    ${bio.length ? `<p class="label" style="margin-top:12px">${tL('Anoche y hoy (ejemplo)', 'Last night and today (sample)')}</p><div class="bio">${bio.map(x => `<div><span>${x[2] ? tL(x[1], x[2]) : x[1]}</span><b>${x[3]}</b></div>`).join('')}</div>` : ''}
+  </section>`;
+}
+function devList() {
+  const q = fold(devQ.trim());
+  const hit = d => !q || fold(`${d.n} ${d.d} ${d.en} ${d.data.map(k => DEV_DATA[k].join(' ')).join(' ')} ${devCatOf(d.cat).slice(1, 3).join(' ')}`).includes(q);
+  const cats = DEV_CATS.filter(c => devCat === 'todos' || c[0] === devCat);
+  const html = cats.map(c => { const ds = DEVICES.filter(d => d.cat === c[0] && hit(d)); return ds.length ? `<p class="dev-group" style="--dc:${c[3]}">${tL(c[1], c[2])}</p>${ds.map(devRow).join('')}` : ''; }).join('');
+  return html || `<div class="dev-empty"><b>${tL('No encontramos ese dispositivo', 'We couldn’t find that device')}</b><p class="muted small">${tL('En la app final podrás pedir que lo agreguemos.', 'In the final app you’ll be able to ask us to add it.')}</p></div>`;
+}
+function openDevices(cat) {
+  devCat = cat || 'todos'; devQ = '';
+  const chips = [['todos', 'Todos', 'All'], ...DEV_CATS];
+  openSheet(`<div class="sec-head"><h3 class="h2">${tL('Dispositivos y apps', 'Devices and apps')}</h3><span class="dev-count" id="dev-n">${devOn().length}/${DEVICES.length}</span></div>
+    <p class="muted small">${tL('En el prototipo la conexión es simulada; en la app final pedirá permiso en tu teléfono.', 'In the prototype connecting is simulated; the final app will ask for permission on your phone.')}</p>
+    <label class="dev-search">${ic('search', 17)}<span class="sr">${tL('Buscar dispositivo', 'Search devices')}</span><input id="dev-q" type="search" autocomplete="off" placeholder="${esc(tL('Busca: Fitbit, Muse, meditación, sueño…', 'Search: Fitbit, Muse, meditation, sleep…'))}"></label>
+    <div class="dev-cats">${chips.map(c => `<button class="chip-btn" data-act="dev-cat" data-cat="${c[0]}" aria-pressed="${devCat === c[0]}">${tL(c[1], c[2])}</button>`).join('')}</div>
+    <div id="dev-list">${devList()}</div>`, 'tall');
+  setTimeout(() => { const b = $('.dev-cats [aria-pressed="true"]'); b && b.scrollIntoView({block:'nearest', inline:'center'}); }, 80);
+}
+function refreshDevSheet() { const l = $('#sheet.show #dev-list'); if (l) l.innerHTML = devList(); const n = $('#sheet.show #dev-n'); if (n) n.textContent = `${devOn().length}/${DEVICES.length}`; }
+document.addEventListener('input', e => { if (e.target.id === 'dev-q') { devQ = e.target.value; refreshDevSheet(); } });
+function mindDevCard() {
+  const M = devMetrics().filter(x => x.v);
+  if (!M.length) return `<section class="card" id="mind-dev"><h2 class="h2">${tL('Mide tu calma', 'Measure your calm')}</h2>
+    <p class="muted small" style="margin-top:4px">${tL('Conecta una diadema, un sensor o tu app de meditación y aquí verás tus minutos, tu calma y tu estrés del día.', 'Connect a headband, a sensor or your meditation app and you’ll see your minutes, calm and daytime stress here.')}</p>
+    <div class="mind-pick">${['muse', 'heartmath', 'calm', 'headspace', 'apple', 'fitbit'].map(id => DEVICES.find(d => d.id === id)).map(d => `<span class="chip">${esc(d.n)}</span>`).join('')}</div>
+    <button class="btn full" data-act="dev-all" data-cat="mente">${tL('Conectar dispositivo de meditación', 'Connect a meditation device')}</button></section>`;
+  return `<section class="card" id="mind-dev"><div class="sec-head"><h2 class="h2">${tL('Tu mente, medida', 'Your mind, measured')}</h2><button class="link" data-act="dev-all" data-cat="mente">${tL('Dispositivos', 'Devices')}</button></div>
+    <p class="muted small">${tL('De', 'From')} ${esc([...new Set(M.map(x => x.src))].join(', '))} · ${tL('datos de ejemplo', 'sample data')}</p>
+    <div class="mind-tiles">${M.slice(0, 6).map(x => `<div><span>${esc(x.k)}</span><b>${esc(x.v)}</b><small>${esc(x.sub)}</small></div>`).join('')}</div>
+    <button class="btn ghost full" style="margin-top:12px" data-act="breathe">${ic('wind', 16)} ${tL('Respirar 1 min con Nubi', 'Breathe 1 min with Nubi')}</button></section>`;
+}
 
 /* ---------- boot ---------- */
 $('#tabbar').innerHTML = TABS.map(([t, l, i]) => `<button class="tab" data-act="tab" data-tab="${t}"><span class="tp">${ic(i, 22)}</span>${l}</button>`).join('');
