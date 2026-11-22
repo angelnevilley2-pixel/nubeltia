@@ -751,6 +751,31 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .mind-tiles b{font:800 19px/1.15 var(--f-display);font-variant-numeric:tabular-nums}
 .mind-tiles small{font-size:11px;color:var(--mental)}
 .mind-pick{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 12px}
+
+.dev-via{display:block;font:600 11.5px/1.35 var(--f-body);color:var(--muted);margin-top:5px}
+.dev-via.real{color:var(--brand);display:flex;align-items:center;gap:4px}
+.dev-act{display:flex;flex-direction:column;align-items:center;gap:3px;flex:none}
+.dev-act small{font:700 9.5px var(--f-body);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.dev .hrb{display:block;font:700 12.5px var(--f-body);color:var(--brand);background:none;border:0;padding:0;margin-top:6px;text-align:left;cursor:pointer}
+.dev .btn.small{flex:none}
+.dev-sync b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.dev .dev-sync{display:block;line-height:1.45}
+.dev .dev-sync b{display:inline;font-weight:800}
+.dev .dev-sync::before{display:inline-block;margin-right:5px;vertical-align:1px}
+.mind-tiles b span{font:inherit;color:inherit}
+.ble-note{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:16px;background:var(--brand-soft);border:1px solid rgba(57,225,255,.3)}
+.ble-note.warn{background:var(--gold-soft);border-color:rgba(245,192,74,.35)}
+.ble-note>.ic{color:var(--brand);flex:none;margin-top:2px}
+.ble-note.warn>.ic{color:var(--gold)}
+.ble-note b{display:block;margin-bottom:2px}
+.ble-note .btn{margin-top:8px;display:inline-flex}
+.mind-tiles .live{border:1px solid rgba(57,225,255,.35);background:linear-gradient(160deg,rgba(57,225,255,.12),var(--surface-2))}
+.mind-tiles .live small{color:var(--brand)}
+.mind-btns{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.breath-live{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;font:600 13px var(--f-body);color:var(--muted);margin-top:8px}
+.breath-live b{color:var(--ink);font-variant-numeric:tabular-nums}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--danger);margin-right:2px;animation:ldot 1s ease-in-out infinite}
+@keyframes ldot{50%{opacity:.25}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1012,19 +1037,20 @@ const DEVICES = [
   {id:'huawei', cat:'salud', n:'Huawei Health', l:'HW', d:'Relojes y pulseras Huawei', en:'Huawei watches and bands', data:['sleep', 'hr', 'stress', 'steps', 'breath']},
   {id:'zepp', cat:'salud', n:'Zepp (Amazfit)', l:'Z', d:'Relojes y pulseras Amazfit', en:'Amazfit watches and bands', data:['sleep', 'hr', 'stress', 'steps']},
   {id:'mifit', cat:'salud', n:'Mi Fitness (Xiaomi)', l:'Mi', d:'Xiaomi Smart Band y relojes Xiaomi', en:'Xiaomi Smart Band and Xiaomi watches', data:['sleep', 'hr', 'stress', 'steps']},
+  {id:'hrband', cat:'reloj', n:'Banda o reloj (Bluetooth)', nen:'Band or watch (Bluetooth)', l:'HR', ble:'hr', d:'Bandas de pecho o brazo (Polar H10, Garmin HRM, Wahoo…) o tu reloj transmitiendo su ritmo cardiaco', en:'Chest or arm straps (Polar H10, Garmin HRM, Wahoo…) or your watch broadcasting its heart rate', data:['hr', 'hrv']},
   {id:'pixel', cat:'reloj', n:'Google Pixel Watch', l:'PW', d:'Sueño, estrés y pasos con Fitbit integrado', en:'Sleep, stress and steps with Fitbit built in', data:['sleep', 'hr', 'hrv', 'stress', 'steps']},
   {id:'fitbit', cat:'reloj', n:'Fitbit', l:'F', d:'Pulseras y relojes Fitbit, con manejo del estrés y sesiones de relajación', en:'Fitbit bands and watches, with stress management and relax sessions', data:['sleep', 'hr', 'hrv', 'stress', 'steps', 'mind']},
   {id:'galaxy', cat:'reloj', n:'Samsung Galaxy Watch', l:'GW', d:'Estrés, sueño y frecuencia cardiaca', en:'Stress, sleep and heart rate', data:['sleep', 'hr', 'stress', 'steps']},
-  {id:'garmin', cat:'reloj', n:'Garmin', l:'G', d:'Body Battery, estrés, respiración y sueño', en:'Body Battery, stress, breathing and sleep', data:['sleep', 'hr', 'hrv', 'stress', 'steps', 'breath', 'workouts']},
-  {id:'whoop', cat:'reloj', n:'Whoop', l:'W', d:'Recuperación, esfuerzo, estrés y sueño', en:'Recovery, strain, stress and sleep', data:['sleep', 'hr', 'hrv', 'stress', 'workouts']},
-  {id:'polar', cat:'reloj', n:'Polar', l:'P', d:'Recuperación nocturna, sueño y entrenos', en:'Nightly recharge, sleep and workouts', data:['sleep', 'hr', 'hrv', 'workouts']},
+  {id:'garmin', hrb:true, cat:'reloj', n:'Garmin', l:'G', d:'Body Battery, estrés, respiración y sueño', en:'Body Battery, stress, breathing and sleep', data:['sleep', 'hr', 'hrv', 'stress', 'steps', 'breath', 'workouts']},
+  {id:'whoop', hrb:true, cat:'reloj', n:'Whoop', l:'W', d:'Recuperación, esfuerzo, estrés y sueño', en:'Recovery, strain, stress and sleep', data:['sleep', 'hr', 'hrv', 'stress', 'workouts']},
+  {id:'polar', hrb:true, cat:'reloj', n:'Polar', l:'P', d:'Recuperación nocturna, sueño y entrenos', en:'Nightly recharge, sleep and workouts', data:['sleep', 'hr', 'hrv', 'workouts']},
   {id:'suunto', cat:'reloj', n:'Suunto', l:'S', d:'Entrenos, recuperación y sueño', en:'Workouts, recovery and sleep', data:['sleep', 'hr', 'workouts']},
-  {id:'coros', cat:'reloj', n:'Coros', l:'C', d:'Entrenos y carga de entrenamiento', en:'Workouts and training load', data:['sleep', 'hr', 'workouts']},
+  {id:'coros', hrb:true, cat:'reloj', n:'Coros', l:'C', d:'Entrenos y carga de entrenamiento', en:'Workouts and training load', data:['sleep', 'hr', 'workouts']},
   {id:'oura', cat:'anillo', n:'Oura', l:'O', d:'Sueño, preparación, estrés del día y sesiones de meditación', en:'Sleep, readiness, daytime stress and meditation sessions', data:['sleep', 'hr', 'hrv', 'stress', 'mind']},
   {id:'galaxyring', cat:'anillo', n:'Samsung Galaxy Ring', l:'GR', d:'Sueño, estrés y frecuencia cardiaca', en:'Sleep, stress and heart rate', data:['sleep', 'hr', 'stress']},
   {id:'ultrahuman', cat:'anillo', n:'Ultrahuman Ring', l:'U', d:'Sueño, recuperación y ritmo circadiano', en:'Sleep, recovery and circadian rhythm', data:['sleep', 'hr', 'hrv']},
   {id:'ringconn', cat:'anillo', n:'RingConn', l:'RC', d:'Sueño, estrés y VFC sin suscripción', en:'Sleep, stress and HRV with no subscription', data:['sleep', 'hr', 'hrv', 'stress']},
-  {id:'muse', cat:'mente', n:'Muse', l:'M', d:'Diadema que lee tu actividad cerebral (EEG) mientras meditas', en:'Headband that reads your brain activity (EEG) while you meditate', data:['eeg', 'mind', 'hr', 'breath']},
+  {id:'muse', cat:'mente', n:'Muse', l:'M', ble:'muse', d:'Diadema EEG (Muse 2 y Muse S): se conecta de verdad por Bluetooth y mide tu calma mientras meditas', en:'EEG headband (Muse 2 and Muse S): connects for real over Bluetooth and measures your calm while you meditate', data:['eeg', 'mind']},
   {id:'heartmath', cat:'mente', n:'HeartMath Inner Balance', l:'HM', d:'Sensor de oreja que mide tu coherencia cardiaca al respirar', en:'Ear sensor that measures your heart coherence as you breathe', data:['coh', 'hrv', 'breath']},
   {id:'neurable', cat:'mente', n:'Neurable', l:'N', d:'Audífonos con sensores que miden tu enfoque y te avisan cuándo descansar', en:'Headphones with sensors that measure your focus and tell you when to rest', data:['focus', 'eeg']},
   {id:'focuscalm', cat:'mente', n:'FocusCalm', l:'FC', d:'Diadema EEG para entrenar la calma', en:'EEG headband to train calm', data:['eeg', 'mind']},
@@ -1039,6 +1065,8 @@ const DEVICES = [
   {id:'strava', cat:'ejercicio', n:'Strava', l:'St', d:'Carreras, bici y caminatas', en:'Runs, rides and walks', data:['workouts', 'hr']},
   {id:'nrc', cat:'ejercicio', n:'Nike Run Club', l:'NR', d:'Carreras y entrenos guiados', en:'Runs and guided workouts', data:['workouts']},
 ];
+DEVICES.forEach(d => { d.via = d.ble ? 'ble' : ['oura', 'fitbit', 'whoop', 'garmin', 'polar', 'suunto', 'coros', 'withings', 'strava'].includes(d.id) ? 'cuenta' : 'app'; });
+const devName = d => tL(d.n, d.nen || d.n);
 const MEALS = [
   {id:'desayuno', name:'Desayuno', time:'08:00', items:[
     [{n:'Huevo revuelto',q:'2 piezas',k:140,p:13,c:1,g:10},{n:'Claras con espinaca',q:'5 claras y 1 huevo',k:155,p:21,c:2,g:5},{n:'Yogur griego natural',q:'170 g',k:100,p:17,c:6,g:1}],
@@ -1135,6 +1163,7 @@ if (!S.tasks) S.tasks = defTasks();
 if (S.coins === undefined) S.coins = 150;
 if (!S.wardrobe) S.wardrobe = {owned:{band:true}, eq:{head:'band'}, acts:{}};
 if (S.chests === undefined) S.chests = 1;
+DEVICES.forEach(d => { if (d.ble) S.devices[d.id] = false; });
 if (S.asst) S.asst = S.asst.filter(m => !m.pending && m.content);
 function rollover() {
   if (S.day === todayKey()) return;
@@ -1764,6 +1793,9 @@ function nubi(ev, d = {}) {
       const list = L.length > 1 ? L.slice(0, -1).join(', ') + tL(' y ', ' and ') + L[L.length - 1] : L[0];
       line = tL(`¡${dv.n} conectado! Ahora sincronizo ${list} por ti.`, `${dv.n} connected! Now I sync your ${list} for you.`);
       if (dv.data.some(k => MIND_KEYS.includes(k))) o = {act:'go-mind', label:tL('Ver en Mental', 'See in Mental')};
+      if (d.real) { clip = 'celebrate'; pts = 3; o = {act:'breathe', label:tL('Respirar 1 min', 'Breathe 1 min')};
+        line = dv.id === 'muse' ? tL('¡Muse conectada de verdad! Ya leo tu calma en vivo. Respira conmigo y mira cómo cambia.', "Muse really connected! I'm reading your calm live. Breathe with me and watch it change.")
+          : tL('¡Conectado de verdad! Ya siento tu ritmo cardiaco en vivo. Respira conmigo y mira cómo baja.', "Really connected! I can feel your heart rate live. Breathe with me and watch it drop."); }
       break; }
     case 'name': clip = 'wave'; line = tL(`¡Mucho gusto, ${name}! Me encanta tu nombre.`, `Nice to meet you, ${name}! I love your name.`); break;
     case 'coach': clip = 'clap'; line = tL('¡Ahora somos equipo con tu coach! Vamos con todo.', "Now we're a team with your coach! Let's go."); break;
@@ -1904,12 +1936,12 @@ function reasonsBlock() {
 let breathT = 0, breathI = 0;
 function openBreath() {
   openSheet(`<h3 class="h2">Respira 1 minuto</h3><p class="muted">Inhala mientras el círculo crece y exhala mientras se encoge.</p>
-    <div class="breath"><div class="breath-circle" id="bc"></div><p class="breath-label" id="bl">Prepárate…</p><p class="muted small" id="bt">60 s</p></div>
+    <div class="breath"><div class="breath-circle" id="bc"></div><p class="breath-label" id="bl">Prepárate…</p><p class="muted small" id="bt">60 s</p>${breathLiveBox()}</div>
     <button class="btn ghost full" data-act="breath-stop">Terminar</button>`);
-  const endAt = Date.now() + 60800;
+  const endAt = Date.now() + 60800; breathBase = {hrv:rmssd(), calm:live.calm, hr:live.hr}; setTimeout(() => paintLive(true), 60);
   const phase = inhale => {
     const c = $('#bc'); if (!c) return;
-    if (Date.now() >= endAt - 300) { stopBreath(); closeSheet(); addXP(10); SND.done(); mindLog(1); setTimeout(() => nubi('breathDone'), 300); return; }
+    if (Date.now() >= endAt - 300) { stopBreath(); closeSheet(); addXP(10); SND.done(); mindLog(1); setTimeout(() => nubi('breathDone'), 300); breathResult(); return; }
     c.style.transitionDuration = (inhale ? 4 : 6) + 's'; c.classList.toggle('in', inhale);
     $('#bl').textContent = inhale ? 'Inhala' : 'Exhala';
     breathT = setTimeout(() => phase(!inhale), inhale ? 4000 : 6000);
@@ -2332,6 +2364,8 @@ const A = {
   },
   'dev-all': t => openDevices(t.dataset.cat || 'todos'),
   'dev-cat': t => { devCat = t.dataset.cat; $$('.dev-cats .chip-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.cat === devCat)); refreshDevSheet(); },
+  'ble-on': t => bleConnect(t.dataset.id),
+  'ble-off': t => bleOff(t.dataset.id),
   'go-mind': () => { closeSheet(); goScroll('mental', '#mind-dev'); },
   'share': t => { S.share[t.dataset.id] = !S.share[t.dataset.id]; save(); t.setAttribute('aria-checked', S.share[t.dataset.id]); },
   'setting': t => { S.settings[t.dataset.id] = !S.settings[t.dataset.id]; save(); t.setAttribute('aria-checked', S.settings[t.dataset.id]); if (t.dataset.id === 'sound' && S.settings.sound) SND.check(); if (t.dataset.id === 'vibrate') buzz(60); },
@@ -3575,7 +3609,7 @@ function overview() {
     registro_animo:S.check ? {animo:MOODS[S.check.mood - 1], estres:S.check.stress, ansiedad:S.check.anx, sueno:S.check.sleep} : null,
     misiones:missionsToday().map(m => ({mision:m.es, progreso:`${Math.min(m.goal, m.v())}/${m.goal}`, reclamada:!!S.missions.claimed[m.id]})),
     semana:weekStats().summary, mes:monthStats().summary,
-    dispositivos:DEVICES.filter(d => S.devices[d.id]).map(d => d.n), datos_dispositivos:devMetrics().map(x => `${x.k}: ${x.v} (${x.src})`)};
+    dispositivos:DEVICES.filter(d => S.devices[d.id]).map(d => d.n), en_vivo:{ritmo_cardiaco:BLE.hr && live.hr ? live.hr : null, vfc_ms:BLE.hr ? rmssd() : null, calma_eeg:BLE.muse && live.calm != null ? Math.round(live.calm) : null}, datos_dispositivos:devMetrics().map(x => `${x.k}: ${x.v} (${x.src})`)};
 }
 const ASST_RULES = () => `Eres Nubi, la mascota nube y asistente personal de la app Nubeltia. ${S.lang === 'en' ? 'Reply in natural English.' : 'Hablas en español neutro, de tú, cálido y motivador.'}
 Ayudas a organizar el día, la semana y el mes: hábitos, pendientes, entrenamiento, nutrición, enfoque (pomodoro) y metas.
@@ -3724,7 +3758,10 @@ Object.assign(EN, {'Asistente Nubi':'Nubi assistant', 'Misiones y cofres':'Missi
 const MIND_KEYS = ['mind', 'eeg', 'coh', 'focus', 'stress', 'hrv', 'breath'];
 const devCatOf = id => DEV_CATS.find(c => c[0] === id);
 const devHas = k => DEVICES.some(d => S.devices[d.id] && d.data.includes(k));
-const devSrc = k => (DEVICES.find(d => S.devices[d.id] && d.data.includes(k)) || {}).n || '';
+const devSrc = k => { const d = DEVICES.find(x => S.devices[x.id] && x.data.includes(k)); return d ? devName(d) : ''; };
+/* simulated sources only (real Bluetooth values are shown live, never as samples) */
+const devSim = k => DEVICES.some(d => !d.ble && S.devices[d.id] && d.data.includes(k));
+const devSimSrc = k => { const d = DEVICES.find(x => !x.ble && S.devices[x.id] && x.data.includes(k)); return d ? devName(d) : ''; };
 const devOn = () => DEVICES.filter(d => S.devices[d.id]);
 const fold = x => String(x).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 let devCat = 'todos', devQ = '';
@@ -3732,11 +3769,11 @@ function mindLog(min) {
   if (!S.mind || S.mind.day !== todayKey()) S.mind = {day:todayKey(), min:0};
   S.mind.min += min; save();
   const hub = ['apple', 'health', 'samsung', 'fitbit', 'oura'].map(id => DEVICES.find(d => d.id === id)).find(d => S.devices[d.id]);
-  if (hub) setTimeout(() => toast(tL(`Guardé ${min} min de atención plena en ${hub.n}.`, `Saved ${min} mindful min to ${hub.n}.`)), 1600);
+  if (hub) setTimeout(() => toast(tL(`Guardé ${min} min de atención plena en ${hub.n} (simulado).`, `Saved ${min} mindful min to ${hub.n} (simulated).`)), 1600);
 }
 function devMetrics() {
   const own = S.mind && S.mind.day === todayKey() ? S.mind.min : 0, M = [];
-  const add = (k, es, en, v, sub) => { if (devHas(k)) M.push({k:tL(es, en), v, sub, src:devSrc(k)}); };
+  const add = (key, es, en, v, sub) => { if (devSim(key)) M.push({key, k:tL(es, en), v, sub, src:devSimSrc(key)}); };
   add('mind', 'Meditación hoy', 'Meditation today', `${12 + own} min`, tL('7 días seguidos', '7 days in a row'));
   add('eeg', 'Calma (EEG)', 'Calm (EEG)', '68 %', tL('9 min en calma profunda', '9 min of deep calm'));
   add('focus', 'Enfoque', 'Focus', '74/100', tL('Mejor de 10:00 a 11:30', 'Best 10:00 to 11:30'));
@@ -3746,52 +3783,219 @@ function devMetrics() {
   add('breath', 'Respiración', 'Breathing', '13 rpm', tL('En reposo', 'At rest'));
   return M;
 }
+
+/* ---------- real connections over Bluetooth (Web Bluetooth) ----------
+   Heart-rate service 0x180D (chest/arm straps and watches that broadcast HR) and Muse EEG headbands.
+   Works in Chrome or Edge on Android, Windows, Mac and ChromeOS over HTTPS; not in iPhone browsers or inside the Claude frame. */
+const TEAM_URL = 'https://angelnevilley2-pixel.github.io/nubeltia/';
+const BLE = {hr:null, muse:null};
+const live = {hr:0, rr:[], hrAt:0, calm:null, calmAt:0, eeg:[[], [], [], []], good:0, bat:null};
+let breathBase = null, paintT = 0;
+const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const BLE_WHY = {
+  ios:['El iPhone no deja usar Bluetooth desde el navegador. Pruébalo en Android, Windows o Mac con Chrome o Edge; la app final sí lo hará en iPhone.', "iPhone browsers don't allow Bluetooth. Try it on Android, Windows or Mac with Chrome or Edge; the final app will do it on iPhone too."],
+  browser:['Este navegador no permite Bluetooth. Usa Chrome o Edge en Android, Windows o Mac.', "This browser doesn't support Bluetooth. Use Chrome or Edge on Android, Windows or Mac."],
+  frame:['Dentro de Claude no se puede usar Bluetooth. Abre la versión del equipo en Chrome o Edge y conéctalo ahí.', "Bluetooth can't be used inside Claude. Open the team version in Chrome or Edge and connect there."],
+};
+function bleWhy() {
+  if (isIOS) return 'ios';
+  if (!navigator.bluetooth || !window.isSecureContext) return 'browser';
+  try { if (document.featurePolicy && !document.featurePolicy.allowsFeature('bluetooth')) return 'frame'; } catch (e) {}
+  return '';
+}
+const bleLive = id => id === 'muse' ? !!BLE.muse : id === 'hrband' ? !!BLE.hr : false;
+function rmssd() {
+  const r = live.rr.slice(-40); if (r.length < 6) return null;
+  let sum = 0, n = 0;
+  for (let i = 1; i < r.length; i++) { const d = r[i] - r[i - 1]; if (Math.abs(d) < 250) { sum += d * d; n++; } }
+  return n >= 4 ? Math.round(Math.sqrt(sum / n)) : null;
+}
+function paintLive(force) {
+  const now = Date.now(); if (!force && now - paintT < 400) return; paintT = now;
+  const hv = rmssd();
+  $$('[data-live]').forEach(el => { const k = el.dataset.live;
+    el.textContent = k === 'hr' ? (BLE.hr && live.hr ? live.hr : '—') : k === 'hrv' ? (hv == null ? '…' : hv)
+      : k === 'calm' ? (live.calm == null ? '…' : Math.round(live.calm) + ' %')
+      : k === 'sig' ? (live.good ? tL(`${live.good} de 4 sensores bien`, `${live.good} of 4 sensors OK`) : tL('Ajusta la diadema', 'Adjust the headband')) : ''; });
+}
+/* standard Heart Rate Measurement: flags, bpm (8 or 16 bit), optional energy, RR intervals in 1/1024 s */
+function onHR(v) {
+  const f = v.getUint8(0); let i = 1;
+  const hr = f & 1 ? v.getUint16(i, true) : v.getUint8(i); i += f & 1 ? 2 : 1;
+  if (f & 8) i += 2;
+  if (f & 16) for (; i + 1 < v.byteLength; i += 2) { const ms = v.getUint16(i, true) / 1024 * 1000; if (ms > 280 && ms < 2200) live.rr.push(ms); }
+  if (live.rr.length > 300) live.rr = live.rr.slice(-200);
+  if (hr > 0) { live.hr = hr; live.hrAt = Date.now(); }
+  paintLive();
+}
+async function hrConnect() {
+  const dev = await navigator.bluetooth.requestDevice({filters:[{services:['heart_rate']}], optionalServices:['battery_service']});
+  const gatt = await dev.gatt.connect();
+  const ch = await (await gatt.getPrimaryService('heart_rate')).getCharacteristic('heart_rate_measurement');
+  live.rr = []; live.hr = 0;
+  ch.addEventListener('characteristicvaluechanged', e => onHR(e.target.value));
+  await ch.startNotifications();
+  try { const bc = await (await gatt.getPrimaryService('battery_service')).getCharacteristic('battery_level'); live.bat = (await bc.readValue()).getUint8(0); } catch (e) { live.bat = null; }
+  BLE.hr = {dev, name:dev.name || ''};
+  dev.addEventListener('gattserverdisconnected', () => bleLost('hrband'));
+  return dev.name || '';
+}
+/* Muse: service 0xfe8d, control 273e0001, EEG TP9/AF7/AF8/TP10 on 273e0003-0006; 12 samples of 12 bits per packet, 256 Hz */
+const MUSE_SVC = 0xfe8d, MU = n => `273e00${n}-4c4d-454d-96be-f03bac821358`;
+async function museConnect() {
+  const dev = await navigator.bluetooth.requestDevice({filters:[{services:[MUSE_SVC]}]});
+  const srv = await (await dev.gatt.connect()).getPrimaryService(MUSE_SVC);
+  const ctl = await srv.getCharacteristic(MU('01'));
+  const cmd = c => { const b = new TextEncoder().encode(`X${c}\n`); b[0] = b.length - 1; return ctl.writeValue(b); };
+  live.eeg = [[], [], [], []]; live.calm = null; live.good = 0;
+  for (let k = 0; k < 4; k++) { const ch = await srv.getCharacteristic(MU('0' + (3 + k))); ch.addEventListener('characteristicvaluechanged', e => onEEG(k, e.target.value)); await ch.startNotifications(); }
+  await cmd('h'); await cmd('p21'); await cmd('s'); await cmd('d');
+  BLE.muse = {dev, cmd, name:dev.name || 'Muse', tick:setInterval(calmTick, 1000)};
+  dev.addEventListener('gattserverdisconnected', () => bleLost('muse'));
+  return dev.name || 'Muse';
+}
+function onEEG(k, v) {
+  const b = new Uint8Array(v.buffer, v.byteOffset + 2, v.byteLength - 2), out = live.eeg[k];
+  for (let i = 0; i + 2 < b.length; i += 3) out.push(0.48828125 * (((b[i] << 4) | (b[i + 1] >> 4)) - 0x800), 0.48828125 * ((((b[i + 1] & 15) << 8) | b[i + 2]) - 0x800));
+  if (out.length > 1024) out.splice(0, out.length - 512);
+}
+/* calm = share of alpha (8-12 Hz) in 4-30 Hz power, last second, clean channels only; smoothed */
+function bandPow(x) {
+  const N = x.length, m = x.reduce((p, q) => p + q, 0) / N, P = [];
+  for (let f = 4; f <= 30; f++) { let re = 0, im = 0; for (let n = 0; n < N; n++) { const v = (x[n] - m) * (.5 - .5 * Math.cos(2 * Math.PI * n / (N - 1))), a = 2 * Math.PI * f * n / N; re += v * Math.cos(a); im -= v * Math.sin(a); } P[f] = re * re + im * im; }
+  return P;
+}
+function calmTick() {
+  let rel = 0, good = 0;
+  live.eeg.forEach(ch => {
+    if (ch.length < 256) return;
+    const x = ch.slice(-256), m = x.reduce((p, q) => p + q, 0) / 256;
+    if (x.some(v => Math.abs(v - m) > 120)) return;
+    const P = bandPow(x); let th = 0, al = 0, be = 0;
+    for (let f = 4; f <= 30; f++) { if (f < 8) th += P[f]; else if (f <= 12) al += P[f]; else be += P[f]; }
+    const tot = th + al + be; if (tot > 0) { rel += al / tot; good++; }
+  });
+  live.good = good;
+  if (good) { const c = Math.max(0, Math.min(100, (rel / good - .12) / .38 * 100)); live.calm = live.calm == null ? c : live.calm * .7 + c * .3; live.calmAt = Date.now(); }
+  paintLive(true);
+}
+function bleConnect(id) {
+  const why = bleWhy(), d = DEVICES.find(x => x.id === id);
+  if (why) { toast(tL(...BLE_WHY[why])); if (!$('#sheet.show #dev-list')) openDevices(id === 'muse' ? 'mente' : 'todos'); return; }
+  if (bleLive(id)) return;
+  /* requestDevice must run inside the tap, so nothing is awaited before it */
+  (id === 'muse' ? museConnect() : hrConnect()).then(name => {
+    S.devices[id] = true; S.devXP = S.devXP || {};
+    if (!S.devXP[id]) { S.devXP[id] = true; addXP(15); }
+    save(); rerender(); refreshDevSheet(); paintLive(true);
+    toast(tL(`${name || devName(d)} conectado por Bluetooth.`, `${name || devName(d)} connected over Bluetooth.`));
+    nubi('device', {d, real:true});
+  }).catch(e => {
+    if (e && e.name === 'NotFoundError') return;
+    if (e && e.name === 'SecurityError') { toast(tL(...BLE_WHY.frame)); return; }
+    toast(tL(`No se pudo conectar: ${(e && e.message) || e}`, `Couldn't connect: ${(e && e.message) || e}`));
+  });
+}
+function bleLost(id) {
+  if (id === 'muse' && BLE.muse) { clearInterval(BLE.muse.tick); BLE.muse = null; live.calm = null; live.good = 0; }
+  if (id === 'hrband' && BLE.hr) { BLE.hr = null; live.hr = 0; live.rr = []; }
+  if (S.devices[id]) { S.devices[id] = false; save(); rerender(); refreshDevSheet(); toast(tL('Dispositivo desconectado.', 'Device disconnected.')); }
+}
+function bleOff(id) {
+  try {
+    if (id === 'muse' && BLE.muse) { const m = BLE.muse; m.cmd('h').catch(() => {}).finally(() => { try { m.dev.gatt.disconnect(); } catch (e) {} }); }
+    if (id === 'hrband' && BLE.hr) BLE.hr.dev.gatt.disconnect();
+  } catch (e) {}
+  setTimeout(() => bleLost(id), 400);
+}
+function breathLiveBox() {
+  const p = [];
+  if (BLE.hr) p.push(`<span><span class="live-dot"></span> <b data-live="hr">—</b> lpm</span><span>VFC <b data-live="hrv">…</b> ms</span>`);
+  if (BLE.muse) p.push(`<span>${tL('Calma', 'Calm')} <b data-live="calm">…</b></span>`);
+  return p.length ? `<div class="breath-live">${p.join('')}</div>` : '';
+}
+function breathResult() {
+  if (!breathBase || !(BLE.hr || BLE.muse)) return;
+  const b = breathBase, hv = rmssd(), out = [];
+  if (BLE.hr && b.hr && live.hr) out.push(live.hr < b.hr ? tL(`tu pulso bajó de ${b.hr} a ${live.hr} lpm`, `your pulse dropped from ${b.hr} to ${live.hr} bpm`) : tL(`tu pulso quedó en ${live.hr} lpm`, `your pulse is at ${live.hr} bpm`));
+  if (BLE.hr && b.hrv != null && hv != null) out.push(hv > b.hrv ? tL(`tu VFC subió de ${b.hrv} a ${hv} ms`, `your HRV rose from ${b.hrv} to ${hv} ms`) : tL(`tu VFC está en ${hv} ms`, `your HRV is ${hv} ms`));
+  if (BLE.muse && b.calm != null && live.calm != null) out.push(tL(`tu calma pasó de ${Math.round(b.calm)} % a ${Math.round(live.calm)} %`, `your calm went from ${Math.round(b.calm)}% to ${Math.round(live.calm)}%`));
+  breathBase = null;
+  if (out.length) setTimeout(() => nubiSay(tL('Medido de verdad: ', 'Really measured: ') + out.join(tL(' y ', ' and ')) + '.', {ms:7000}), 4200);
+}
+
 function devRow(d) {
-  const on = !!S.devices[d.id], c = devCatOf(d.cat);
-  return `<div class="dev ${on ? 'on' : ''}"><span class="dev-logo" style="--dc:${c[3]}">${d.l}</span><div><b>${esc(d.n)}</b><span class="muted small">${esc(tL(d.d, d.en))}</span>
-    ${on ? `<span class="dev-sync">${tL('Sincronizado hace 5 min (simulado)', 'Synced 5 min ago (simulated)')}</span>` : ''}
-    <span class="dev-tags">${d.data.slice(0, 4).map(k => `<i>${tL(DEV_DATA[k][0], DEV_DATA[k][1])}</i>`).join('')}${d.data.length > 4 ? `<i>+${d.data.length - 4}</i>` : ''}</span></div>
-    ${sw(on, 'dev', `data-id="${d.id}"`, tL('Conectar ', 'Connect ') + d.n)}</div>`;
+  const c = devCatOf(d.cat), tags = `<span class="dev-tags">${d.data.slice(0, 4).map(k => `<i>${tL(DEV_DATA[k][0], DEV_DATA[k][1])}</i>`).join('')}${d.data.length > 4 ? `<i>+${d.data.length - 4}</i>` : ''}</span>`;
+  let on, status = '', via, act;
+  if (d.ble) {
+    on = bleLive(d.id);
+    status = on ? (d.id === 'muse' ? `<span class="dev-sync">${tL('En vivo', 'Live')} · ${tL('calma', 'calm')} <b data-live="calm">…</b> · <span data-live="sig"></span></span>`
+      : `<span class="dev-sync">${tL('En vivo', 'Live')} · <b data-live="hr">—</b> lpm · VFC <b data-live="hrv">…</b> ms${live.bat != null ? ` · ${tL('batería', 'battery')} ${live.bat} %` : ''}</span>`) : '';
+    via = `<span class="dev-via real">${ic('link', 12)} ${tL('Conexión real por Bluetooth', 'Real Bluetooth connection')}</span>`;
+    act = on ? `<button class="btn small ghost" data-act="ble-off" data-id="${d.id}">${tL('Desconectar', 'Disconnect')}</button>` : `<button class="btn small" data-act="ble-on" data-id="${d.id}">${tL('Conectar', 'Connect')}</button>`;
+  } else {
+    on = !!S.devices[d.id];
+    status = on ? `<span class="dev-sync">${tL('Datos de ejemplo (simulado)', 'Sample data (simulated)')}</span>` : '';
+    via = `<span class="dev-via">${d.via === 'cuenta' ? tL(`Con tu cuenta de ${d.n}: se activa cuando registremos Nubeltia con ${d.n}.`, `With your ${d.n} account: turns on once Nubeltia is registered with ${d.n}.`)
+      : ['apple', 'health'].includes(d.id) ? tL('Llega con la app para teléfono: una página web no puede leer este dato.', 'Comes with the phone app: a web page can’t read this data.')
+      : tL('Llega con la app para iPhone y Android, vía Apple Salud o Health Connect.', 'Comes with the iPhone and Android app, via Apple Health or Health Connect.')}</span>`
+      + (d.hrb ? `<button class="hrb" data-act="ble-on" data-id="hrband">${ic('link', 12)} ${tL('Su ritmo cardiaco en vivo: activa «transmitir frecuencia cardiaca» y toca aquí', 'Its live heart rate: turn on “broadcast heart rate” and tap here')}</button>` : '');
+    act = `<span class="dev-act">${sw(on, 'dev', `data-id="${d.id}"`, tL('Simular ', 'Simulate ') + d.n)}<small>${tL('demo', 'demo')}</small></span>`;
+  }
+  return `<div class="dev ${on ? 'on' : ''}"><span class="dev-logo" style="--dc:${c[3]}">${d.l}</span><div><b>${esc(devName(d))}</b><span class="muted small">${esc(tL(d.d, d.en))}</span>${status}${tags}${via}</div>${act}</div>`;
 }
 function devicesCard() {
-  const on = devOn(), list = on.length ? on : ['apple', 'health', 'gfit', 'fitbit', 'muse'].map(id => DEVICES.find(d => d.id === id));
-  const bio = [['sleep', 'Sueño', 'Sleep', '7 h 12 min'], ['sleep', 'Profundo', 'Deep', '1 h 05 min'], ['sleep', 'REM', 'REM', '1 h 34 min'], ['hr', 'FC en reposo', 'Resting HR', '58 lpm'], ['hrv', 'VFC', 'HRV', '46 ms'], ['steps', tL('Pasos hoy', 'Steps today'), '', nf(S.steps)], ['weight', 'Peso', 'Weight', `${S.profile.peso} kg`], ['stress', 'Estrés', 'Stress', tL('Bajo', 'Low')]].filter(x => devHas(x[0]));
+  const on = devOn(), list = on.length ? on : ['hrband', 'muse', 'apple', 'health', 'gfit', 'fitbit'].map(id => DEVICES.find(d => d.id === id));
+  const bio = [['sleep', 'Sueño', 'Sleep', '7 h 12 min'], ['sleep', 'Profundo', 'Deep', '1 h 05 min'], ['sleep', 'REM', 'REM', '1 h 34 min'], ['hr', 'FC en reposo', 'Resting HR', '58 lpm'], ['hrv', 'VFC', 'HRV', '46 ms'], ['steps', tL('Pasos hoy', 'Steps today'), '', nf(S.steps)], ['weight', 'Peso', 'Weight', `${S.profile.peso} kg`], ['stress', 'Estrés', 'Stress', tL('Bajo', 'Low')]].filter(x => devSim(x[0]));
   return `<section class="card" id="devices"><div class="sec-head"><h2 class="h2">${tL('Dispositivos y apps', 'Devices and apps')}</h2><span class="dev-count">${on.length} ${tL(on.length === 1 ? 'conectado' : 'conectados', 'connected')}</span></div>
-    <p class="muted small" style="margin:4px 0 8px">${tL('Conecta relojes, anillos, diademas de meditación y apps para ver tu sueño, estrés y minutos de meditación sin escribirlos.', 'Connect watches, rings, meditation headbands and apps to see your sleep, stress and meditation minutes without typing them in.')}</p>
-    ${on.length ? '' : `<p class="label">${tL('Los más usados', 'Most popular')}</p>`}
+    <p class="muted small" style="margin:4px 0 8px">${tL('Las bandas y relojes con ritmo cardiaco y la diadema Muse ya se conectan de verdad por Bluetooth. Los demás muestran datos de ejemplo hasta tener la app.', 'Heart-rate bands and watches and the Muse headband already connect for real over Bluetooth. The rest show sample data until the app is ready.')}</p>
+    ${on.length ? '' : `<p class="label">${tL('Para empezar', 'To get started')}</p>`}
     ${list.map(devRow).join('')}
     <button class="btn ghost full" style="margin-top:10px" data-act="dev-all">${ic('plus', 16)} ${tL(`Ver los ${DEVICES.length} dispositivos y apps`, `See all ${DEVICES.length} devices and apps`)}</button>
     ${bio.length ? `<p class="label" style="margin-top:12px">${tL('Anoche y hoy (ejemplo)', 'Last night and today (sample)')}</p><div class="bio">${bio.map(x => `<div><span>${x[2] ? tL(x[1], x[2]) : x[1]}</span><b>${x[3]}</b></div>`).join('')}</div>` : ''}
   </section>`;
 }
 function devList() {
-  const q = fold(devQ.trim());
-  const hit = d => !q || fold(`${d.n} ${d.d} ${d.en} ${d.data.map(k => DEV_DATA[k].join(' ')).join(' ')} ${devCatOf(d.cat).slice(1, 3).join(' ')}`).includes(q);
+  const q = fold(devQ.trim()), realFirst = devCat === 'todos' && !q;
+  const hit = d => !q || fold(`${d.n} ${d.nen || ''} ${d.d} ${d.en} ${d.data.map(k => DEV_DATA[k].join(' ')).join(' ')} ${devCatOf(d.cat).slice(1, 3).join(' ')} ${d.ble ? 'bluetooth real' : ''}`).includes(q);
   const cats = DEV_CATS.filter(c => devCat === 'todos' || c[0] === devCat);
-  const html = cats.map(c => { const ds = DEVICES.filter(d => d.cat === c[0] && hit(d)); return ds.length ? `<p class="dev-group" style="--dc:${c[3]}">${tL(c[1], c[2])}</p>${ds.map(devRow).join('')}` : ''; }).join('');
+  const head = realFirst ? `<p class="dev-group" style="--dc:var(--brand)">${tL('Conéctalo de verdad hoy', 'Connect for real today')}</p>${DEVICES.filter(d => d.ble).map(devRow).join('')}` : '';
+  const html = head + cats.map(c => { const ds = DEVICES.filter(d => d.cat === c[0] && hit(d) && !(realFirst && d.ble)); return ds.length ? `<p class="dev-group" style="--dc:${c[3]}">${tL(c[1], c[2])}</p>${ds.map(devRow).join('')}` : ''; }).join('');
   return html || `<div class="dev-empty"><b>${tL('No encontramos ese dispositivo', 'We couldn’t find that device')}</b><p class="muted small">${tL('En la app final podrás pedir que lo agreguemos.', 'In the final app you’ll be able to ask us to add it.')}</p></div>`;
+}
+function bleNote() {
+  const why = bleWhy();
+  return `<div class="ble-note ${why ? 'warn' : ''}">${ic('link', 18)}<div><b>${tL('Conexión real por Bluetooth', 'Real Bluetooth connection')}</b>
+    <p class="muted small">${why ? tL(...BLE_WHY[why]) : tL('Enciende el Bluetooth, ten cerca tu banda, tu reloj transmitiendo su ritmo cardiaco o tu diadema Muse, y toca Conectar.', 'Turn on Bluetooth, keep your strap, your watch broadcasting heart rate or your Muse nearby, and tap Connect.')}</p>
+    ${why === 'frame' ? `<a class="btn small" href="${TEAM_URL}" target="_blank" rel="noopener">${tL('Abrir versión del equipo', 'Open team version')}</a>` : ''}</div></div>`;
 }
 function openDevices(cat) {
   devCat = cat || 'todos'; devQ = '';
   const chips = [['todos', 'Todos', 'All'], ...DEV_CATS];
   openSheet(`<div class="sec-head"><h3 class="h2">${tL('Dispositivos y apps', 'Devices and apps')}</h3><span class="dev-count" id="dev-n">${devOn().length}/${DEVICES.length}</span></div>
-    <p class="muted small">${tL('En el prototipo la conexión es simulada; en la app final pedirá permiso en tu teléfono.', 'In the prototype connecting is simulated; the final app will ask for permission on your phone.')}</p>
+    ${bleNote()}
     <label class="dev-search">${ic('search', 17)}<span class="sr">${tL('Buscar dispositivo', 'Search devices')}</span><input id="dev-q" type="search" autocomplete="off" placeholder="${esc(tL('Busca: Fitbit, Muse, meditación, sueño…', 'Search: Fitbit, Muse, meditation, sleep…'))}"></label>
     <div class="dev-cats">${chips.map(c => `<button class="chip-btn" data-act="dev-cat" data-cat="${c[0]}" aria-pressed="${devCat === c[0]}">${tL(c[1], c[2])}</button>`).join('')}</div>
     <div id="dev-list">${devList()}</div>`, 'tall');
-  setTimeout(() => { const b = $('.dev-cats [aria-pressed="true"]'); b && b.scrollIntoView({block:'nearest', inline:'center'}); }, 80);
+  setTimeout(() => { const b = $('.dev-cats [aria-pressed="true"]'); b && b.scrollIntoView({block:'nearest', inline:'center'}); paintLive(true); }, 80);
 }
-function refreshDevSheet() { const l = $('#sheet.show #dev-list'); if (l) l.innerHTML = devList(); const n = $('#sheet.show #dev-n'); if (n) n.textContent = `${devOn().length}/${DEVICES.length}`; }
+function refreshDevSheet() { const l = $('#sheet.show #dev-list'); if (l) { l.innerHTML = devList(); paintLive(true); } const n = $('#sheet.show #dev-n'); if (n) n.textContent = `${devOn().length}/${DEVICES.length}`; }
 document.addEventListener('input', e => { if (e.target.id === 'dev-q') { devQ = e.target.value; refreshDevSheet(); } });
 function mindDevCard() {
-  const M = devMetrics().filter(x => x.v);
-  if (!M.length) return `<section class="card" id="mind-dev"><h2 class="h2">${tL('Mide tu calma', 'Measure your calm')}</h2>
-    <p class="muted small" style="margin-top:4px">${tL('Conecta una diadema, un sensor o tu app de meditación y aquí verás tus minutos, tu calma y tu estrés del día.', 'Connect a headband, a sensor or your meditation app and you’ll see your minutes, calm and daytime stress here.')}</p>
-    <div class="mind-pick">${['muse', 'heartmath', 'calm', 'headspace', 'apple', 'fitbit'].map(id => DEVICES.find(d => d.id === id)).map(d => `<span class="chip">${esc(d.n)}</span>`).join('')}</div>
-    <button class="btn full" data-act="dev-all" data-cat="mente">${tL('Conectar dispositivo de meditación', 'Connect a meditation device')}</button></section>`;
+  const L = [];
+  if (BLE.muse) L.push(`<div class="live"><span>${tL('Calma (EEG) en vivo', 'Live calm (EEG)')}</span><b data-live="calm">…</b><small data-live="sig"></small></div>`);
+  if (BLE.hr) L.push(`<div class="live"><span><span class="live-dot"></span> ${tL('Ritmo cardiaco', 'Heart rate')}</span><b><span data-live="hr">—</span> lpm</b><small>${tL('En vivo', 'Live')}</small></div>`,
+    `<div class="live"><span>VFC (RMSSD)</span><b><span data-live="hrv">…</span> ms</b><small>${tL('Con tus latidos reales', 'From your real heartbeats')}</small></div>`);
+  const skip = [...(BLE.muse ? ['eeg'] : []), ...(BLE.hr ? ['hrv'] : [])], M = devMetrics().filter(x => !skip.includes(x.key));
+  if (!L.length && !M.length) return `<section class="card" id="mind-dev"><h2 class="h2">${tL('Mide tu calma', 'Measure your calm')}</h2>
+    <p class="muted small" style="margin-top:4px">${tL('Conecta de verdad tu diadema Muse o una banda o reloj con ritmo cardiaco y verás tu calma y tu VFC en vivo, también mientras respiras con Nubi.', 'Really connect your Muse headband or a heart-rate band or watch and you’ll see your calm and HRV live, also while you breathe with Nubi.')}</p>
+    <div class="mind-btns"><button class="btn full" data-act="ble-on" data-id="muse">${ic('link', 16)} ${tL('Conectar diadema Muse', 'Connect Muse headband')}</button>
+    <button class="btn ghost full" data-act="ble-on" data-id="hrband">${ic('heart', 16)} ${tL('Conectar banda o reloj (ritmo cardiaco)', 'Connect band or watch (heart rate)')}</button>
+    <button class="link" data-act="dev-all" data-cat="mente">${tL('Ver todos los dispositivos de meditación', 'See all meditation devices')}</button></div></section>`;
+  const liveSrc = [BLE.muse && BLE.muse.name, BLE.hr && (BLE.hr.name || tL('banda', 'band'))].filter(Boolean), simSrc = [...new Set(M.map(x => x.src))];
   return `<section class="card" id="mind-dev"><div class="sec-head"><h2 class="h2">${tL('Tu mente, medida', 'Your mind, measured')}</h2><button class="link" data-act="dev-all" data-cat="mente">${tL('Dispositivos', 'Devices')}</button></div>
-    <p class="muted small">${tL('De', 'From')} ${esc([...new Set(M.map(x => x.src))].join(', '))} · ${tL('datos de ejemplo', 'sample data')}</p>
-    <div class="mind-tiles">${M.slice(0, 6).map(x => `<div><span>${esc(x.k)}</span><b>${esc(x.v)}</b><small>${esc(x.sub)}</small></div>`).join('')}</div>
+    <p class="muted small">${liveSrc.length ? `${tL('En vivo', 'Live')}: ${esc(liveSrc.join(', '))}` : ''}${liveSrc.length && simSrc.length ? ' · ' : ''}${simSrc.length ? `${tL('Ejemplo', 'Sample')}: ${esc(simSrc.join(', '))}` : ''}</p>
+    <div class="mind-tiles">${L.join('')}${M.slice(0, 6 - L.length).map(x => `<div><span>${esc(x.k)}</span><b>${esc(x.v)}</b><small>${esc(x.sub)}</small></div>`).join('')}</div>
     <button class="btn ghost full" style="margin-top:12px" data-act="breathe">${ic('wind', 16)} ${tL('Respirar 1 min con Nubi', 'Breathe 1 min with Nubi')}</button></section>`;
 }
 
