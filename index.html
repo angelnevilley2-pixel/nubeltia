@@ -776,6 +776,54 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .breath-live b{color:var(--ink);font-variant-numeric:tabular-nums}
 .live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--danger);margin-right:2px;animation:ldot 1s ease-in-out infinite}
 @keyframes ldot{50%{opacity:.25}}
+
+/* your watch, live */
+.hrpill{background:rgba(255,107,122,.16);color:var(--ink)}
+.hp-heart{color:var(--danger);display:inline-flex;vertical-align:-2px}
+.lv-heart{color:var(--danger);display:inline-flex;flex:none;filter:drop-shadow(0 0 14px rgba(255,107,122,.55))}
+.lv-heart svg,.hp-heart svg{animation:beat var(--beat,1.4s) ease-in-out infinite;transform-origin:50% 55%}
+@keyframes beat{0%,100%{transform:scale(1)}12%{transform:scale(1.2)}26%{transform:scale(.96)}40%{transform:scale(1.08)}}
+.lv-head{display:flex;align-items:flex-start;gap:12px;justify-content:space-between}
+.lv-head .btn{flex:none}
+.lv-status{font:600 12.5px/1.4 var(--f-body);color:var(--food);margin-top:3px}
+.lv-status.warn{color:var(--gold)}
+.lv-status:empty{display:none}
+.lv-hint{background:var(--gold-soft);border:1px solid rgba(245,192,74,.35);border-radius:14px;padding:10px 12px;font-size:13px;line-height:1.45}
+.lv-hero{display:flex;align-items:center;gap:14px;padding:4px 2px}
+.lv-num{display:flex;align-items:baseline;gap:6px}
+.lv-num b{font:800 64px/1 var(--f-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.lv-num span{font:700 16px var(--f-body);color:var(--muted)}
+.lv-zone{margin-left:auto;font:800 12px/1.2 var(--f-body);font-style:normal;color:var(--zc,var(--muted));background:color-mix(in srgb,var(--zc,#8A93B8) 16%,transparent);border:1px solid color-mix(in srgb,var(--zc,#8A93B8) 45%,transparent);border-radius:12px;padding:6px 10px;text-align:center;max-width:42%}
+.lv-zone.sm{margin-left:6px;font-size:11px;padding:3px 8px;border-radius:99px;max-width:none}
+.lv-chart{background:var(--surface-2);border-radius:16px;padding:8px 8px 6px}
+.lv-chart canvas{display:block;width:100%;height:130px}
+.lv-chart small{display:block;text-align:right;font-size:11px;margin-top:2px}
+.lv-tiles{margin-top:0}
+.lv-tiles small span{font:inherit;color:inherit}
+.lv-zones .zrow{display:grid;grid-template-columns:10px minmax(0,1.3fr) 1fr 44px;align-items:center;gap:8px;padding:4px 0;font-size:12.5px}
+.zdot{width:10px;height:10px;border-radius:50%;background:var(--zc)}
+.zb{height:8px;border-radius:99px;background:var(--track);overflow:hidden}
+.zb i{display:block;height:100%;width:0;background:var(--zc);border-radius:99px;transition:width .6s}
+.zt{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-weight:700}
+.lv-caps .cap{display:flex;align-items:center;gap:9px;padding:7px 0;font-size:13.5px;border-top:1px solid var(--line)}
+.cap-ic{width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;font:800 11px var(--f-body)}
+.cap.ok .cap-ic{background:var(--food);color:#00140F}.cap.ok .cap-ic::after{content:"✓"}
+.cap.no{color:var(--muted)}.cap.no .cap-ic{background:var(--surface-2);color:var(--muted)}.cap.no .cap-ic::after{content:"–"}
+.cap.wait .cap-ic{border:2px dashed var(--line)}
+.lv-more{margin-top:10px;background:var(--surface-2);border-radius:14px;padding:11px 12px;font-size:13px;line-height:1.45}
+.lv-tech summary{cursor:pointer;font:700 13.5px var(--f-body);color:var(--brand);padding:6px 0}
+.lv-tech dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;font-size:12.5px;margin:6px 0}
+.lv-tech dt{color:var(--muted)}.lv-tech dd{margin:0;overflow-wrap:anywhere}
+.lv-tech pre{background:var(--surface-2);border-radius:12px;padding:10px;font:500 11.5px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;max-height:180px;overflow:auto;margin:6px 0 8px}
+.card.live-card{border:1px solid rgba(255,107,122,.3);background:linear-gradient(150deg,rgba(255,107,122,.13),rgba(57,225,255,.05) 70%),var(--surface)}
+.lc-top{display:flex;align-items:center;gap:12px}
+.lc-main{flex:1;min-width:0}
+.lc-bpm{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap;margin-top:2px}
+.lc-bpm b{font:800 36px/1 var(--f-display);font-variant-numeric:tabular-nums}
+.lc-bpm span{color:var(--muted);font-weight:700}
+.lc-stats{display:flex;gap:6px 14px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.lc-stats b{color:var(--ink);font-variant-numeric:tabular-nums}
+.live-card .lv-status{margin-top:8px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -802,6 +850,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
       <div class="brandmark"><span class="nb-mark" aria-hidden="true"></span><span class="nb-word" role="img" aria-label="Nubeltia"></span></div>
       <span class="proto">Prototipo</span>
       <span class="spacer"></span>
+      <button class="tpill hrpill" id="hr-pill" data-act="live-open" hidden aria-label="Tu pulso en vivo"><span class="hp-heart"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.4-4.5-9.5-9.2C1 8.4 3.1 5 6.6 5c2.1 0 3.7 1.1 5.4 3.1C13.7 6.1 15.3 5 17.4 5c3.5 0 5.6 3.4 4.1 6.8C19.4 16.5 12 21 12 21z"/></svg></span><b data-live="hr">—</b></button>
       <button class="tpill" id="top-timer" data-act="top-timer" hidden></button>
       <button class="xp" data-act="shop-open" aria-label="Tus monedas y la tienda de Nubi"><span class="lv" id="lv">7</span><span class="coin"></span><span id="coin-txt">150</span></button>
       <button class="icon-btn lang-btn" data-act="lang" id="lang-btn" aria-label="Idioma / Language"></button>
@@ -1496,6 +1545,7 @@ function renderInicio() {
     <div><p class="eyebrow">${esc(dateLabel())}</p><h1 class="h1">${greet}, ${esc(S.name)}</h1></div>
     <div class="p3-slot">${mascot(pct === 1 ? 'celebrate' : 'happy', 122)}<button class="p3-play" data-act="play-pulso" aria-label="Jugar con Nubi">${ic('game', 17)}</button></div>
   </header>
+  ${liveCard()}
   ${nextCard()}
   ${missionsCard()}
   ${asstCard()}
@@ -2116,6 +2166,7 @@ function renderTrain() {
   const sd = setsDone();
   return `
   <header class="hello screen-head"><div><p class="eyebrow">Entrenamiento</p><h1 class="h1">Muévete hoy</h1></div><div class="p3-slot">${mascot(S.workoutDone ? 'celebrate' : 'happy', 112)}</div></header>
+  ${liveCard()}
   <section class="card steps-card">${ring(S.steps / 10000, 100, 'var(--train)', nf(S.steps), 'de 10,000')}
     <div><h2 class="h2">Pasos de hoy</h2><p class="muted small">${devHas('steps') ? tL(`Sincronizado con ${devSrc('steps')} hace 5 min (ejemplo).`, `Synced with ${devSrc('steps')} 5 min ago (sample).`) : 'Dato de ejemplo. Conecta tu reloj en Perfil.'}</p>
     <p class="small">${S.steps >= 10000 ? '¡Meta de pasos cumplida!' : `Te faltan ${nf(10000 - S.steps)}. Caminar 20 minutos son unos 2,000 pasos.`}</p></div></section>
@@ -2196,7 +2247,7 @@ function rerender() {
   if (current === 'mental') renderChat();
   sc.scrollTop = y;
   P3 && P3.mount();
-  refreshAsst(); checkMissions();
+  refreshAsst(); checkMissions(); paintLive(true); syncLivePill();
 }
 function show(tab) {
   if (!R[tab]) tab = 'inicio';
@@ -2365,6 +2416,13 @@ const A = {
   'dev-all': t => openDevices(t.dataset.cat || 'todos'),
   'dev-cat': t => { devCat = t.dataset.cat; $$('.dev-cats .chip-btn').forEach(b => b.setAttribute('aria-pressed', b.dataset.cat === devCat)); refreshDevSheet(); },
   'ble-on': t => bleConnect(t.dataset.id),
+  'ble-all': () => bleConnect('hrband', true),
+  'live-open': () => openLive(),
+  'live-copy': () => {
+    const txt = liveDiag(), done = () => toast(tL('Diagnóstico copiado. Pégalo en el chat con Claude.', 'Diagnostics copied. Paste it in the chat with Claude.'));
+    const fall = () => { const pre = $('#lv-log'); if (pre) { pre.textContent = txt; const r = document.createRange(); r.selectNodeContents(pre); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); } toast(tL('Selecciona el texto y cópialo.', 'Select the text and copy it.')); };
+    try { navigator.clipboard.writeText(txt).then(done, fall); } catch (e) { fall(); }
+  },
   'ble-off': t => bleOff(t.dataset.id),
   'go-mind': () => { closeSheet(); goScroll('mental', '#mind-dev'); },
   'share': t => { S.share[t.dataset.id] = !S.share[t.dataset.id]; save(); t.setAttribute('aria-checked', S.share[t.dataset.id]); },
@@ -3609,7 +3667,7 @@ function overview() {
     registro_animo:S.check ? {animo:MOODS[S.check.mood - 1], estres:S.check.stress, ansiedad:S.check.anx, sueno:S.check.sleep} : null,
     misiones:missionsToday().map(m => ({mision:m.es, progreso:`${Math.min(m.goal, m.v())}/${m.goal}`, reclamada:!!S.missions.claimed[m.id]})),
     semana:weekStats().summary, mes:monthStats().summary,
-    dispositivos:DEVICES.filter(d => S.devices[d.id]).map(d => d.n), en_vivo:{ritmo_cardiaco:BLE.hr && live.hr ? live.hr : null, vfc_ms:BLE.hr ? rmssd() : null, calma_eeg:BLE.muse && live.calm != null ? Math.round(live.calm) : null}, datos_dispositivos:devMetrics().map(x => `${x.k}: ${x.v} (${x.src})`)};
+    dispositivos:DEVICES.filter(d => S.devices[d.id]).map(d => d.n), en_vivo:liveSummary(), datos_dispositivos:devMetrics().map(x => `${x.k}: ${x.v} (${x.src})`)};
 }
 const ASST_RULES = () => `Eres Nubi, la mascota nube y asistente personal de la app Nubeltia. ${S.lang === 'en' ? 'Reply in natural English.' : 'Hablas en español neutro, de tú, cálido y motivador.'}
 Ayudas a organizar el día, la semana y el mes: hábitos, pendientes, entrenamiento, nutrición, enfoque (pomodoro) y metas.
@@ -3789,7 +3847,7 @@ function devMetrics() {
    Works in Chrome or Edge on Android, Windows, Mac and ChromeOS over HTTPS; not in iPhone browsers or inside the Claude frame. */
 const TEAM_URL = 'https://angelnevilley2-pixel.github.io/nubeltia/';
 const BLE = {hr:null, muse:null};
-const live = {hr:0, rr:[], hrAt:0, calm:null, calmAt:0, eeg:[[], [], [], []], good:0, bat:null};
+const live = {hr:0, rr:[], hrAt:0, calm:null, calmAt:0, eeg:[[], [], [], []], good:0, bat:null, pk:0, rrSeen:false, contact:null, kj:null, rsc:null, spo2:null, temp:null, info:{}, svcs:[], loc:null, log:[], sess:null, brand:'', warned:false, savedAt:0};
 let breathBase = null, paintT = 0;
 const isIOS = /iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 const BLE_WHY = {
@@ -3812,33 +3870,87 @@ function rmssd() {
 }
 function paintLive(force) {
   const now = Date.now(); if (!force && now - paintT < 400) return; paintT = now;
-  const hv = rmssd();
-  $$('[data-live]').forEach(el => { const k = el.dataset.live;
-    el.textContent = k === 'hr' ? (BLE.hr && live.hr ? live.hr : '—') : k === 'hrv' ? (hv == null ? '…' : hv)
-      : k === 'calm' ? (live.calm == null ? '…' : Math.round(live.calm) + ' %')
-      : k === 'sig' ? (live.good ? tL(`${live.good} de 4 sensores bien`, `${live.good} of 4 sensors OK`) : tL('Ajusta la diadema', 'Adjust the headband')) : ''; });
+  const V = liveVals();
+  $$('[data-live]').forEach(el => { const k = el.dataset.live; if (k in V) el.textContent = V[k]; });
+  $$('[data-live="status"]').forEach(el => el.classList.toggle('warn', V.warn));
+  $$('[data-live-hint]').forEach(el => { el.hidden = !V.warn; });
+  $$('[data-optk]').forEach(el => { el.hidden = !V[el.dataset.optk]; });
+  const z = ZONES[zoneOf(live.hr)][2];
+  $$('[data-zc]').forEach(el => { el.style.setProperty('--zc', z); el.hidden = !(BLE.hr && live.hr); });
+  $$('.lv-heart, .hp-heart').forEach(el => el.style.setProperty('--beat', live.hr ? (60 / live.hr).toFixed(2) + 's' : '1.4s'));
+  if (live.sess) { const tot = live.sess.zones.reduce((a, b) => a + b, 0) || 1;
+    $$('[data-zbar]').forEach(el => { el.style.width = (live.sess.zones[+el.dataset.zbar] / tot * 100).toFixed(1) + '%'; });
+    $$('[data-zt]').forEach(el => { el.textContent = fmtDur(live.sess.zones[+el.dataset.zt] * 1000); }); }
+  $$('[data-cap]').forEach(el => { const c = el.dataset.cap, st = c === 'rr' ? (live.rrSeen ? 'ok' : live.pk > 4 ? 'no' : 'wait') : live.svcs.includes(+c) ? 'ok' : 'no'; el.className = 'cap ' + st; });
+  const lg = $('#lv-log'); if (lg && !lg.dataset.frozen) lg.textContent = live.log.join('\n');
 }
 /* standard Heart Rate Measurement: flags, bpm (8 or 16 bit), optional energy, RR intervals in 1/1024 s */
 function onHR(v) {
   const f = v.getUint8(0); let i = 1;
   const hr = f & 1 ? v.getUint16(i, true) : v.getUint8(i); i += f & 1 ? 2 : 1;
-  if (f & 8) i += 2;
-  if (f & 16) for (; i + 1 < v.byteLength; i += 2) { const ms = v.getUint16(i, true) / 1024 * 1000; if (ms > 280 && ms < 2200) live.rr.push(ms); }
+  const cs = (f >> 1) & 3; live.contact = cs === 3 ? true : cs === 2 ? false : null;
+  if (f & 8) { live.kj = v.getUint16(i, true); i += 2; }
+  if (f & 16) { live.rrSeen = true; for (; i + 1 < v.byteLength; i += 2) { const ms = v.getUint16(i, true) / 1024 * 1000; if (ms > 280 && ms < 2200) live.rr.push(ms); } }
   if (live.rr.length > 300) live.rr = live.rr.slice(-200);
-  if (hr > 0) { live.hr = hr; live.hrAt = Date.now(); }
+  live.pk++;
+  if (live.pk === 1) blog(tL(`Primer dato: ${hr} lpm · ${f & 16 ? 'con' : 'sin'} intervalos entre latidos · contacto ${cs === 3 ? 'bien' : cs === 2 ? 'sin piel' : 'no informado'}`, `First reading: ${hr} bpm · ${f & 16 ? 'with' : 'without'} beat intervals · contact ${cs === 3 ? 'good' : cs === 2 ? 'no skin' : 'not reported'}`));
+  if (hr > 0 && hr < 250) {
+    const now = Date.now(), dt = live.hrAt ? Math.min(3, (now - live.hrAt) / 1000) : 1, S2 = live.sess, D = hrDayGet();
+    live.hr = hr; live.hrAt = now;
+    if (S2) { S2.min = S2.n ? Math.min(S2.min, hr) : hr; S2.max = Math.max(S2.max, hr); S2.sum += hr; S2.n++; S2.zones[zoneOf(hr)] += dt; S2.kcal += kcalMin(hr) * dt / 60; S2.hist.push([now, hr]); if (S2.hist.length > 900) S2.hist.splice(0, 300); }
+    D.min = D.n ? Math.min(D.min, hr) : hr; D.max = Math.max(D.max, hr); D.sum += hr; D.n++;
+  }
   paintLive();
 }
-async function hrConnect() {
-  const dev = await navigator.bluetooth.requestDevice({filters:[{services:['heart_rate']}], optionalServices:['battery_service']});
+const HR_OPT = [0x180F, 0x180A, 0x1814, 0x1816, 0x1822, 0x1809, 0x1805, 0x181C, 0x181A];
+const SVC_NAME = {0x180D:['Ritmo cardiaco', 'Heart rate'], 0x180F:['Batería', 'Battery'], 0x180A:['Información del dispositivo', 'Device information'], 0x1814:['Velocidad y cadencia al correr', 'Running speed and cadence'], 0x1816:['Cadencia en bici', 'Cycling cadence'], 0x1822:['Oxígeno en sangre', 'Blood oxygen'], 0x1809:['Temperatura', 'Temperature'], 0x1805:['Hora', 'Time'], 0x181C:['Datos del usuario', 'User data'], 0x181A:['Sensores ambientales', 'Environmental sensing']};
+const svcShort = u => parseInt(String(u).slice(4, 8), 16);
+/* requestDevice must run inside the tap: it is the first thing called */
+function hrConnect(all) {
+  return navigator.bluetooth.requestDevice(all ? {acceptAllDevices:true, optionalServices:[0x180D, ...HR_OPT]} : {filters:[{services:[0x180D]}], optionalServices:HR_OPT}).then(async dev => {
+    Object.assign(live, {rr:[], hr:0, hrAt:0, pk:0, rrSeen:false, contact:null, kj:null, rsc:null, spo2:null, temp:null, info:{}, svcs:[], loc:null, bat:null, log:[], sess:newSess(), brand:'', warned:false});
+    blog(tL(`Conectando con ${dev.name || 'el dispositivo'}…`, `Connecting to ${dev.name || 'the device'}…`));
+    try { await hrSetup(dev); } catch (e) { try { dev.gatt.disconnect(); } catch (x) {} throw e; }
+    BLE.hr = {dev, name:dev.name || live.info.model || '', re:0, manual:false, tick:setInterval(liveTick, 1000)};
+    dev.addEventListener('gattserverdisconnected', onHrDisc);
+    live.brand = brandOf(`${dev.name || ''} ${live.info.maker || ''} ${live.info.model || ''}`);
+    blog(tL('Conectado. Escuchando tu pulso en vivo.', 'Connected. Listening to your live heart rate.'));
+    return BLE.hr.name;
+  });
+}
+async function hrSetup(dev) {
   const gatt = await dev.gatt.connect();
-  const ch = await (await gatt.getPrimaryService('heart_rate')).getCharacteristic('heart_rate_measurement');
-  live.rr = []; live.hr = 0;
+  let svcs = []; try { svcs = await gatt.getPrimaryServices(); } catch (e) {}
+  live.svcs = svcs.map(x => svcShort(x.uuid));
+  blog(tL('Servicios que comparte', 'Services it shares') + ': ' + (live.svcs.map(u => SVC_NAME[u] ? tL(...SVC_NAME[u]) : '0x' + u.toString(16)).join(', ') || '—'));
+  const get = u => svcs.find(x => svcShort(x.uuid) === u);
+  let hrs = get(0x180D);
+  if (!hrs) { try { hrs = await gatt.getPrimaryService(0x180D); live.svcs.push(0x180D); } catch (e) { const err = new Error('nohr'); err.name = 'NoHR'; throw err; } }
+  const ch = await hrs.getCharacteristic(0x2A37);
   ch.addEventListener('characteristicvaluechanged', e => onHR(e.target.value));
   await ch.startNotifications();
-  try { const bc = await (await gatt.getPrimaryService('battery_service')).getCharacteristic('battery_level'); live.bat = (await bc.readValue()).getUint8(0); } catch (e) { live.bat = null; }
-  BLE.hr = {dev, name:dev.name || ''};
-  dev.addEventListener('gattserverdisconnected', () => bleLost('hrband'));
-  return dev.name || '';
+  try { live.loc = (await (await hrs.getCharacteristic(0x2A38)).readValue()).getUint8(0); } catch (e) {}
+  const bs = get(0x180F);
+  if (bs) { try { const c = await bs.getCharacteristic(0x2A19); live.bat = (await c.readValue()).getUint8(0); try { c.addEventListener('characteristicvaluechanged', e => { live.bat = e.target.value.getUint8(0); }); await c.startNotifications(); } catch (e) {} } catch (e) {} }
+  const di = get(0x180A);
+  if (di) { const td = new TextDecoder(); for (const [u, k] of [[0x2A29, 'maker'], [0x2A24, 'model'], [0x2A26, 'fw'], [0x2A27, 'hw']]) { try { live.info[k] = td.decode(await (await di.getCharacteristic(u)).readValue()).replace(/\0/g, '').trim(); } catch (e) {} } }
+  const sub = async (u, chr, fn, label) => { const x = get(u); if (!x) return; try { const c = await x.getCharacteristic(chr); c.addEventListener('characteristicvaluechanged', e => fn(e.target.value)); await c.startNotifications(); blog(tL('Escuchando', 'Listening to') + ' ' + label); } catch (e) {} };
+  await sub(0x1814, 0x2A53, onRSC, tL('cadencia y velocidad', 'cadence and speed'));
+  await sub(0x1822, 0x2A5F, onPLX, tL('oxígeno en sangre', 'blood oxygen'));
+  await sub(0x1809, 0x2A1C, onTemp, tL('temperatura', 'temperature'));
+  return gatt;
+}
+function onRSC(v) { const f = v.getUint8(0); const r = {speed:v.getUint16(1, true) / 256, cad:v.getUint8(3), run:!!(f & 4)}; let o = 4; if (f & 1) { r.stride = v.getUint16(o, true) / 100; o += 2; } if (f & 2) r.dist = v.getUint32(o, true) / 10; live.rsc = r; }
+const sfloat = (v, o) => { const r = v.getUint16(o, true); if (r >= 0x07FE && r <= 0x0802) return null; let m = r & 0x0FFF, e = r >> 12; if (m >= 0x800) m -= 0x1000; if (e >= 8) e -= 16; return m * Math.pow(10, e); };
+function onPLX(v) { const x = sfloat(v, 1); if (x != null && x > 50 && x <= 100) live.spo2 = x; }
+function onTemp(v) { const f = v.getUint8(0), raw = v.getUint32(1, true); let m = raw & 0xFFFFFF; const e = raw >> 24; if (m >= 0x800000) m -= 0x1000000; let t = m * Math.pow(10, e); if (f & 1) t = (t - 32) / 1.8; if (t > 25 && t < 45) live.temp = t; }
+function onHrDisc() {
+  const h = BLE.hr; if (!h) return;
+  if (h.manual) { bleLost('hrband'); return; }
+  h.re = (h.re || 0) + 1;
+  if (h.re > 6) { blog(tL('No se pudo reconectar.', 'Could not reconnect.')); bleLost('hrband'); return; }
+  blog(tL(`Se perdió la conexión. Reconectando (intento ${h.re})…`, `Connection lost. Reconnecting (attempt ${h.re})…`)); paintLive(true);
+  setTimeout(() => { if (BLE.hr !== h) return; hrSetup(h.dev).then(() => { h.re = 0; blog(tL('Reconectado.', 'Reconnected.')); paintLive(true); }).catch(() => onHrDisc()); }, Math.min(30000, 1000 * 2 ** (h.re - 1)));
 }
 /* Muse: service 0xfe8d, control 273e0001, EEG TP9/AF7/AF8/TP10 on 273e0003-0006; 12 samples of 12 bits per packet, 256 Hz */
 const MUSE_SVC = 0xfe8d, MU = n => `273e00${n}-4c4d-454d-96be-f03bac821358`;
@@ -3879,32 +3991,34 @@ function calmTick() {
   if (good) { const c = Math.max(0, Math.min(100, (rel / good - .12) / .38 * 100)); live.calm = live.calm == null ? c : live.calm * .7 + c * .3; live.calmAt = Date.now(); }
   paintLive(true);
 }
-function bleConnect(id) {
+function bleConnect(id, all) {
   const why = bleWhy(), d = DEVICES.find(x => x.id === id);
   if (why) { toast(tL(...BLE_WHY[why])); if (!$('#sheet.show #dev-list')) openDevices(id === 'muse' ? 'mente' : 'todos'); return; }
-  if (bleLive(id)) return;
-  /* requestDevice must run inside the tap, so nothing is awaited before it */
-  (id === 'muse' ? museConnect() : hrConnect()).then(name => {
+  if (bleLive(id)) { if (id === 'hrband') openLive(); return; }
+  (id === 'muse' ? museConnect() : hrConnect(all)).then(name => {
     S.devices[id] = true; S.devXP = S.devXP || {};
     if (!S.devXP[id]) { S.devXP[id] = true; addXP(15); }
-    save(); rerender(); refreshDevSheet(); paintLive(true);
+    save(); rerender(); refreshDevSheet(); syncLivePill(); paintLive(true);
     toast(tL(`${name || devName(d)} conectado por Bluetooth.`, `${name || devName(d)} connected over Bluetooth.`));
-    nubi('device', {d, real:true});
+    if (id === 'hrband') { friendUp(3); P3 && P3.ok() && P3.play('celebrate'); setTimeout(openLive, 250); }
+    else nubi('device', {d, real:true});
   }).catch(e => {
     if (e && e.name === 'NotFoundError') return;
     if (e && e.name === 'SecurityError') { toast(tL(...BLE_WHY.frame)); return; }
+    if (e && e.name === 'NoHR') { toast(tL('Ese dispositivo no comparte su ritmo cardiaco por Bluetooth. Activa en él «transmitir frecuencia cardiaca» y vuelve a intentar.', "That device doesn't share its heart rate over Bluetooth. Turn on “broadcast heart rate” on it and try again.")); return; }
+    blog(tL('Error al conectar: ', 'Connection error: ') + ((e && e.message) || e));
     toast(tL(`No se pudo conectar: ${(e && e.message) || e}`, `Couldn't connect: ${(e && e.message) || e}`));
   });
 }
 function bleLost(id) {
   if (id === 'muse' && BLE.muse) { clearInterval(BLE.muse.tick); BLE.muse = null; live.calm = null; live.good = 0; }
-  if (id === 'hrband' && BLE.hr) { BLE.hr = null; live.hr = 0; live.rr = []; }
-  if (S.devices[id]) { S.devices[id] = false; save(); rerender(); refreshDevSheet(); toast(tL('Dispositivo desconectado.', 'Device disconnected.')); }
+  if (id === 'hrband' && BLE.hr) { clearInterval(BLE.hr.tick); BLE.hr = null; live.hr = 0; live.rr = []; blog(tL('Desconectado.', 'Disconnected.')); save(); }
+  if (S.devices[id]) { S.devices[id] = false; save(); if ($('#sheet.show #lv-chart')) closeSheet(); rerender(); refreshDevSheet(); syncLivePill(); toast(tL('Dispositivo desconectado.', 'Device disconnected.')); }
 }
 function bleOff(id) {
   try {
     if (id === 'muse' && BLE.muse) { const m = BLE.muse; m.cmd('h').catch(() => {}).finally(() => { try { m.dev.gatt.disconnect(); } catch (e) {} }); }
-    if (id === 'hrband' && BLE.hr) BLE.hr.dev.gatt.disconnect();
+    if (id === 'hrband' && BLE.hr) { BLE.hr.manual = true; BLE.hr.dev.gatt.disconnect(); }
   } catch (e) {}
   setTimeout(() => bleLost(id), 400);
 }
@@ -3926,32 +4040,37 @@ function breathResult() {
 
 function devRow(d) {
   const c = devCatOf(d.cat), tags = `<span class="dev-tags">${d.data.slice(0, 4).map(k => `<i>${tL(DEV_DATA[k][0], DEV_DATA[k][1])}</i>`).join('')}${d.data.length > 4 ? `<i>+${d.data.length - 4}</i>` : ''}</span>`;
-  let on, status = '', via, act;
+  const V = liveVals(); let on, status = '', via, act;
   if (d.ble) {
     on = bleLive(d.id);
-    status = on ? (d.id === 'muse' ? `<span class="dev-sync">${tL('En vivo', 'Live')} · ${tL('calma', 'calm')} <b data-live="calm">…</b> · <span data-live="sig"></span></span>`
-      : `<span class="dev-sync">${tL('En vivo', 'Live')} · <b data-live="hr">—</b> lpm · VFC <b data-live="hrv">…</b> ms${live.bat != null ? ` · ${tL('batería', 'battery')} ${live.bat} %` : ''}</span>`) : '';
+    status = on ? (d.id === 'muse' ? `<span class="dev-sync">${tL('En vivo', 'Live')} · ${tL('calma', 'calm')} <b data-live="calm">${V.calm}</b> · <span data-live="sig">${V.sig}</span></span>`
+      : `<span class="dev-sync">${tL('En vivo', 'Live')} · <b data-live="hr">${V.hr}</b> lpm · VFC <b data-live="hrv">${V.hrv}</b> ms · ${tL('batería', 'battery')} <b data-live="bat">${V.bat}</b></span><button class="hrb" data-act="live-open">${tL('Ver todos sus datos en vivo', 'See all its data live')}</button>`) : '';
     via = `<span class="dev-via real">${ic('link', 12)} ${tL('Conexión real por Bluetooth', 'Real Bluetooth connection')}</span>`;
     act = on ? `<button class="btn small ghost" data-act="ble-off" data-id="${d.id}">${tL('Desconectar', 'Disconnect')}</button>` : `<button class="btn small" data-act="ble-on" data-id="${d.id}">${tL('Conectar', 'Connect')}</button>`;
   } else {
     on = !!S.devices[d.id];
-    status = on ? `<span class="dev-sync">${tL('Datos de ejemplo (simulado)', 'Sample data (simulated)')}</span>` : '';
-    via = `<span class="dev-via">${d.via === 'cuenta' ? tL(`Con tu cuenta de ${d.n}: se activa cuando registremos Nubeltia con ${d.n}.`, `With your ${d.n} account: turns on once Nubeltia is registered with ${d.n}.`)
+    const mine = BLE.hr && live.brand === d.id;
+    status = mine ? `<span class="dev-sync">${tL('Tu reloj está conectado en vivo', 'Your watch is connected live')} · <b data-live="hr">${V.hr}</b> lpm</span><button class="hrb" data-act="live-open">${tL('Ver todos sus datos en vivo', 'See all its data live')}</button>`
+      : on ? `<span class="dev-sync">${tL('Datos de ejemplo (simulado)', 'Sample data (simulated)')}</span>` : '';
+    via = `<span class="dev-via">${d.via === 'cuenta' ? tL(`Pasos, sueño y estrés: con tu cuenta de ${d.n}, cuando registremos Nubeltia con ${d.n}.`, `Steps, sleep and stress: with your ${d.n} account, once Nubeltia is registered with ${d.n}.`)
       : ['apple', 'health'].includes(d.id) ? tL('Llega con la app para teléfono: una página web no puede leer este dato.', 'Comes with the phone app: a web page can’t read this data.')
       : tL('Llega con la app para iPhone y Android, vía Apple Salud o Health Connect.', 'Comes with the iPhone and Android app, via Apple Health or Health Connect.')}</span>`
-      + (d.hrb ? `<button class="hrb" data-act="ble-on" data-id="hrband">${ic('link', 12)} ${tL('Su ritmo cardiaco en vivo: activa «transmitir frecuencia cardiaca» y toca aquí', 'Its live heart rate: turn on “broadcast heart rate” and tap here')}</button>` : '');
+      + (d.hrb && !mine ? `<button class="hrb" data-act="ble-on" data-id="hrband">${ic('link', 12)} ${tL('Su ritmo cardiaco en vivo: activa «transmitir frecuencia cardiaca» y toca aquí', 'Its live heart rate: turn on “broadcast heart rate” and tap here')}</button>` : '');
     act = `<span class="dev-act">${sw(on, 'dev', `data-id="${d.id}"`, tL('Simular ', 'Simulate ') + d.n)}<small>${tL('demo', 'demo')}</small></span>`;
   }
-  return `<div class="dev ${on ? 'on' : ''}"><span class="dev-logo" style="--dc:${c[3]}">${d.l}</span><div><b>${esc(devName(d))}</b><span class="muted small">${esc(tL(d.d, d.en))}</span>${status}${tags}${via}</div>${act}</div>`;
+  return `<div class="dev ${on || (BLE.hr && live.brand === d.id) ? 'on' : ''}"><span class="dev-logo" style="--dc:${c[3]}">${d.l}</span><div><b>${esc(devName(d))}</b><span class="muted small">${esc(tL(d.d, d.en))}</span>${status}${tags}${via}</div>${act}</div>`;
 }
 function devicesCard() {
   const on = devOn(), list = on.length ? on : ['hrband', 'muse', 'apple', 'health', 'gfit', 'fitbit'].map(id => DEVICES.find(d => d.id === id));
   const bio = [['sleep', 'Sueño', 'Sleep', '7 h 12 min'], ['sleep', 'Profundo', 'Deep', '1 h 05 min'], ['sleep', 'REM', 'REM', '1 h 34 min'], ['hr', 'FC en reposo', 'Resting HR', '58 lpm'], ['hrv', 'VFC', 'HRV', '46 ms'], ['steps', tL('Pasos hoy', 'Steps today'), '', nf(S.steps)], ['weight', 'Peso', 'Weight', `${S.profile.peso} kg`], ['stress', 'Estrés', 'Stress', tL('Bajo', 'Low')]].filter(x => devSim(x[0]));
+  const D = S.hrDay && S.hrDay.day === todayKey() && S.hrDay.n ? S.hrDay : null;
   return `<section class="card" id="devices"><div class="sec-head"><h2 class="h2">${tL('Dispositivos y apps', 'Devices and apps')}</h2><span class="dev-count">${on.length} ${tL(on.length === 1 ? 'conectado' : 'conectados', 'connected')}</span></div>
     <p class="muted small" style="margin:4px 0 8px">${tL('Las bandas y relojes con ritmo cardiaco y la diadema Muse ya se conectan de verdad por Bluetooth. Los demás muestran datos de ejemplo hasta tener la app.', 'Heart-rate bands and watches and the Muse headband already connect for real over Bluetooth. The rest show sample data until the app is ready.')}</p>
+    ${BLE.hr ? `<button class="btn full" style="margin-bottom:6px" data-act="live-open"><span class="hp-heart">${HEART(16)}</span> ${tL('Ver mi reloj en vivo', 'See my watch live')}</button>` : ''}
     ${on.length ? '' : `<p class="label">${tL('Para empezar', 'To get started')}</p>`}
     ${list.map(devRow).join('')}
     <button class="btn ghost full" style="margin-top:10px" data-act="dev-all">${ic('plus', 16)} ${tL(`Ver los ${DEVICES.length} dispositivos y apps`, `See all ${DEVICES.length} devices and apps`)}</button>
+    ${D ? `<p class="label" style="margin-top:12px">${tL('Medido hoy por tu reloj (real)', 'Measured today by your watch (real)')}</p><div class="bio"><div><span>${tL('Mínima', 'Lowest')}</span><b>${D.min} lpm</b></div><div><span>${tL('Promedio', 'Average')}</span><b>${Math.round(D.sum / D.n)} lpm</b></div><div><span>${tL('Máxima', 'Highest')}</span><b>${D.max} lpm</b></div></div>` : ''}
     ${bio.length ? `<p class="label" style="margin-top:12px">${tL('Anoche y hoy (ejemplo)', 'Last night and today (sample)')}</p><div class="bio">${bio.map(x => `<div><span>${x[2] ? tL(x[1], x[2]) : x[1]}</span><b>${x[3]}</b></div>`).join('')}</div>` : ''}
   </section>`;
 }
@@ -3967,7 +4086,7 @@ function bleNote() {
   const why = bleWhy();
   return `<div class="ble-note ${why ? 'warn' : ''}">${ic('link', 18)}<div><b>${tL('Conexión real por Bluetooth', 'Real Bluetooth connection')}</b>
     <p class="muted small">${why ? tL(...BLE_WHY[why]) : tL('Enciende el Bluetooth, ten cerca tu banda, tu reloj transmitiendo su ritmo cardiaco o tu diadema Muse, y toca Conectar.', 'Turn on Bluetooth, keep your strap, your watch broadcasting heart rate or your Muse nearby, and tap Connect.')}</p>
-    ${why === 'frame' ? `<a class="btn small" href="${TEAM_URL}" target="_blank" rel="noopener">${tL('Abrir versión del equipo', 'Open team version')}</a>` : ''}</div></div>`;
+    ${why === 'frame' ? `<a class="btn small" href="${TEAM_URL}" target="_blank" rel="noopener">${tL('Abrir versión del equipo', 'Open team version')}</a>` : why ? '' : `<button class="hrb" data-act="ble-all">${tL('¿No aparece tu reloj? Buscar todos los dispositivos', 'Watch not showing? Search all devices')}</button>`}</div></div>`;
 }
 function openDevices(cat) {
   devCat = cat || 'todos'; devQ = '';
@@ -3982,21 +4101,142 @@ function openDevices(cat) {
 function refreshDevSheet() { const l = $('#sheet.show #dev-list'); if (l) { l.innerHTML = devList(); paintLive(true); } const n = $('#sheet.show #dev-n'); if (n) n.textContent = `${devOn().length}/${DEVICES.length}`; }
 document.addEventListener('input', e => { if (e.target.id === 'dev-q') { devQ = e.target.value; refreshDevSheet(); } });
 function mindDevCard() {
-  const L = [];
-  if (BLE.muse) L.push(`<div class="live"><span>${tL('Calma (EEG) en vivo', 'Live calm (EEG)')}</span><b data-live="calm">…</b><small data-live="sig"></small></div>`);
-  if (BLE.hr) L.push(`<div class="live"><span><span class="live-dot"></span> ${tL('Ritmo cardiaco', 'Heart rate')}</span><b><span data-live="hr">—</span> lpm</b><small>${tL('En vivo', 'Live')}</small></div>`,
-    `<div class="live"><span>VFC (RMSSD)</span><b><span data-live="hrv">…</span> ms</b><small>${tL('Con tus latidos reales', 'From your real heartbeats')}</small></div>`);
+  const L = [], V = liveVals();
+  if (BLE.muse) L.push(`<div class="live"><span>${tL('Calma (EEG) en vivo', 'Live calm (EEG)')}</span><b data-live="calm">${V.calm}</b><small data-live="sig">${V.sig}</small></div>`);
+  if (BLE.hr) L.push(`<div class="live"><span><span class="live-dot"></span> ${tL('Ritmo cardiaco', 'Heart rate')}</span><b><span data-live="hr">${V.hr}</span> lpm</b><small data-live="zone">${V.zone}</small></div>`,
+    `<div class="live"><span>VFC (RMSSD)</span><b><span data-live="hrv">${V.hrv}</span> ms</b><small data-live="hrvsub">${V.hrvsub}</small></div>`);
   const skip = [...(BLE.muse ? ['eeg'] : []), ...(BLE.hr ? ['hrv'] : [])], M = devMetrics().filter(x => !skip.includes(x.key));
   if (!L.length && !M.length) return `<section class="card" id="mind-dev"><h2 class="h2">${tL('Mide tu calma', 'Measure your calm')}</h2>
     <p class="muted small" style="margin-top:4px">${tL('Conecta de verdad tu diadema Muse o una banda o reloj con ritmo cardiaco y verás tu calma y tu VFC en vivo, también mientras respiras con Nubi.', 'Really connect your Muse headband or a heart-rate band or watch and you’ll see your calm and HRV live, also while you breathe with Nubi.')}</p>
     <div class="mind-btns"><button class="btn full" data-act="ble-on" data-id="muse">${ic('link', 16)} ${tL('Conectar diadema Muse', 'Connect Muse headband')}</button>
     <button class="btn ghost full" data-act="ble-on" data-id="hrband">${ic('heart', 16)} ${tL('Conectar banda o reloj (ritmo cardiaco)', 'Connect band or watch (heart rate)')}</button>
     <button class="link" data-act="dev-all" data-cat="mente">${tL('Ver todos los dispositivos de meditación', 'See all meditation devices')}</button></div></section>`;
-  const liveSrc = [BLE.muse && BLE.muse.name, BLE.hr && (BLE.hr.name || tL('banda', 'band'))].filter(Boolean), simSrc = [...new Set(M.map(x => x.src))];
+  const liveSrc = [BLE.muse && BLE.muse.name, BLE.hr && (BLE.hr.name || tL('tu reloj', 'your watch'))].filter(Boolean), simSrc = [...new Set(M.map(x => x.src))];
   return `<section class="card" id="mind-dev"><div class="sec-head"><h2 class="h2">${tL('Tu mente, medida', 'Your mind, measured')}</h2><button class="link" data-act="dev-all" data-cat="mente">${tL('Dispositivos', 'Devices')}</button></div>
     <p class="muted small">${liveSrc.length ? `${tL('En vivo', 'Live')}: ${esc(liveSrc.join(', '))}` : ''}${liveSrc.length && simSrc.length ? ' · ' : ''}${simSrc.length ? `${tL('Ejemplo', 'Sample')}: ${esc(simSrc.join(', '))}` : ''}</p>
     <div class="mind-tiles">${L.join('')}${M.slice(0, 6 - L.length).map(x => `<div><span>${esc(x.k)}</span><b>${esc(x.v)}</b><small>${esc(x.sub)}</small></div>`).join('')}</div>
-    <button class="btn ghost full" style="margin-top:12px" data-act="breathe">${ic('wind', 16)} ${tL('Respirar 1 min con Nubi', 'Breathe 1 min with Nubi')}</button></section>`;
+    ${BLE.hr ? `<button class="btn full" style="margin-top:12px" data-act="live-open"><span class="hp-heart">${HEART(16)}</span> ${tL('Ver mi reloj en vivo', 'See my watch live')}</button>` : ''}
+    <button class="btn ghost full" style="margin-top:8px" data-act="breathe">${ic('wind', 16)} ${tL('Respirar 1 min con Nubi', 'Breathe 1 min with Nubi')}</button></section>`;
+}
+
+/* ---------- your watch, live: zones, calories, chart, diagnostics ---------- */
+const HEART = n => `<svg viewBox="0 0 24 24" width="${n}" height="${n}" aria-hidden="true"><path fill="currentColor" d="M12 21s-7.4-4.5-9.5-9.2C1 8.4 3.1 5 6.6 5c2.1 0 3.7 1.1 5.4 3.1C13.7 6.1 15.3 5 17.4 5c3.5 0 5.6 3.4 4.1 6.8C19.4 16.5 12 21 12 21z"/></svg>`;
+const ZONES = [['Reposo', 'Resting', '#6C7AA8'], ['Zona 1 · Muy suave', 'Zone 1 · Very light', '#8A93B8'], ['Zona 2 · Suave', 'Zone 2 · Light', '#39E1FF'], ['Zona 3 · Moderada', 'Zone 3 · Moderate', '#2DE1C2'], ['Zona 4 · Intensa', 'Zone 4 · Hard', '#F5C04A'], ['Zona 5 · Máxima', 'Zone 5 · Maximum', '#FF6B7A']];
+const ZT = [0, .5, .6, .7, .8, .9];
+const hrMax = () => Math.round(208 - .7 * (+(S.profile && S.profile.edad) || 30));
+const zoneOf = hr => { const q = (hr || 0) / hrMax(); return q >= .9 ? 5 : q >= .8 ? 4 : q >= .7 ? 3 : q >= .6 ? 2 : q >= .5 ? 1 : 0; };
+/* Keytel et al. (2005): energy from heart rate, weight, age and sex; never below ~resting burn */
+function kcalMin(hr) {
+  const P = S.profile || {}, w = +P.peso || 70, a = +P.edad || 30;
+  const k = P.sexo === 'hombre' ? (-55.0969 + .6309 * hr + .1988 * w + .2017 * a) / 4.184 : (-20.4022 + .4472 * hr - .1263 * w + .074 * a) / 4.184;
+  return Math.max(1, k);
+}
+const newSess = () => ({start:Date.now(), min:0, max:0, sum:0, n:0, zones:[0, 0, 0, 0, 0, 0], kcal:0, hist:[]});
+function hrDayGet() { if (!S.hrDay || S.hrDay.day !== todayKey()) S.hrDay = {day:todayKey(), min:0, max:0, sum:0, n:0, low:0}; return S.hrDay; }
+const fmtDur = ms => { const t = Math.max(0, Math.round(ms / 1000)), h = Math.floor(t / 3600), m = Math.floor(t % 3600 / 60); return h ? `${h}:${pad(m)}:${pad(t % 60)}` : `${m}:${pad(t % 60)}`; };
+const LOC = [['otro lugar', 'other'], ['pecho', 'chest'], ['muñeca', 'wrist'], ['dedo', 'finger'], ['mano', 'hand'], ['oreja', 'ear lobe'], ['pie', 'foot']];
+const BRANDS = [['garmin', /garmin|forerunner|f[eē]nix|venu|vivo|instinct|epix|enduro|approach|hrm-?(pro|dual|fit|run|200)/i], ['polar', /polar|verity|h10|h9\b|vantage|grit|pacer|ignite|unite/i], ['coros', /coros|apex|vertix|pace ?\d|dura/i], ['whoop', /whoop/i], ['zepp', /amazfit|zepp|gtr|gts|t-rex|bip|cheetah|balance|helio|active ?2/i], ['mifit', /xiaomi|mi smart band|mi band|redmi|smart band \d/i], ['huawei', /huawei|honor|watch gt|watch fit|band \d/i], ['suunto', /suunto/i], ['fitbit', /fitbit|charge ?\d|versa|sense ?\d|inspire/i], ['galaxy', /galaxy watch/i], ['pixel', /pixel watch/i]];
+const brandOf = t => (BRANDS.find(b => b[1].test(t || '')) || [''])[0];
+let blogT = 0;
+function blog(m) { const d = new Date(); live.log.push(`${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} ${m}`); if (live.log.length > 120) live.log.shift(); }
+function liveVals() {
+  const s = live.sess, now = Date.now(), hv = rmssd(), on = !!BLE.hr, ago = live.hrAt ? Math.round((now - live.hrAt) / 1000) : null;
+  const waitLong = on && !(BLE.hr && BLE.hr.re) && (ago == null ? now - ((s && s.start) || now) > 8000 : ago > 8);
+  const D = S.hrDay && S.hrDay.day === todayKey() ? S.hrDay : null;
+  return {
+    hr:on && live.hr ? String(live.hr) : '—',
+    hrv:hv == null ? (live.rrSeen || !live.pk ? '…' : '—') : String(hv),
+    hrvsub:hv != null ? (hv >= 50 ? tL('Buena recuperación', 'Good recovery') : hv >= 25 ? tL('Normal', 'Normal') : tL('Baja: date un respiro', 'Low: take a breather')) : live.pk > 4 && !live.rrSeen ? tL('Tu reloj no envía intervalos entre latidos', 'Your watch doesn’t send beat intervals') : tL('Calculando con tus latidos…', 'Calculating from your beats…'),
+    calm:live.calm == null ? '…' : Math.round(live.calm) + ' %',
+    sig:live.good ? tL(`${live.good} de 4 sensores bien`, `${live.good} of 4 sensors OK`) : tL('Ajusta la diadema', 'Adjust the headband'),
+    status:!on ? '' : BLE.hr.re ? tL('Reconectando…', 'Reconnecting…') : ago == null ? (waitLong ? tL('Conectado, pero tu reloj aún no manda el pulso', 'Connected, but your watch isn’t sending heart rate yet') : tL('Conectado · esperando el primer latido…', 'Connected · waiting for the first beat…')) : ago > 8 ? tL(`Conectado, pero sin datos desde hace ${ago} s`, `Connected, but no data for ${ago} s`) : tL(`En vivo · último dato hace ${ago} s · ${live.pk} lecturas`, `Live · last reading ${ago} s ago · ${live.pk} readings`),
+    warn:waitLong,
+    zone:on && live.hr ? tL(...ZONES[zoneOf(live.hr)].slice(0, 2)) + ` · ${Math.round(live.hr / hrMax() * 100)} %` : '',
+    min:s && s.n ? String(s.min) : '—', avg:s && s.n ? String(Math.round(s.sum / s.n)) : '—', max:s && s.n ? String(s.max) : '—', dur:s ? fmtDur(now - s.start) : '0:00',
+    kcal:s ? (s.kcal < 10 ? s.kcal.toFixed(1) : String(Math.round(s.kcal))) : '0', low:D && D.low ? `${D.low} lpm` : tL('midiendo…', 'measuring…'),
+    bat:live.bat != null ? `${live.bat} %` : '—',
+    contact:live.contact == null ? tL('No lo informa', 'Not reported') : live.contact ? tL('Bien colocado', 'Good contact') : tL('Sin contacto: ajústalo', 'No contact: adjust it'),
+    kj:live.kj != null ? `${Math.round(live.kj / 4.184)} kcal` : '', cad:live.rsc ? `${live.rsc.cad} ${tL('pasos/min', 'steps/min')}` : '',
+    speed:live.rsc ? `${(live.rsc.speed * 3.6).toFixed(1)} km/h` : '', dist:live.rsc && live.rsc.dist != null ? `${(live.rsc.dist / 1000).toFixed(2)} km` : '',
+    spo2:live.spo2 != null ? `${Math.round(live.spo2)} %` : '', temp:live.temp != null ? `${live.temp.toFixed(1)} °C` : '',
+    maker:live.info.maker || '—', model:live.info.model || (BLE.hr && BLE.hr.name) || '—', fw:live.info.fw || '—', loc:live.loc != null ? tL(...(LOC[live.loc] || LOC[0])) : '—', pk:String(live.pk),
+  };
+}
+function liveSummary() {
+  if (!BLE.hr && !BLE.muse) return null;
+  const V = liveVals(), s = live.sess;
+  return {dispositivo:BLE.hr ? `${V.maker !== '—' ? V.maker + ' ' : ''}${V.model}` : null, ritmo_cardiaco:BLE.hr && live.hr ? live.hr : null, zona:V.zone || null, fc_max_estimada:hrMax(), vfc_ms:BLE.hr ? rmssd() : null,
+    sesion:s && s.n ? {minutos:Math.round((Date.now() - s.start) / 60000), minima:s.min, promedio:Math.round(s.sum / s.n), maxima:s.max, kcal_estimadas:Math.round(s.kcal)} : null,
+    fc_reposo_hoy:S.hrDay && S.hrDay.day === todayKey() && S.hrDay.low ? S.hrDay.low : null, bateria:live.bat, oxigeno:live.spo2 != null ? Math.round(live.spo2) : null, cadencia:live.rsc ? live.rsc.cad : null,
+    calma_eeg:BLE.muse && live.calm != null ? Math.round(live.calm) : null};
+}
+function liveTick() {
+  const h = BLE.hr; if (!h) return;
+  const now = Date.now(), s = live.sess, ago = live.hrAt ? now - live.hrAt : now - s.start;
+  if (ago > 10000 && !live.warned && !h.re) { live.warned = true; blog(tL('Sin datos de pulso desde hace 10 s.', 'No heart-rate data for 10 s.')); }
+  if (ago < 3000) live.warned = false;
+  const last = s.hist.filter(q => now - q[0] <= 60000);
+  if (last.length >= 30 && now - last[0][0] >= 45000) { const a = Math.round(last.reduce((x, q) => x + q[1], 0) / last.length), D = hrDayGet(); D.low = D.low ? Math.min(D.low, a) : a; }
+  if (now - live.savedAt > 30000) { live.savedAt = now; save(); }
+  paintLive(true); drawLiveChart();
+}
+function syncLivePill() { const p = $('#hr-pill'); if (p) p.hidden = !BLE.hr; }
+function drawLiveChart() {
+  const cv = $('#sheet.show #lv-chart'); if (!cv || !live.sess) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1), W = cv.clientWidth, H = cv.clientHeight || 130; if (!W) return;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const g = cv.getContext('2d'); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+  const now = Date.now(), span = 120000, pts = live.sess.hist.filter(q => now - q[0] <= span), hm = hrMax();
+  let lo = 250, hi = 0; pts.forEach(q => { lo = Math.min(lo, q[1]); hi = Math.max(hi, q[1]); });
+  if (!pts.length) { lo = 60; hi = 100; }
+  lo = Math.max(30, Math.floor((lo - 8) / 5) * 5); hi = Math.max(Math.ceil((hi + 8) / 5) * 5, lo + 30);
+  const Y = v => H - 16 - (v - lo) / (hi - lo) * (H - 26), X = t => Math.max(0, (1 - (now - t) / span)) * (W - 30);
+  for (let k = 1; k <= 5; k++) { const a = ZT[k] * hm, b = k < 5 ? ZT[k + 1] * hm : 260; const y1 = Y(Math.min(b, hi)), y2 = Y(Math.max(a, lo)); if (y2 > y1) { g.fillStyle = ZONES[k][2] + '16'; g.fillRect(0, y1, W - 30, y2 - y1); } }
+  g.fillStyle = 'rgba(138,147,184,.85)'; g.font = '600 10px Figtree, system-ui, sans-serif'; g.textAlign = 'left';
+  [hi - 5, Math.round((lo + hi) / 2), lo + 5].forEach(v => { g.fillText(String(v), W - 26, Y(v) + 3); g.strokeStyle = 'rgba(138,147,184,.12)'; g.beginPath(); g.moveTo(0, Y(v)); g.lineTo(W - 30, Y(v)); g.stroke(); });
+  if (pts.length > 1) {
+    const grad = g.createLinearGradient(0, 0, W, 0); grad.addColorStop(0, '#39E1FF'); grad.addColorStop(1, '#FF6B7A');
+    g.beginPath(); pts.forEach((q, k) => { const x = X(q[0]), y = Y(q[1]); k ? g.lineTo(x, y) : g.moveTo(x, y); });
+    g.lineWidth = 2.5; g.lineJoin = 'round'; g.strokeStyle = grad; g.stroke();
+    g.lineTo(X(pts[pts.length - 1][0]), H - 16); g.lineTo(X(pts[0][0]), H - 16); g.closePath();
+    const fill = g.createLinearGradient(0, 0, 0, H); fill.addColorStop(0, 'rgba(255,107,122,.22)'); fill.addColorStop(1, 'rgba(57,225,255,0)'); g.fillStyle = fill; g.fill();
+  }
+  if (pts.length) { const q = pts[pts.length - 1], x = X(q[0]), y = Y(q[1]); g.fillStyle = ZONES[zoneOf(q[1])][2]; g.shadowColor = g.fillStyle; g.shadowBlur = 10; g.beginPath(); g.arc(x, y, 4.5, 0, Math.PI * 2); g.fill(); g.shadowBlur = 0; }
+}
+function liveCard() {
+  if (!BLE.hr) return '';
+  const V = liveVals();
+  return `<section class="card live-card"><div class="lc-top"><span class="lv-heart">${HEART(32)}</span><div class="lc-main"><p class="eyebrow">${tL('En vivo', 'Live')} · ${esc(BLE.hr.name || tL('tu reloj', 'your watch'))}</p>
+    <p class="lc-bpm"><b data-live="hr">${V.hr}</b><span>lpm</span><em class="lv-zone sm" data-live="zone" data-zc>${V.zone}</em></p></div><button class="btn small" data-act="live-open">${tL('Ver todo', 'See all')}</button></div>
+    <div class="lc-stats"><span>VFC <b data-live="hrv">${V.hrv}</b> ms</span><span>${tL('Calorías', 'Calories')} <b data-live="kcal">${V.kcal}</b></span><span>${tL('Batería', 'Battery')} <b data-live="bat">${V.bat}</b></span><span>${tL('Conectado', 'Connected')} <b data-live="dur">${V.dur}</b></span></div>
+    <p class="lv-status" data-live="status">${V.status}</p></section>`;
+}
+function liveDiag() {
+  const V = liveVals();
+  return [`Nubeltia · ${tL('diagnóstico Bluetooth', 'Bluetooth diagnostics')}`, `${tL('Dispositivo', 'Device')}: ${(BLE.hr && BLE.hr.name) || '—'} · ${V.maker} · ${V.model} · firmware ${V.fw}`,
+    `${tL('Servicios', 'Services')}: ${live.svcs.map(u => '0x' + u.toString(16)).join(', ') || '—'}`, `${tL('Lecturas', 'Readings')}: ${live.pk} · RR: ${live.rrSeen ? 'sí' : 'no'} · ${tL('contacto', 'contact')}: ${V.contact} · ${tL('estado', 'status')}: ${V.status}`,
+    `${tL('Navegador', 'Browser')}: ${navigator.userAgent}`, '--', ...live.log].join('\n');
+}
+function openLive() {
+  if (!BLE.hr) { bleConnect('hrband'); return; }
+  const V = liveVals(), hm = hrMax(), brand = DEVICES.find(d => d.id === live.brand);
+  const caps = [[0x180D, 'Ritmo cardiaco en vivo', 'Live heart rate'], ['rr', 'Intervalos entre latidos (para la VFC)', 'Beat-to-beat intervals (for HRV)'], [0x180F, 'Batería', 'Battery'], [0x180A, 'Marca, modelo y firmware', 'Brand, model and firmware'], [0x1814, 'Cadencia y velocidad al correr', 'Running cadence and speed'], [0x1822, 'Oxígeno en sangre', 'Blood oxygen'], [0x1809, 'Temperatura', 'Temperature']];
+  const tile = (k, es, en, sub, opt) => `<div ${opt ? `data-optk="${k}" ${V[k] ? '' : 'hidden'}` : ''}><span>${tL(es, en)}</span><b data-live="${k}">${V[k]}</b>${sub ? `<small>${sub}</small>` : ''}</div>`;
+  openSheet(`<div class="lv-head"><div><p class="eyebrow">${tL('Tu reloj en vivo', 'Your watch, live')}</p><h3 class="h2">${esc(BLE.hr.name || V.model)}</h3><p class="lv-status" data-live="status">${V.status}</p></div><button class="btn small ghost" data-act="ble-off" data-id="hrband">${tL('Desconectar', 'Disconnect')}</button></div>
+    <div class="lv-hint" data-live-hint ${V.warn ? '' : 'hidden'}>${tL('Tu reloj está conectado, pero no está mandando el pulso. Abre en el reloj la opción «transmitir frecuencia cardiaca» (o empieza una actividad) y déjalo con la pantalla activa.', 'Your watch is connected but isn’t sending heart rate. Open “broadcast heart rate” on the watch (or start an activity) and keep its screen on.')}</div>
+    <div class="lv-hero"><span class="lv-heart">${HEART(56)}</span><div class="lv-num"><b data-live="hr">${V.hr}</b><span>lpm</span></div><em class="lv-zone" data-live="zone" data-zc>${V.zone}</em></div>
+    <div class="lv-chart"><canvas id="lv-chart"></canvas><small class="muted">${tL('Tu pulso, últimos 2 minutos', 'Your heart rate, last 2 minutes')}</small></div>
+    <div class="stats4"><div><b data-live="min">${V.min}</b><small>${tL('mínimo', 'lowest')}</small></div><div><b data-live="avg">${V.avg}</b><small>${tL('promedio', 'average')}</small></div><div><b data-live="max">${V.max}</b><small>${tL('máximo', 'highest')}</small></div><div><b data-live="dur">${V.dur}</b><small>${tL('conectado', 'connected')}</small></div></div>
+    <div class="mind-tiles lv-tiles">${tile('hrv', 'VFC (RMSSD, ms)', 'HRV (RMSSD, ms)', `<span data-live="hrvsub">${V.hrvsub}</span>`)}${tile('kcal', 'Calorías', 'Calories', tL('Estimadas con tu pulso, peso y edad', 'Estimated from your HR, weight and age'))}
+      ${tile('low', 'FC en reposo hoy', 'Resting HR today', tL('Tu promedio de 1 min más bajo', 'Your lowest 1-min average'))}${tile('bat', 'Batería', 'Battery', '')}${tile('contact', 'Contacto del sensor', 'Sensor contact', '')}
+      ${tile('kj', 'Energía (del reloj)', 'Energy (from watch)', '', 1)}${tile('cad', 'Cadencia', 'Cadence', '', 1)}${tile('speed', 'Velocidad', 'Speed', '', 1)}${tile('dist', 'Distancia', 'Distance', '', 1)}${tile('spo2', 'Oxígeno en sangre', 'Blood oxygen', '', 1)}${tile('temp', 'Temperatura', 'Temperature', '', 1)}</div>
+    <div class="lv-zones"><p class="label">${tL('Tiempo en cada zona', 'Time in each zone')} · ${tL('FC máx.', 'Max HR')} ${hm} (${tL('por tu edad', 'by your age')})</p>${ZONES.map((z, k) => `<div class="zrow"><span class="zdot" style="--zc:${z[2]}"></span><span class="zn">${tL(z[0], z[1])}</span><span class="zb"><i data-zbar="${k}" style="--zc:${z[2]}"></i></span><span class="zt" data-zt="${k}">0:00</span></div>`).join('')}</div>
+    <div class="lv-caps"><p class="label">${tL('Lo que comparte tu reloj por Bluetooth', 'What your watch shares over Bluetooth')}</p>${caps.map(c => `<div class="cap wait" data-cap="${c[0]}"><span class="cap-ic"></span>${tL(c[1], c[2])}</div>`).join('')}
+      <div class="lv-more">${tL(`Pasos del día, sueño, estrés y entrenamientos guardados no viajan por Bluetooth abierto: los guarda la app de ${brand ? brand.n : 'tu marca'}. Para traerlos de verdad hay que conectar tu cuenta de ${brand ? brand.n : 'la marca'} o usar la app para teléfono con Apple Salud o Health Connect.`, `Daily steps, sleep, stress and saved workouts don’t travel over open Bluetooth: ${brand ? brand.n : 'your brand'}’s app keeps them. To bring them in for real we need to connect your ${brand ? brand.n : 'brand'} account or use the phone app with Apple Health or Health Connect.`)}</div></div>
+    <details class="lv-tech"><summary>${tL('Detalles técnicos y diagnóstico', 'Technical details and diagnostics')}</summary>
+      <dl><dt>${tL('Fabricante', 'Maker')}</dt><dd data-live="maker">${V.maker}</dd><dt>${tL('Modelo', 'Model')}</dt><dd data-live="model">${V.model}</dd><dt>Firmware</dt><dd data-live="fw">${V.fw}</dd><dt>${tL('Sensor en', 'Sensor on')}</dt><dd data-live="loc">${V.loc}</dd><dt>${tL('Lecturas recibidas', 'Readings received')}</dt><dd data-live="pk">${V.pk}</dd></dl>
+      <pre id="lv-log"></pre><button class="btn small ghost" data-act="live-copy">${tL('Copiar diagnóstico', 'Copy diagnostics')}</button></details>`, 'tall');
+  setTimeout(() => { paintLive(true); drawLiveChart(); }, 60);
 }
 
 /* ---------- boot ---------- */
