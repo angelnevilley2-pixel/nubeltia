@@ -840,6 +840,60 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .lv-hb{border:0;background:none;padding:0;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--muted);cursor:pointer}
 .lv-hb small{display:flex;align-items:center;gap:3px;font:700 10.5px var(--f-body)}
 .lv-hb[aria-pressed="true"] small{color:var(--danger)}
+
+/* food scanner */
+.card.scan-card{background:linear-gradient(155deg,rgba(45,225,194,.16),rgba(57,225,255,.05) 65%),var(--surface);border:1px solid rgba(45,225,194,.3)}
+.scan-top{display:flex;gap:12px;align-items:center}
+.scan-ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--food);color:var(--food-ink);flex:none;box-shadow:0 0 18px rgba(45,225,194,.4)}
+.scan-btns{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;margin:14px 0 10px}
+.scan-btns .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.scan-form{margin-top:2px}
+.scan-today{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.scan-row{display:flex;align-items:center;gap:6px;border-top:1px solid var(--line);padding:6px 0}
+.scan-today .sec-head + .scan-row{border-top:0}
+.scan-open{flex:1;min-width:0;display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.scan-open img,.scan-noimg{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none;background:var(--surface-2);display:grid;place-items:center;color:var(--food)}
+.scan-open span{min-width:0;display:flex;flex-direction:column}
+.scan-open b{font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.scan-open small{color:var(--muted);font-size:12px}
+.sr-scanning{display:flex;flex-direction:column;align-items:center;gap:14px;padding:8px 0}
+.sr-shot{position:relative;width:100%;max-width:330px;aspect-ratio:1;border-radius:22px;overflow:hidden;background:var(--surface-2);display:grid;place-items:center;color:var(--food)}
+.sr-shot img{width:100%;height:100%;object-fit:cover}
+.sr-laser{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,#2DE1C2,transparent);box-shadow:0 0 18px 4px rgba(45,225,194,.6);animation:laser 1.6s ease-in-out infinite alternate}
+@keyframes laser{from{top:6%}to{top:92%}}
+.sr-msg{display:flex;align-items:center;gap:8px;font-weight:700}
+.dots{display:inline-flex;gap:4px}.dots i{width:6px;height:6px;border-radius:50%;background:var(--food);animation:dot 1s ease-in-out infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{50%{transform:translateY(-4px);opacity:.4}}
+.sres{display:flex;flex-direction:column;gap:12px}
+.sr-head{display:flex;gap:12px;align-items:flex-start}
+.sr-thumb{width:64px;height:64px;border-radius:16px;object-fit:cover;flex:none}
+.sr-title{flex:1;min-width:0}
+.sr-grade{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;font:800 18px var(--f-display);flex:none;color:#050720}
+.g-A{background:#2DE1C2}.g-B{background:#7BE38A}.g-C{background:#F5C04A}.g-D{background:#FF9F5A}.g-E{background:#FF6B7A}
+.sr-main{display:flex;align-items:center;gap:16px}
+.sr-donut{flex:none}
+.sr-dk{font:800 17px var(--f-display);fill:var(--ink)}.sr-du{font:700 10px var(--f-body);fill:var(--muted)}
+.sr-macros{flex:1;display:flex;flex-direction:column;gap:8px}
+.sr-macros div{display:grid;grid-template-columns:10px 1fr auto 38px;align-items:center;gap:8px;font-size:13.5px}
+.sr-macros i{width:10px;height:10px;border-radius:3px;background:var(--c)}
+.sr-macros b{font-variant-numeric:tabular-nums}
+.sr-macros small{color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.sr-goal{font-size:13.5px;line-height:1.45;background:var(--surface-2);border-radius:14px;padding:10px 12px}
+.sr-sug{display:flex;flex-direction:column;gap:6px}
+.sr-tiles{margin-top:0}
+.sr-size{display:flex;flex-direction:column;gap:6px}
+.sr-items div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
+.sr-items small{color:var(--muted)}
+.sr-tip{display:flex;gap:10px;align-items:flex-start;background:var(--mental-soft);border-radius:14px;padding:10px 12px;font-size:13.5px;line-height:1.45}
+.sr-tip .asst-ic{width:30px;height:30px;border-radius:10px}
+.sr-btns{display:flex;flex-wrap:wrap;gap:8px}
+.sr-btns .btn{display:inline-flex;align-items:center;gap:6px}
+.sr-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:20px 6px;color:var(--food)}
+.sr-empty p{color:var(--muted)}
+.hits{display:flex;flex-direction:column}
+.hit{display:flex;align-items:center;gap:10px;padding:10px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
+.hit > span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}
+.hit small{color:var(--muted);font-size:12px}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -898,6 +952,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
     <div class="celeb" id="celeb" role="dialog" aria-modal="true" aria-labelledby="celeb-title">
       <div class="celeb-card"><div id="celeb-mascot"></div><h2 id="celeb-title"></h2><p id="celeb-sub"></p><button class="btn full" data-act="celeb-close">Seguir</button></div>
     </div>
+    <input type="file" accept="image/*" capture="environment" id="scan-cam" hidden><input type="file" accept="image/*" id="scan-gal" hidden>
     <div class="chestov" id="chestov" role="dialog" aria-modal="true" aria-label="Cofre sorpresa"></div>
     <canvas id="fx"></canvas>
     <div class="splash" id="splash" aria-hidden="true"><span class="nb-mark"></span><span class="nb-word"></span></div>
@@ -943,6 +998,9 @@ const I = {
   game:'<rect x="2.5" y="7" width="19" height="10.5" rx="5.2"/><path d="M7.5 10.5v4M5.5 12.5h4M15.5 11.5h.01M18 13.5h.01"/>',
   x:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
   plus:'<path d="M12 5v14M5 12h14"/>',
+  camera:'<path d="M4 8.5h3.2L9 6h6l1.8 2.5H20V19H4z"/><circle cx="12" cy="13.2" r="3.4"/>',
+  image:'<rect x="4" y="5" width="16" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m5 17.5 4.5-4.5 3 3 2-2 4.5 4.5"/>',
+  barcode:'<path d="M5 6v12M8 6v12M11.5 6v12M14 6v12M17 6v12M19.5 6v12"/>',
   play:'<path d="M8.5 5.5v13l10.5-6.5z" fill="currentColor"/>',
   pause:'<path d="M8.5 5.5v13M15.5 5.5v13" stroke-width="3"/>',
   reset:'<path d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"/><path d="M4.5 4.5v4h4"/>',
@@ -2096,14 +2154,16 @@ function mealBlock(m) {
 function eatenBlock() {
   const r = calc(), tgt = r ? r.target : 1650;
   const t = MEALS.filter(m => S.eaten[m.id]).reduce((a, m) => { const x = mealTot(m); a.k += x.k; a.p += x.p; return a; }, {k:0, p:0});
+  scanToday().forEach(x => { t.k += Math.round(sv(x, 'kcal')); t.p += Math.round(sv(x, 'p')); });
   return `<div class="card steps-card" id="eaten">${ring(t.k / tgt, 84, 'var(--food)', nf(t.k), 'kcal')}
-    <div><h2 class="h2">Hoy llevas ${nf(t.k)} de ${nf(tgt)} kcal</h2><p class="muted small">Proteína: ${t.p} g de ${r ? nf(r.prot) : '—'} g. Marca cada comida con “Lo comí”.</p></div></div>`;
+    <div><h2 class="h2">Hoy llevas ${nf(t.k)} de ${nf(tgt)} kcal</h2><p class="muted small">Proteína: ${t.p} g de ${r ? nf(r.prot) : '—'} g. Marca cada comida con “Lo comí” o escanea lo que comas.</p></div></div>`;
 }
 function renderNutri() {
   const p = S.profile, opt = (v, l, cur) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${l}</option>`;
   const num = (k, l, attrs) => `<div class="field"><label for="np-${k}">${l}</label><input id="np-${k}" type="number" inputmode="decimal" data-np="${k}" value="${esc(p[k])}" ${attrs}></div>`;
   return `
   <header class="hello screen-head"><div><p class="eyebrow">Nutrición</p><h1 class="h1">Tu plan de alimentación</h1></div><div class="p3-slot">${mascot('happy', 112)}</div></header>
+  ${scanCard()}
   <section class="card"><div class="sec-head"><h2 class="h2">Tus datos</h2><span class="muted small">Se recalcula al instante</span></div>
     <div class="form-grid">
       <div class="field"><label for="np-sexo">Sexo</label><select id="np-sexo" data-np="sexo">${opt('mujer', 'Mujer', p.sexo)}${opt('hombre', 'Hombre', p.sexo)}</select></div>
@@ -2407,6 +2467,14 @@ const A = {
   'ble-on': t => bleConnect(t.dataset.id),
   'ble-all': () => bleConnect('hrband', true),
   'live-open': () => openLive(),
+  'scan-cam': () => { const i = $('#scan-cam'); i.value = ''; i.click(); },
+  'scan-gal': () => { const i = $('#scan-gal'); i.value = ''; i.click(); },
+  'sr-mult': t => { if (!scanCur) return; scanCur.mult = +t.dataset.m; showScan(scanCur); },
+  'sr-add': () => scanAdd(),
+  'sr-fix': () => { const f = $('#sr-fixbox'); if (f) { f.hidden = false; const i = $('#sr-fix-in'); i && i.focus(); } },
+  'sr-pick': t => { const P = (scanHits || [])[+t.dataset.i]; if (P) showScan(offToScan(P, P.code)); },
+  'scan-view': t => { const x = (S.scans || []).find(y => y.id === t.dataset.id); if (x) { scanCur = x; showScan(x, true); } },
+  'scan-del': t => { S.scans = (S.scans || []).filter(y => y.id !== t.dataset.id); save(); rerender(); SFX.undo(); },
   'hb-toggle': t => { S.settings.hb = !S.settings.hb; save(); t.setAttribute('aria-pressed', S.settings.hb); t.querySelector('small').innerHTML = `${ic(S.settings.hb ? 'sound' : 'mute', 13)} ${tL('latido', 'beat')}`; toast(S.settings.hb ? tL('Escuchas tu latido en vivo.', 'You hear your live heartbeat.') : tL('Latido en silencio.', 'Heartbeat muted.')); heartLoop(); },
   'sfx-cat': t => { const k = t.dataset.k; S.settings.sfx[k] = !S.settings.sfx[k]; save(); t.setAttribute('aria-pressed', S.settings.sfx[k]); if (S.settings.sfx[k]) SFX_DEMO[k](); },
   'sfx-demo': () => { if (!S.settings.sound) { toast(tL('Activa los sonidos primero.', 'Turn sounds on first.')); return; } [['ui', 0], ['reward', 700], ['nubi', 1900], ['focus', 2900]].forEach(([k, t]) => setTimeout(() => SFX_DEMO[k](), t)); },
@@ -2469,6 +2537,8 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('submit', e => {
   e.preventDefault();
+  if (e.target.id === 'scan-form') { const i = $('#scan-q'), v = i.value.trim(); if (v) { i.value = ''; scanText(v); } return; }
+  if (e.target.id === 'sr-fix-form') { const i = $('#sr-fix-in'), v = i.value.trim(); if (v) scanFix(v); return; }
   if (e.target.id === 'asst-form') { const i = $('#asst-in'); const v = i.value; i.value = ''; sendAsst(v); return; }
   if (e.target.id === 'chat-form') { if (chatBusy) { chatCtl && chatCtl.abort(); return; } const i = $('#chat-in'); const v = i.value; i.value = ''; sendChat(v); }
   if (e.target.id === 'task-form') {
@@ -3658,7 +3728,7 @@ function overview() {
     habitos:S.habits.map(h => ({nombre:h.name, hora:h.time, estado:h.state || 'pendiente', racha:h.streak})),
     pendientes:(S.tasks || []).map(t => ({texto:t.t, hecho:t.done})),
     metas:S.goals.map(g => ({nombre:g.name, avance:`${g.cur}/${g.target} ${g.unit}`, para:g.due})),
-    agua:`${S.water}/8`, comidas:MEALS.map(m => ({comida:m.name, hora:m.time, comido:!!S.eaten[m.id], kcal:mealTot(m).k})), meta_kcal:r ? r.target : null,
+    agua:`${S.water}/8`, comidas:MEALS.map(m => ({comida:m.name, hora:m.time, comido:!!S.eaten[m.id], kcal:mealTot(m).k})), escaneado_hoy:scanToday().map(x => ({comida:x.name, hora:x.at, kcal:Math.round(sv(x, 'kcal')), proteina_g:Math.round(sv(x, 'p')), azucar_g:sv(x, 'sug') == null ? null : Math.round(sv(x, 'sug'))})), meta_kcal:r ? r.target : null,
     rutina:{series:`${setsDone()}/${setsTotal}`, ejercicios:EXS.map(e => e.n)}, pomodoros_hoy:S.pomo.today,
     registro_animo:S.check ? {animo:MOODS[S.check.mood - 1], estres:S.check.stress, ansiedad:S.check.anx, sueno:S.check.sleep} : null,
     misiones:missionsToday().map(m => ({mision:m.es, progreso:`${Math.min(m.goal, m.v())}/${m.goal}`, reclamada:!!S.missions.claimed[m.id]})),
@@ -4417,6 +4487,204 @@ function heartLoop() {
   if (!S.settings.hb || !BLE.hr || !live.hr || !$('#sheet.show #lv-chart')) { if (S.settings.hb && BLE.hr) hbT = setTimeout(heartLoop, 1000); return; }
   SFX.heart(); hbT = setTimeout(heartLoop, Math.max(300, 60000 / live.hr));
 }
+
+
+/* ---------- food scanner: photo, label, barcode or description -> nutrition facts ----------
+   1. A barcode in the photo (BarcodeDetector) -> Open Food Facts, the open product database (real label data).
+   2. Otherwise Claude looks at the photo (sample with images) and estimates; brand items use published values.
+   3. Without AI (team copy): description searches Open Food Facts; a photo without barcode shows a labelled example. */
+let scanCur = null, scanBlob = null, scanThumb = '', scanHits = null, scanBusy = false;
+const NUM = v => (v === null || v === undefined || v === '' || !isFinite(+v)) ? null : +v;
+const sv = (x, k) => x[k] == null ? null : x[k] * (x.mult || 1);
+const scanToday = () => (S.scans || []).filter(x => x.added && x.day === todayKey());
+const fmtN = (v, d = 0) => v == null ? '—' : (d ? (Math.round(v * 10) / 10).toLocaleString('es-MX') : Math.round(v).toLocaleString('es-MX'));
+SFX.scan = () => { noise(0, .5, {f:600, f2:3200, q:6, vol:.035, cat:'ui', wet:.2}); note(PENTA[2], .05, .12, {type:'sine', vol:.035, cat:'ui', wet:.3}); note(PENTA[4], .2, .12, {type:'sine', vol:.035, cat:'ui', wet:.3}); };
+SFX.found = () => { note(PENTA[3], 0, .1, {type:'triangle', vol:.06, cat:'reward'}); note(PENTA[5], .08, .1, {type:'triangle', vol:.06, cat:'reward'}); note(PENTA[7], .16, .35, {type:'triangle', vol:.065, cat:'reward', wet:.4}); sparkle(.2, 4); };
+function scanCard() {
+  const T = scanToday(), tot = T.reduce((a, x) => a + (sv(x, 'kcal') || 0), 0), ai = aiState === 'live';
+  return `<section class="card scan-card" id="scan">
+    <div class="scan-top"><span class="scan-ic">${ic('camera', 22)}</span><div><h2 class="h2">${tL('Escanea tu comida', 'Scan your food')}</h2><p class="muted small">${tL('Tómale foto a tu plato, tu bebida o su etiqueta y te digo calorías, proteína, azúcares, grasa y más.', 'Snap your plate, drink or its label and I’ll tell you calories, protein, sugar, fat and more.')}</p></div></div>
+    <div class="scan-btns"><button class="btn" data-act="scan-cam">${ic('camera', 18)} ${tL('Tomar foto', 'Take photo')}</button><button class="btn ghost" data-act="scan-gal">${ic('image', 18)} ${tL('Galería', 'Gallery')}</button></div>
+    <form class="chat-form scan-form" id="scan-form"><label class="sr" for="scan-q">${tL('Describe tu comida', 'Describe your food')}</label><input id="scan-q" autocomplete="off" maxlength="140" placeholder="${esc(tL('O escríbelo: frappuccino de caramelo grande', 'Or type it: grande caramel frappuccino'))}"><button class="send" aria-label="${tL('Analizar', 'Analyze')}">${ic('send', 18)}</button></form>
+    <p class="ai-note">${ai ? tL('Analiza con IA. Si la foto trae código de barras, uso los datos reales del producto.', 'Analyzed with AI. If the photo shows a barcode, I use the product’s real data.') : tL('En esta versión: código de barras y búsqueda de productos con datos reales (Open Food Facts). La foto de platillos con IA funciona en la versión de Claude.', 'In this version: barcode and product search with real data (Open Food Facts). AI photo analysis of dishes works in the Claude version.')}</p>
+    ${T.length ? `<div class="scan-today"><div class="sec-head"><b>${tL('Escaneado hoy', 'Scanned today')}</b><span class="muted small">${fmtN(tot)} kcal</span></div>${T.map(x => `<div class="scan-row"><button class="scan-open" data-act="scan-view" data-id="${x.id}">${x.thumb ? `<img src="${x.thumb}" alt="">` : `<span class="scan-noimg">${ic(x.src === 'codigo' ? 'barcode' : 'food', 18)}</span>`}<span><b>${esc(x.name)}</b><small>${x.at} · ${fmtN(sv(x, 'kcal'))} kcal · P ${fmtN(sv(x, 'p'))} g · ${tL('azúcar', 'sugar')} ${fmtN(sv(x, 'sug'))} g</small></span></button><button class="icon-btn" data-act="scan-del" data-id="${x.id}" aria-label="${tL('Quitar', 'Remove')}">${ic('x', 16)}</button></div>`).join('')}</div>` : ''}
+  </section>`;
+}
+/* resize for the AI (max 1024 px) and keep a small thumbnail for the history */
+function prepImage(file) {
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), im = new Image();
+    im.onload = () => {
+      const mk = (mx, q) => { const k = Math.min(1, mx / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k); c.getContext('2d').drawImage(im, 0, 0, c.width, c.height); return [c, q]; };
+      const [big] = mk(1024), [small] = mk(120);
+      big.toBlob(b => { res({blob:b, thumb:small.toDataURL('image/jpeg', .6), url, im}); }, 'image/jpeg', .84);
+    };
+    im.onerror = () => rej(new Error('img'));
+    im.src = url;
+  });
+}
+function scanSheet(img, msg) {
+  openSheet(`<div class="sr-scanning">${img ? `<div class="sr-shot"><img src="${img}" alt=""><i class="sr-laser"></i></div>` : `<div class="sr-shot sr-text">${ic('food', 40)}</div>`}
+    <p class="sr-msg"><span class="dots"><i></i><i></i><i></i></span> <span id="sr-msg">${esc(msg)}</span></p></div>`, 'tall');
+  SFX.scan(); P3 && P3.ok() && P3.play('think');
+}
+const setScanMsg = m => { const e = $('#sr-msg'); if (e) e.textContent = m; };
+async function scanFile(file) {
+  if (!file || scanBusy) return;
+  scanBusy = true; scanHits = null;
+  try {
+    const pi = await prepImage(file); scanBlob = pi.blob; scanThumb = pi.thumb;
+    scanSheet(pi.url, tL('Buscando código de barras…', 'Looking for a barcode…'));
+    let code = null;
+    if ('BarcodeDetector' in window) { try { const bd = new BarcodeDetector({formats:['ean_13', 'ean_8', 'upc_a', 'upc_e']}); const r = await bd.detect(pi.im); code = r[0] && r[0].rawValue; } catch (e) {} }
+    if (code) {
+      setScanMsg(tL(`Código ${code}: buscando el producto…`, `Code ${code}: looking up the product…`));
+      let offErr = false; const x = await offLookup(code).catch(() => { offErr = true; return null; });
+      if (x) { x.thumb = scanThumb; showScan(x); return; }
+      if (!(await aiCanSee())) { scanError({code:offErr ? 'offdown' : 'nocode', bar:code}); return; }
+      setScanMsg(tL('No encontré ese código; lo analizo con la foto…', 'Code not found; analyzing the photo…'));
+    }
+    if (await aiCanSee()) { setScanMsg(tL('Nubi está analizando tu comida…', 'Nubi is analyzing your food…')); const x = await aiNutri({blob:scanBlob}); x.thumb = scanThumb; showScan(x); return; }
+    if (aiState === 'live' && sample) { scanError({code:'noimg'}); return; }
+    showScan(Object.assign(scanExample(), {thumb:scanThumb}));
+  } catch (e) { scanError(e); } finally { scanBusy = false; }
+}
+async function scanText(q) {
+  if (scanBusy) return; scanBusy = true; scanBlob = null; scanThumb = ''; scanHits = null;
+  try {
+    scanSheet('', tL(`Analizando “${q}”…`, `Analyzing “${q}”…`));
+    if (aiState === 'live' && sample) { const x = await aiNutri({text:q}); showScan(x); return; }
+    let offErr = false; const hits = await offSearch(q).catch(() => { offErr = true; return null; });
+    if (hits && hits.length) { scanHits = hits; showHits(q, hits); return; }
+    if (offErr) { scanError({code:'offdown'}); return; }
+    showScan(Object.assign(scanExample(), {note:tL('No encontré ese producto en la base abierta. Esto es un ejemplo de cómo se ve el resultado.', 'I couldn’t find that product in the open database. This is an example of the result.')}));
+  } catch (e) { scanError(e); } finally { scanBusy = false; }
+}
+async function scanFix(v) {
+  if (scanBusy) return; scanBusy = true;
+  try {
+    scanSheet(scanThumb || '', tL('Corrigiendo con tu aclaración…', 'Correcting with your note…'));
+    if (aiState === 'live' && sample) { const x = await aiNutri({blob:scanBlob && await aiCanSee() ? scanBlob : null, text:v, fix:true}); x.thumb = scanThumb; showScan(x); return; }
+    scanBusy = false; scanText(v); return;
+  } catch (e) { scanError(e); } finally { scanBusy = false; }
+}
+function scanError(e) {
+  const m = e && e.notFood ? tL('No veo comida ni bebida en la foto. Intenta de nuevo con el plato o el vaso al centro.', 'I don’t see food or a drink in the photo. Try again with the plate or cup centered.')
+    : e && e.code === 'offdown' ? tL(`${e.bar ? `Leí el código ${e.bar}, pero l` : 'L'}a base de datos de productos (Open Food Facts) no responde en este momento. Intenta en unos minutos.`, `${e.bar ? `I read code ${e.bar}, but t` : 'T'}he product database (Open Food Facts) isn’t responding right now. Try again in a few minutes.`)
+    : e && e.code === 'nocode' ? tL(`Leí el código ${e.bar}, pero ese producto no está en la base de datos. Escribe su nombre en Escanea tu comida.`, `I read code ${e.bar}, but that product isn’t in the database. Type its name in Scan your food.`)
+    : e && e.code === 'noimg' ? tL('Aquí la IA no puede ver fotos. Escribe qué es en el cuadro de Escanea tu comida y lo analizo.', 'Here the AI can’t see photos. Type what it is in Scan your food and I’ll analyze it.')
+    : e && e.code === 'rate_limited' ? tL('Hice muchos análisis seguidos. Espera un momento y vuelve a intentar.', 'Too many analyses in a row. Wait a moment and try again.')
+    : e && e.code === 'not_granted' ? tL('Para analizar fotos necesito tu permiso. Inténtalo de nuevo y acepta.', 'I need your permission to analyze photos. Try again and accept.')
+    : tL('No pude analizarla. Prueba con más luz, más cerca, o escribe qué es.', 'I couldn’t analyze it. Try more light, closer, or type what it is.');
+  openSheet(`<div class="sr-empty">${ic('food', 34)}<h3 class="h2">${tL('Ups, no salió', 'Oops, that didn’t work')}</h3><p class="muted">${m}</p><div class="sr-btns"><button class="btn" data-act="scan-cam">${ic('camera', 16)} ${tL('Otra foto', 'Another photo')}</button><button class="btn ghost" data-act="sheet-close">${tL('Cerrar', 'Close')}</button></div></div>`, 'tall');
+  SFX.error();
+}
+let canSee = null;
+async function aiCanSee() {
+  if (aiState !== 'live' || !sample) return false;
+  if (canSee !== null) return canSee;
+  try { const L = sample.limits ? await sample.limits() : null; canSee = !!(L && L.images); } catch (e) { canSee = false; }
+  return canSee;
+}
+const NUTRI_RULES = () => `Eres el nutriólogo de la app Nubeltia. Identifica la comida o bebida y estima su información nutricional para la porción que se ve o se describe.
+- Si reconoces un producto de marca o de una cadena (Starbucks, McDonald's, Oxxo, Domino's, etc.), usa los valores oficiales publicados para el tamaño y la preparación más probables, e indícalo en "source": "marca".
+- Si la foto muestra una etiqueta nutrimental o tabla nutricional, lee los valores exactos por porción ("source": "etiqueta").
+- Si no, estima con cuidado ("source": "estimacion"): usa referencias visuales (vasos, platos, cubiertos, manos) para el tamaño.
+- Para bebidas de cafetería, da en "sizes" los tamaños típicos con su factor respecto a la porción analizada (por ejemplo Alto 0.75, Grande 1, Venti 1.25).
+- Si la imagen no muestra comida ni bebida, responde exactamente {"is_food": false}.
+- Números sin unidades. Usa null si no aplica o no se puede estimar.
+- "tip": una alternativa más ligera y concreta, en tono amable, sin culpa (máximo 22 palabras).
+- "note": cómo hiciste la estimación (máximo 22 palabras).
+- Textos en ${S.lang === 'en' ? 'inglés' : 'español neutro'}.
+Responde SOLO con JSON válido, sin texto extra, con esta forma:
+{"is_food":true,"name":"","portion":"","confidence":"alta|media|baja","source":"marca|etiqueta|estimacion","items":[{"name":"","amount":"","kcal":0}],"kcal":0,"protein_g":0,"carbs_g":0,"sugar_g":0,"added_sugar_g":0,"fiber_g":0,"fat_g":0,"sat_fat_g":0,"sodium_mg":0,"caffeine_mg":null,"grade":"A|B|C|D|E","sizes":[{"label":"","mult":1}],"tip":"","note":""}`;
+function parseJSON(t) { const m = String(t || '').match(/\{[\s\S]*\}/); if (!m) throw new Error('nojson'); return JSON.parse(m[0]); }
+async function aiNutri({blob, text, fix}) {
+  const r0 = calc(), who = `${S.profile.sexo}, ${S.profile.edad} años, ${S.profile.peso} kg, meta ${r0 ? r0.target : 1650} kcal al día`;
+  const ask = `${NUTRI_RULES()}\n\nPersona: ${who}.\n${blob ? (text ? `Analiza la foto. Aclaración de la persona: "${text}".` : 'Analiza la foto.') : `La persona describe lo que va a comer o tomar: "${text}".`}${fix && scanCur ? `\nTu análisis anterior fue "${scanCur.name}"; la persona lo corrige.` : ''}`;
+  const r = await sample(ask, blob ? {images:[blob], cache:false} : {cache:false});
+  const j = parseJSON(r.text);
+  if (j.is_food === false) { const e = new Error('notfood'); e.code = 'notfood'; throw Object.assign(e, {notFood:true}); }
+  return {id:'s' + Date.now(), src:j.source === 'etiqueta' ? 'etiqueta' : j.source === 'marca' ? 'marca' : 'ia', name:String(j.name || text || tL('Tu comida', 'Your food')).slice(0, 80), portion:String(j.portion || ''), conf:j.confidence || 'media',
+    items:Array.isArray(j.items) ? j.items.slice(0, 8).map(i => ({name:String(i.name || ''), amount:String(i.amount || ''), kcal:NUM(i.kcal)})) : [],
+    kcal:NUM(j.kcal) || 0, p:NUM(j.protein_g), c:NUM(j.carbs_g), sug:NUM(j.sugar_g), asug:NUM(j.added_sugar_g), fib:NUM(j.fiber_g), fat:NUM(j.fat_g), sat:NUM(j.sat_fat_g), sod:NUM(j.sodium_mg), caf:NUM(j.caffeine_mg),
+    grade:/^[A-E]$/i.test(j.grade || '') ? j.grade.toUpperCase() : '', sizes:Array.isArray(j.sizes) ? j.sizes.filter(z => z && z.label && NUM(z.mult)).slice(0, 4).map(z => ({label:String(z.label), mult:+z.mult})) : [],
+    tip:String(j.tip || ''), note:String(j.note || ''), mult:1};
+}
+/* Open Food Facts: real label data for packaged products */
+const OFF_FIELDS = 'code,product_name,product_name_es,brands,nutriments,serving_size,serving_quantity,nutriscore_grade,quantity';
+async function offLookup(code) {
+  const r = await fetch(`https://world.openfoodfacts.org/api/v2/product/${encodeURIComponent(code)}?fields=${OFF_FIELDS}`);
+  if (!r.ok) throw new Error('off ' + r.status);
+  const j = await r.json(); if (j.status !== 1 || !j.product) return null;
+  return offToScan(j.product, code);
+}
+async function offSearch(q) {
+  const r = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(q)}&search_simple=1&action=process&json=1&page_size=8&fields=${OFF_FIELDS}`);
+  if (!r.ok) throw new Error('off ' + r.status);
+  const j = await r.json(); return (j.products || []).filter(P => P.nutriments && (P.nutriments['energy-kcal_100g'] != null || P.nutriments['energy-kcal_serving'] != null));
+}
+function offToScan(P, code) {
+  const N = P.nutriments || {}, sq = +P.serving_quantity || 0;
+  const v = k => { const a = NUM(N[k + '_serving']), b = NUM(N[k + '_100g']); return a != null ? a : b != null ? (sq ? b * sq / 100 : b) : null; };
+  const kj = v('energy'), kcal = v('energy-kcal') != null ? v('energy-kcal') : kj != null ? kj / 4.184 : 0, sod = v('sodium'), caf = v('caffeine');
+  return {id:'s' + Date.now(), src:'codigo', code, name:[P.product_name_es || P.product_name, P.brands && P.brands.split(',')[0]].filter(Boolean).join(' · ').slice(0, 80) || code,
+    portion:sq ? tL(`1 porción (${P.serving_size || sq + ' g'})`, `1 serving (${P.serving_size || sq + ' g'})`) : tL('100 g o 100 ml', '100 g or 100 ml'), conf:'alta', items:[],
+    kcal, p:v('proteins'), c:v('carbohydrates'), sug:v('sugars'), asug:v('added-sugars'), fib:v('fiber'), fat:v('fat'), sat:v('saturated-fat'), sod:sod != null ? sod * 1000 : null, caf:caf != null ? caf * 1000 : null,
+    grade:/^[a-e]$/i.test(P.nutriscore_grade || '') ? P.nutriscore_grade.toUpperCase() : '', sizes:sq ? [] : [{label:'100 g', mult:1}, {label:'200 g', mult:2}, {label:'330 ml', mult:3.3}],
+    tip:'', note:tL('Datos de la etiqueta, de la base abierta Open Food Facts.', 'Label data from the open Open Food Facts database.'), mult:1};
+}
+function scanExample() {
+  return {id:'s' + Date.now(), src:'ejemplo', name:tL('Frappuccino de caramelo grande', 'Grande caramel Frappuccino'), portion:tL('1 vaso grande (473 ml) con leche entera y crema batida', '1 grande cup (473 ml) with whole milk and whipped cream'), conf:'media', items:[],
+    kcal:380, p:5, c:55, sug:54, asug:null, fib:0, fat:16, sat:10, sod:240, caf:90, grade:'E', sizes:[{label:tL('Alto', 'Tall'), mult:.75}, {label:'Grande', mult:1}, {label:'Venti', mult:1.25}],
+    tip:tL('Pídelo tamaño alto, con leche descremada y sin crema batida: ahorras casi la mitad.', 'Order a tall with skim milk and no whipped cream: you save almost half.'), note:'', mult:1};
+}
+function showHits(q, hits) {
+  openSheet(`<div class="sec-head"><h3 class="h2">${tL('¿Cuál es?', 'Which one?')}</h3><span class="muted small">Open Food Facts</span></div><p class="muted small">${tL(`Productos para “${esc(q)}” con su etiqueta real:`, `Products for “${esc(q)}” with their real label:`)}</p>
+    <div class="hits">${hits.map((P, i) => { const x = offToScan(P, P.code); return `<button class="hit" data-act="sr-pick" data-i="${i}"><span class="scan-noimg">${ic('barcode', 18)}</span><span><b>${esc(x.name)}</b><small>${fmtN(x.kcal)} kcal · ${esc(x.portion)}</small></span>${ic('chevron', 16)}</button>`; }).join('')}</div>`, 'tall');
+  SFX.found();
+}
+const SRC = {codigo:['Código de barras · datos reales', 'Barcode · real data'], etiqueta:['Leído de la etiqueta', 'Read from the label'], marca:['Datos oficiales de la marca (IA)', 'Brand’s published data (AI)'], ia:['Estimado con IA', 'AI estimate'], ejemplo:['Ejemplo · sin IA conectada', 'Example · no AI connected']};
+function showScan(x, saved) {
+  scanCur = x; x.mult = x.mult || 1;
+  const r0 = calc(), tgt = r0 ? r0.target : 1650, K = sv(x, 'kcal') || 0, P = sv(x, 'p') || 0, C = sv(x, 'c') || 0, F = sv(x, 'fat') || 0, SU = sv(x, 'sug');
+  const kP = P * 4, kC = C * 4, kF = F * 9, kT = kP + kC + kF || 1, pc = v => Math.round(v / kT * 100);
+  const eatenK = MEALS.filter(m => S.eaten[m.id]).reduce((a, m) => a + mealTot(m).k, 0) + scanToday().filter(y => y !== x).reduce((a, y) => a + (sv(y, 'kcal') || 0), 0), left = tgt - eatenK - K;
+  const donut = (() => { const R = 34, L = 2 * Math.PI * R; let off = 0; return `<svg viewBox="0 0 90 90" width="96" height="96" class="sr-donut" aria-hidden="true"><circle cx="45" cy="45" r="${R}" fill="none" stroke="var(--track)" stroke-width="11"/>${[[kP, 'var(--brand)'], [kC, 'var(--gold)'], [kF, 'var(--mental)']].map(([v, c]) => { const d = v / kT * L, el = `<circle cx="45" cy="45" r="${R}" fill="none" stroke="${c}" stroke-width="11" stroke-dasharray="${d} ${L - d}" stroke-dashoffset="${-off}" transform="rotate(-90 45 45)"/>`; off += d; return el; }).join('')}<text x="45" y="43" text-anchor="middle" class="sr-dk">${fmtN(K)}</text><text x="45" y="57" text-anchor="middle" class="sr-du">kcal</text></svg>`; })();
+  const sugBar = SU == null ? '' : `<div class="sr-sug"><div class="q-top"><b>${tL('Azúcares', 'Sugars')} ${fmtN(SU, 1)} g</b><small>${tL('ideal: menos de 25 g al día', 'ideal: under 25 g a day')}</small></div><div class="bar ${SU > 25 ? 'gold' : ''}"><i style="width:${Math.min(100, SU / 50 * 100)}%"></i></div></div>`;
+  const tile = (l, v, u, d) => `<div><span>${l}</span><b>${v == null ? '—' : fmtN(v, d) + (u ? ' ' + u : '')}</b></div>`;
+  const sizes = (x.sizes && x.sizes.length ? x.sizes : [{label:'½', mult:.5}, {label:'1', mult:1}, {label:'1½', mult:1.5}, {label:'2', mult:2}]);
+  openSheet(`<div class="sres">
+    ${x.src === 'ejemplo' ? `<div class="lv-hint"><b>${tL('Esto es un ejemplo.', 'This is an example.')}</b> ${tL('Esta versión no tiene IA conectada para leer fotos de platillos. Prueba con el código de barras de un producto o escribe su nombre; la foto con IA funciona en la versión de Claude.', 'This version has no AI connected to read dish photos. Try a product barcode or type its name; AI photos work in the Claude version.')}</div>` : ''}
+    <div class="sr-head">${x.thumb ? `<img class="sr-thumb" src="${x.thumb}" alt="">` : `<span class="sr-thumb scan-noimg">${ic('food', 26)}</span>`}<div class="sr-title"><p class="eyebrow">${tL(...SRC[x.src] || SRC.ia)}</p><h3 class="h2">${esc(x.name)}</h3><p class="muted small">${esc(x.portion)}${x.conf && x.src !== 'codigo' ? ` · ${tL('confianza', 'confidence')} ${esc(x.conf)}` : ''}</p></div>${x.grade ? `<span class="sr-grade g-${x.grade}" title="${tL('Calidad nutricional', 'Nutrition quality')}">${x.grade}</span>` : ''}</div>
+    <div class="sr-main">${donut}<div class="sr-macros">
+      <div><i style="--c:var(--brand)"></i><span>${tL('Proteína', 'Protein')}</span><b>${fmtN(P, 1)} g</b><small>${pc(kP)}%</small></div>
+      <div><i style="--c:var(--gold)"></i><span>${tL('Carbohidratos', 'Carbs')}</span><b>${fmtN(C, 1)} g</b><small>${pc(kC)}%</small></div>
+      <div><i style="--c:var(--mental)"></i><span>${tL('Grasa', 'Fat')}</span><b>${fmtN(F, 1)} g</b><small>${pc(kF)}%</small></div></div></div>
+    <p class="sr-goal">${tL(`Es el <b>${Math.round(K / tgt * 100)}%</b> de tus ${fmtN(tgt)} kcal del día. ${left >= 0 ? `Después te quedarían <b>${fmtN(left)} kcal</b>.` : `Te pasarías por <b>${fmtN(-left)} kcal</b>; compénsalo con una caminata o una cena ligera.`}`, `That’s <b>${Math.round(K / tgt * 100)}%</b> of your ${fmtN(tgt)} kcal for the day. ${left >= 0 ? `You’d have <b>${fmtN(left)} kcal</b> left.` : `You’d go over by <b>${fmtN(-left)} kcal</b>; balance it with a walk or a light dinner.`}`)}</p>
+    ${sugBar}
+    <div class="mind-tiles sr-tiles">${tile(tL('Azúcares añadidos', 'Added sugars'), sv(x, 'asug'), 'g', 1)}${tile(tL('Fibra', 'Fiber'), sv(x, 'fib'), 'g', 1)}${tile(tL('Grasa saturada', 'Saturated fat'), sv(x, 'sat'), 'g', 1)}${tile(tL('Sodio', 'Sodium'), sv(x, 'sod'), 'mg')}${sv(x, 'caf') != null ? tile(tL('Cafeína', 'Caffeine'), sv(x, 'caf'), 'mg') : ''}${tile(tL('Proteína por 100 kcal', 'Protein per 100 kcal'), K ? P / K * 100 : null, 'g', 1)}</div>
+    <div class="sr-size"><span class="label">${tL('Porción', 'Portion')}</span><div class="chips">${sizes.map(z => `<button class="chip-btn" data-act="sr-mult" data-m="${z.mult}" aria-pressed="${Math.abs(z.mult - x.mult) < .01}">${esc(z.label)}</button>`).join('')}</div></div>
+    ${x.items && x.items.length > 1 ? `<div class="sr-items"><p class="label">${tL('Lo que vi', 'What I saw')}</p>${x.items.map(i => `<div><span>${esc(i.name)}${i.amount ? ` <small>· ${esc(i.amount)}</small>` : ''}</span><b>${i.kcal == null ? '—' : fmtN(i.kcal * x.mult) + ' kcal'}</b></div>`).join('')}</div>` : ''}
+    ${x.tip ? `<div class="sr-tip"><span class="asst-ic">${ic('sparkle', 16)}</span><p><b>Nubi:</b> ${esc(x.tip)}</p></div>` : ''}
+    <p class="muted small">${x.note ? esc(x.note) + ' ' : ''}${x.src === 'codigo' ? '' : tL('Valores aproximados: pueden variar según la receta y la porción.', 'Approximate values: they vary with recipe and portion.')}</p>
+    <div class="sr-btns">${saved ? '' : `<button class="btn" data-act="sr-add">${ic('plus', 16)} ${tL('Agregar a mi día', 'Add to my day')}</button>`}<button class="btn ghost" data-act="scan-cam">${ic('camera', 16)} ${tL('Otra foto', 'Another photo')}</button>${x.src !== 'codigo' && !saved ? `<button class="btn ghost" data-act="sr-fix">${tL('No es esto', 'Not this')}</button>` : ''}</div>
+    <form class="chat-form" id="sr-fix-form" ${''}><div id="sr-fixbox" hidden style="display:contents"><label class="sr" for="sr-fix-in">${tL('¿Qué es?', 'What is it?')}</label><input id="sr-fix-in" autocomplete="off" maxlength="120" placeholder="${esc(tL('Dime qué es: ej. latte de avena venti', 'Tell me what it is: e.g. venti oat latte'))}"><button class="send" aria-label="${tL('Corregir', 'Correct')}">${ic('send', 18)}</button></div></form>
+  </div>`, 'tall');
+  SFX.found(); P3 && P3.ok() && P3.play('nod');
+  setTimeout(() => { const b = $('#sheet [data-act=sr-add]') || $('#sheet .sr-btns .btn'); b && b.focus({preventScroll:true}); }, 90);
+}
+function scanAdd() {
+  const x = scanCur; if (!x || x.added) return;
+  x.added = true; x.day = todayKey(); x.at = nowHM();
+  S.scans = [x, ...(S.scans || []).filter(y => y.id !== x.id)].slice(0, 40);
+  S.scans.forEach((y, i) => { if (i >= 12) y.thumb = ''; });
+  save(); closeSheet(); rerender(); addXP(5, {x:phone.clientWidth / 2, y:phone.clientHeight * .4}); SFX.claim();
+  const tot = scanToday().reduce((a, y) => a + (sv(y, 'kcal') || 0), 0) + MEALS.filter(m => S.eaten[m.id]).reduce((a, m) => a + mealTot(m).k, 0), SU = sv(x, 'sug');
+  setTimeout(() => nubiSay(SU != null && SU > 25 ? tL(`¡Anotado! Disfrútalo. Trae ${fmtN(SU)} g de azúcar: acompáñalo con agua y prioriza proteína en tu siguiente comida.`, `Logged! Enjoy it. It has ${fmtN(SU)} g of sugar: have water with it and favor protein at your next meal.`)
+    : tL(`¡Anotado! Hoy llevas ${fmtN(tot)} kcal. ¡Vas muy bien!`, `Logged! You’re at ${fmtN(tot)} kcal today. Doing great!`)), 450);
+}
+document.addEventListener('change', e => { const id = e.target.id; if ((id === 'scan-cam' || id === 'scan-gal') && e.target.files && e.target.files[0]) scanFile(e.target.files[0]); });
 
 /* ---------- boot ---------- */
 if (P3 && P3.play && !P3._snd) { const p0 = P3.play; P3.play = (n, ...r) => { if (CLIP_SND[n] && P3.ok && P3.ok()) CLIP_SND[n](); return p0(n, ...r); }; P3._snd = true; }
