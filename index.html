@@ -894,6 +894,13 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .hit{display:flex;align-items:center;gap:10px;padding:10px 0;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);text-align:left;font:inherit;cursor:pointer}
 .hit > span:nth-child(2){flex:1;min-width:0;display:flex;flex-direction:column}
 .hit small{color:var(--muted);font-size:12px}
+
+/* AI card */
+.ai-steps{margin:8px 0 10px;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.45}
+#ai-key-form .btn{flex:none;height:46px}
+.ai-status{font:600 13px/1.4 var(--f-body);margin:8px 0;color:var(--muted)}
+.ai-status:empty{display:none}
+.ai-status.ok{color:var(--food)}.ai-status.bad{color:var(--danger)}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -2044,14 +2051,16 @@ function openBreath() {
 function stopBreath() { clearTimeout(breathT); clearInterval(breathI); }
 
 /* ---------- Nubi (IA) ---------- */
-let sample = null, aiState = 'checking', chatCtl = null, chatBusy = false;
+let sample = null, aiState = 'checking', aiVia = '', chatCtl = null, chatBusy = false;
 (async () => {
   try { sample = window.claude && window.claude.use ? await window.claude.use('sample') : null; } catch (e) { sample = null; }
+  aiVia = sample ? 'claude' : '';
+  if (!sample && aiKeyGet()) { sample = apiSample; aiVia = 'key'; }
   aiState = sample ? 'live' : 'demo'; const n = $('#ai-note'); if (n) n.textContent = aiNote();
 })();
 function aiNote() {
-  return aiState === 'live' ? 'Responde la IA con la cuenta de Claude de quien usa el prototipo. La primera vez pide permiso.'
-    : aiState === 'demo' ? 'Modo demostración: respuestas de ejemplo. En la app final responde la IA.' : 'Conectando con la IA…';
+  return aiState === 'live' ? (aiVia === 'key' ? 'Responde la IA (Claude Opus 5.5) con tu clave de API.' : 'Responde la IA con la cuenta de Claude de quien usa el prototipo. La primera vez pide permiso.')
+    : aiState === 'demo' ? 'Modo demostración: respuestas de ejemplo. Conecta la IA en Perfil para que Nubi responda de verdad.' : 'Conectando con la IA…';
 }
 function chatMsgs() {
   const greet = `<div class="msg ai">Hola, ${esc(S.name)}. Soy Nubi. ¿Cómo te fue hoy? Puedes contarme qué te estresa o por qué no salió alguna rutina, y lo vemos paso a paso.</div>`;
@@ -2098,6 +2107,8 @@ async function sendChat(text) {
     if (code === 'cancelled') reply.content = e.text ? clean(e.text) : 'Respuesta detenida.';
     else if (['not_granted','sampling_disabled','not_declared','capability_disabled','capability_removed'].includes(code)) { aiState = 'demo'; $('#ai-note').textContent = aiNote(); reply.content = demoReply(text); reply.demo = true; }
     else if (code === 'rate_limited') { reply.content = 'Nubi necesita una pausa. Inténtalo de nuevo en un momento.'; reply.err = true; }
+    else if (code === 'bad_key' || code === 'nokey') { reply.content = tL('Tu clave de IA no funciona. Revísala en Perfil → IA de Nubeltia.', 'Your AI key isn’t working. Check it in Profile → Nubeltia AI.'); reply.err = true; }
+    else if (code === 'network') { reply.content = tL('No hay conexión con la IA. Revisa tu internet e inténtalo de nuevo.', 'Can’t reach the AI. Check your internet and try again.'); reply.err = true; }
     else if (code === 'refused') reply.content = 'Prefiero no responder a eso. ¿Me cuentas cómo te sientes hoy?';
     else { reply.content = (e && e.text ? clean(e.text) + '\n\n' : '') + 'No pude responder ahora. Vuelve a intentarlo.'; reply.err = true; }
   }
@@ -2233,7 +2244,7 @@ function aboutHTML() {
   const sim = ['Avisos en el reloj','Conexión con relojes y anillos','Conexión con tu coach','Fotos de platillos y videos de ejercicios'];
   return `<h3>Funciona de verdad</h3><ul>${ok.map(t => `<li>${ic('check', 16)}<span>${t}</span></li>`).join('')}</ul>
     <h3>Simulado por ahora</h3><ul>${sim.map(t => `<li class="sim">${ic('sparkle', 16)}<span>${t}</span></li>`).join('')}</ul>
-    <p class="fine">Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. En esta versión de prueba, Nubi responde con ejemplos; en la app final responderá con IA.</p>`;
+    <p class="fine">Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. Para que Nubi use IA de verdad (fotos de comida, chat y asistente), conecta tu clave en Perfil → IA de Nubeltia; sin clave responde con ejemplos.</p>`;
 }
 function renderPerfil() {
   const into = S.xp % 100, un = BADGES.filter(b => S.badges[b.id]).length;
@@ -2253,6 +2264,7 @@ function renderPerfil() {
     <p class="muted small" style="margin-top:10px">Cancela cuando quieras. Precios de ejemplo para el prototipo.</p></section>
   <section><div class="sec-head"><h2 class="h2">Logros</h2><span class="muted small">${un} de ${BADGES.length}</span></div>
     <div class="badges">${BADGES.map(b => { const on = !!S.badges[b.id]; return `<button class="badge ${on ? '' : 'locked'}" data-act="badge" data-id="${b.id}"><span class="medal">${ic(on ? b.icon : 'lock', 24)}</span>${b.name}</button>`; }).join('')}</div></section>
+  ${aiCard()}
   ${devicesCard()}
   <section class="card"><h2 class="h2">Conectar con mi coach</h2>
     ${S.coach.connected ? `<div class="coach-on">${ic('link', 22)}<div><b>Coach conectado</b><p class="muted small">Código ${esc(S.coach.code)}. Tu coach puede cargarte planes de alimentación y entrenamiento.</p></div></div>
@@ -2467,6 +2479,10 @@ const A = {
   'ble-on': t => bleConnect(t.dataset.id),
   'ble-all': () => bleConnect('hrband', true),
   'live-open': () => openLive(),
+  'go-nutri': () => goScroll('nutricion', '#scan'),
+  'ai-setup': () => { closeSheet(); goScroll('perfil', '#ai-card'); setTimeout(() => { const i = $('#ai-key'); i && i.focus({preventScroll:true}); }, 500); },
+  'ai-test': () => aiKeyTest(true),
+  'ai-forget': () => { aiKeySet(''); toast(tL('Quité tu clave de este navegador.', 'Removed your key from this browser.')); rerender(); },
   'scan-cam': () => { const i = $('#scan-cam'); i.value = ''; i.click(); },
   'scan-gal': () => { const i = $('#scan-gal'); i.value = ''; i.click(); },
   'sr-mult': t => { if (!scanCur) return; scanCur.mult = +t.dataset.m; showScan(scanCur); },
@@ -2537,6 +2553,7 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('submit', e => {
   e.preventDefault();
+  if (e.target.id === 'ai-key-form') { const i = $('#ai-key'); aiKeySave(i.value); i.value = ''; return; }
   if (e.target.id === 'scan-form') { const i = $('#scan-q'), v = i.value.trim(); if (v) { i.value = ''; scanText(v); } return; }
   if (e.target.id === 'sr-fix-form') { const i = $('#sr-fix-in'), v = i.value.trim(); if (v) scanFix(v); return; }
   if (e.target.id === 'asst-form') { const i = $('#asst-in'); const v = i.value; i.value = ''; sendAsst(v); return; }
@@ -2743,7 +2760,7 @@ const EN = {
 '¡Hey! Aquí sigo, flotando y entrenando.':'Hey! Still here, floating and training.','¿Una pausa de respiración?':'Breathing break?','¡Vamos por ese hábito!':'Let’s get that habit!','Tu mente también se entrena.':'Your mind needs training too.','¡Me haces cosquillas!':'That tickles!',
 };
 Object.assign(EN, {'¡Me mareo!':'I’m dizzy!'});
-Object.assign(EN, {'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. En esta versión de prueba, Nubi responde con ejemplos; en la app final responderá con IA.':'Names and past days are sample data. What you do is saved only in this browser. In this test version Nubi gives sample replies; in the final app it will answer with AI.'});
+Object.assign(EN, {'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. Para que Nubi use IA de verdad (fotos de comida, chat y asistente), conecta tu clave en Perfil → IA de Nubeltia; sin clave responde con ejemplos.':'Names and past days are sample data. What you do is saved only in this browser. For real AI (food photos, chat and assistant), connect your key in Profile → Nubeltia AI; without a key Nubi gives sample replies.'});
 Object.assign(EN, {'Estilo':'Style','Yoga':'Yoga','Correr':'Run','Patineta':'Skateboard','Karate':'Karate','Bici':'Bike','Pintar':'Paint','Cocinar':'Cook','DJ':'DJ','Espacio':'Space',
   'Gorro de fiesta':'Party hat','Gorro de invierno':'Beanie','Sombrero vaquero':'Cowboy hat','Gorro de chef':'Chef hat','Aureola':'Halo','Mochila':'Backpack','Jetpack':'Jetpack','Alas':'Wings','Tenis violeta':'Violet sneakers',
   'Lentes de corazón':'Heart glasses','Visor futurista':'Future visor','Corbata':'Tie','Cadena de oro':'Gold chain','Pesas rosas':'Pink dumbbells','Pesas violetas':'Violet dumbbells',
@@ -3867,7 +3884,7 @@ async function sendAsst(text) {
     reply.content = clean(r.text);
   } catch (e) {
     if (e && ['not_granted', 'sampling_disabled', 'not_declared', 'capability_disabled', 'capability_removed'].includes(e.code)) aiState = 'demo';
-    reply.content = e && e.code === 'rate_limited' ? tL('Necesito una pausa. Inténtalo de nuevo en un momento.', 'I need a short break. Try again in a moment.') : (e && e.text ? clean(e.text) : asstDemo(text, acts));
+    reply.content = e && (e.code === 'bad_key' || e.code === 'nokey') ? tL('Tu clave de IA no funciona. Revísala en Perfil → IA de Nubeltia.', 'Your AI key isn’t working. Check it in Profile → Nubeltia AI.') : e && e.code === 'rate_limited' ? tL('Necesito una pausa. Inténtalo de nuevo en un momento.', 'I need a short break. Try again in a moment.') : (e && e.text ? clean(e.text) : asstDemo(text, acts));
   }
   finish();
 }
@@ -4546,7 +4563,7 @@ async function scanFile(file) {
     }
     if (await aiCanSee()) { setScanMsg(tL('Nubi está analizando tu comida…', 'Nubi is analyzing your food…')); const x = await aiNutri({blob:scanBlob}); x.thumb = scanThumb; showScan(x); return; }
     if (aiState === 'live' && sample) { scanError({code:'noimg'}); return; }
-    showScan(Object.assign(scanExample(), {thumb:scanThumb}));
+    scanNeedsAI(scanThumb ? pi.url : '');
   } catch (e) { scanError(e); } finally { scanBusy = false; }
 }
 async function scanText(q) {
@@ -4557,7 +4574,7 @@ async function scanText(q) {
     let offErr = false; const hits = await offSearch(q).catch(() => { offErr = true; return null; });
     if (hits && hits.length) { scanHits = hits; showHits(q, hits); return; }
     if (offErr) { scanError({code:'offdown'}); return; }
-    showScan(Object.assign(scanExample(), {note:tL('No encontré ese producto en la base abierta. Esto es un ejemplo de cómo se ve el resultado.', 'I couldn’t find that product in the open database. This is an example of the result.')}));
+    scanNeedsAI('', q);
   } catch (e) { scanError(e); } finally { scanBusy = false; }
 }
 async function scanFix(v) {
@@ -4569,7 +4586,10 @@ async function scanFix(v) {
   } catch (e) { scanError(e); } finally { scanBusy = false; }
 }
 function scanError(e) {
-  const m = e && e.notFood ? tL('No veo comida ni bebida en la foto. Intenta de nuevo con el plato o el vaso al centro.', 'I don’t see food or a drink in the photo. Try again with the plate or cup centered.')
+  if (e && (e.code === 'bad_key' || e.code === 'nokey')) { scanNeedsAI('', '', true); return; }
+  const m = e && e.code === 'network' ? tL('No hay conexión con la IA. Revisa tu internet e inténtalo de nuevo.', 'Can’t reach the AI. Check your internet and try again.')
+    : e && e.code === 'refused' ? tL('La IA no quiso analizar esa imagen. Prueba con otra foto de tu comida.', 'The AI declined to analyze that image. Try another photo of your food.')
+    : e && e.notFood ? tL('No veo comida ni bebida en la foto. Intenta de nuevo con el plato o el vaso al centro.', 'I don’t see food or a drink in the photo. Try again with the plate or cup centered.')
     : e && e.code === 'offdown' ? tL(`${e.bar ? `Leí el código ${e.bar}, pero l` : 'L'}a base de datos de productos (Open Food Facts) no responde en este momento. Intenta en unos minutos.`, `${e.bar ? `I read code ${e.bar}, but t` : 'T'}he product database (Open Food Facts) isn’t responding right now. Try again in a few minutes.`)
     : e && e.code === 'nocode' ? tL(`Leí el código ${e.bar}, pero ese producto no está en la base de datos. Escribe su nombre en Escanea tu comida.`, `I read code ${e.bar}, but that product isn’t in the database. Type its name in Scan your food.`)
     : e && e.code === 'noimg' ? tL('Aquí la IA no puede ver fotos. Escribe qué es en el cuadro de Escanea tu comida y lo analizo.', 'Here the AI can’t see photos. Type what it is in Scan your food and I’ll analyze it.')
@@ -4591,13 +4611,15 @@ const NUTRI_RULES = () => `Eres el nutriólogo de la app Nubeltia. Identifica la
 - Si la foto muestra una etiqueta nutrimental o tabla nutricional, lee los valores exactos por porción ("source": "etiqueta").
 - Si no, estima con cuidado ("source": "estimacion"): usa referencias visuales (vasos, platos, cubiertos, manos) para el tamaño.
 - Para bebidas de cafetería, da en "sizes" los tamaños típicos con su factor respecto a la porción analizada (por ejemplo Alto 0.75, Grande 1, Venti 1.25).
-- Si la imagen no muestra comida ni bebida, responde exactamente {"is_food": false}.
+- Si es un suplemento, vitamina o proteína en polvo (frasco, cápsulas, gomitas), lee la etiqueta o tabla de información nutrimental por la porción que indica (por ejemplo 1 o 2 cápsulas) y pon en "extras" sus nutrientes clave con cantidad (por ejemplo EPA, DHA, omega 3 total, vitamina D, colágeno).
+- En "extras" incluye también otros nutrientes importantes que aparezcan en la etiqueta (vitaminas, minerales, colesterol), máximo 8.
+- Si la imagen no muestra comida, bebida ni suplemento, responde exactamente {"is_food": false}.
 - Números sin unidades. Usa null si no aplica o no se puede estimar.
 - "tip": una alternativa más ligera y concreta, en tono amable, sin culpa (máximo 22 palabras).
 - "note": cómo hiciste la estimación (máximo 22 palabras).
 - Textos en ${S.lang === 'en' ? 'inglés' : 'español neutro'}.
 Responde SOLO con JSON válido, sin texto extra, con esta forma:
-{"is_food":true,"name":"","portion":"","confidence":"alta|media|baja","source":"marca|etiqueta|estimacion","items":[{"name":"","amount":"","kcal":0}],"kcal":0,"protein_g":0,"carbs_g":0,"sugar_g":0,"added_sugar_g":0,"fiber_g":0,"fat_g":0,"sat_fat_g":0,"sodium_mg":0,"caffeine_mg":null,"grade":"A|B|C|D|E","sizes":[{"label":"","mult":1}],"tip":"","note":""}`;
+{"is_food":true,"name":"","portion":"","confidence":"alta|media|baja","source":"marca|etiqueta|estimacion","items":[{"name":"","amount":"","kcal":0}],"kcal":0,"protein_g":0,"carbs_g":0,"sugar_g":0,"added_sugar_g":0,"fiber_g":0,"fat_g":0,"sat_fat_g":0,"sodium_mg":0,"caffeine_mg":null,"grade":"A|B|C|D|E","sizes":[{"label":"","mult":1}],"extras":[{"name":"","amount":""}],"tip":"","note":""}`;
 function parseJSON(t) { const m = String(t || '').match(/\{[\s\S]*\}/); if (!m) throw new Error('nojson'); return JSON.parse(m[0]); }
 async function aiNutri({blob, text, fix}) {
   const r0 = calc(), who = `${S.profile.sexo}, ${S.profile.edad} años, ${S.profile.peso} kg, meta ${r0 ? r0.target : 1650} kcal al día`;
@@ -4609,6 +4631,7 @@ async function aiNutri({blob, text, fix}) {
     items:Array.isArray(j.items) ? j.items.slice(0, 8).map(i => ({name:String(i.name || ''), amount:String(i.amount || ''), kcal:NUM(i.kcal)})) : [],
     kcal:NUM(j.kcal) || 0, p:NUM(j.protein_g), c:NUM(j.carbs_g), sug:NUM(j.sugar_g), asug:NUM(j.added_sugar_g), fib:NUM(j.fiber_g), fat:NUM(j.fat_g), sat:NUM(j.sat_fat_g), sod:NUM(j.sodium_mg), caf:NUM(j.caffeine_mg),
     grade:/^[A-E]$/i.test(j.grade || '') ? j.grade.toUpperCase() : '', sizes:Array.isArray(j.sizes) ? j.sizes.filter(z => z && z.label && NUM(z.mult)).slice(0, 4).map(z => ({label:String(z.label), mult:+z.mult})) : [],
+    extras:Array.isArray(j.extras) ? j.extras.filter(z => z && z.name).slice(0, 8).map(z => ({name:String(z.name), amount:String(z.amount || '')})) : [],
     tip:String(j.tip || ''), note:String(j.note || ''), mult:1};
 }
 /* Open Food Facts: real label data for packaged products */
@@ -4666,6 +4689,7 @@ function showScan(x, saved) {
     <div class="mind-tiles sr-tiles">${tile(tL('Azúcares añadidos', 'Added sugars'), sv(x, 'asug'), 'g', 1)}${tile(tL('Fibra', 'Fiber'), sv(x, 'fib'), 'g', 1)}${tile(tL('Grasa saturada', 'Saturated fat'), sv(x, 'sat'), 'g', 1)}${tile(tL('Sodio', 'Sodium'), sv(x, 'sod'), 'mg')}${sv(x, 'caf') != null ? tile(tL('Cafeína', 'Caffeine'), sv(x, 'caf'), 'mg') : ''}${tile(tL('Proteína por 100 kcal', 'Protein per 100 kcal'), K ? P / K * 100 : null, 'g', 1)}</div>
     <div class="sr-size"><span class="label">${tL('Porción', 'Portion')}</span><div class="chips">${sizes.map(z => `<button class="chip-btn" data-act="sr-mult" data-m="${z.mult}" aria-pressed="${Math.abs(z.mult - x.mult) < .01}">${esc(z.label)}</button>`).join('')}</div></div>
     ${x.items && x.items.length > 1 ? `<div class="sr-items"><p class="label">${tL('Lo que vi', 'What I saw')}</p>${x.items.map(i => `<div><span>${esc(i.name)}${i.amount ? ` <small>· ${esc(i.amount)}</small>` : ''}</span><b>${i.kcal == null ? '—' : fmtN(i.kcal * x.mult) + ' kcal'}</b></div>`).join('')}</div>` : ''}
+    ${x.extras && x.extras.length ? `<div class="sr-items"><p class="label">${tL('Otros nutrientes', 'Other nutrients')}</p>${x.extras.map(z => `<div><span>${esc(z.name)}</span><b>${esc(z.amount)}</b></div>`).join('')}</div>` : ''}
     ${x.tip ? `<div class="sr-tip"><span class="asst-ic">${ic('sparkle', 16)}</span><p><b>Nubi:</b> ${esc(x.tip)}</p></div>` : ''}
     <p class="muted small">${x.note ? esc(x.note) + ' ' : ''}${x.src === 'codigo' ? '' : tL('Valores aproximados: pueden variar según la receta y la porción.', 'Approximate values: they vary with recipe and portion.')}</p>
     <div class="sr-btns">${saved ? '' : `<button class="btn" data-act="sr-add">${ic('plus', 16)} ${tL('Agregar a mi día', 'Add to my day')}</button>`}<button class="btn ghost" data-act="scan-cam">${ic('camera', 16)} ${tL('Otra foto', 'Another photo')}</button>${x.src !== 'codigo' && !saved ? `<button class="btn ghost" data-act="sr-fix">${tL('No es esto', 'Not this')}</button>` : ''}</div>
@@ -4685,6 +4709,114 @@ function scanAdd() {
     : tL(`¡Anotado! Hoy llevas ${fmtN(tot)} kcal. ¡Vas muy bien!`, `Logged! You’re at ${fmtN(tot)} kcal today. Doing great!`)), 450);
 }
 document.addEventListener('change', e => { const id = e.target.id; if ((id === 'scan-cam' || id === 'scan-gal') && e.target.files && e.target.files[0]) scanFile(e.target.files[0]); });
+
+
+/* ---------- AI with the person's own Claude API key (team copy without a Claude account) ----------
+   Uses the official Anthropic SDK in the browser. The key stays in this browser's localStorage and is sent only to api.anthropic.com.
+   apiSample() mirrors the artifact's sample(): text or message array in, {text} out, optional images (Blob[]) and tools (client-side execute()). */
+const AI_MODEL = 'claude-opus-5-5', SDK_URL = 'https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@1.6.0/+esm';
+function aiKeyGet() { try { return localStorage.getItem('nubeltia-ai-key') || ''; } catch (e) { return ''; } }
+function aiKeySet(k) {
+  try { if (k) localStorage.setItem('nubeltia-ai-key', k); else localStorage.removeItem('nubeltia-ai-key'); } catch (e) {}
+  apiClient = null; canSee = null;
+  if (aiVia !== 'claude') { sample = k ? apiSample : null; aiVia = k ? 'key' : ''; aiState = k ? 'live' : 'demo'; const n = $('#ai-note'); if (n) n.textContent = aiNote(); }
+}
+let sdkP = null, apiClient = null;
+async function apiClientGet() {
+  const key = aiKeyGet(); if (!key) throw Object.assign(new Error('nokey'), {code:'nokey'});
+  if (!sdkP) sdkP = import(SDK_URL).catch(e => { sdkP = null; throw Object.assign(new Error('sdk'), {code:'network'}); });
+  const mod = await sdkP, Anthropic = mod.default || mod.Anthropic;
+  if (!apiClient) apiClient = new Anthropic({apiKey:key, dangerouslyAllowBrowser:true});
+  return {client:apiClient, Anthropic};
+}
+const blobB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1]); r.onerror = rej; r.readAsDataURL(b); });
+function apiErr(e, A) {
+  const is = C => typeof C === 'function' && e instanceof C;
+  const code = is(A.APIUserAbortError) ? 'cancelled' : is(A.AuthenticationError) || is(A.PermissionDeniedError) ? 'bad_key' : is(A.RateLimitError) ? 'rate_limited'
+    : is(A.APIConnectionError) ? 'network' : is(A.BadRequestError) ? 'bad_request' : is(A.APIError) ? 'api_' + e.status : (e && e.code) || 'error';
+  return Object.assign(new Error((e && e.message) || 'error'), {code, status:e && e.status});
+}
+async function apiSample(input, opts = {}) {
+  const {client, Anthropic} = await apiClientGet();
+  const msgs = Array.isArray(input) ? input.map(m => ({role:m.role, content:String(m.content)})) : [{role:'user', content:String(input)}];
+  const imgs = opts.images || [];
+  if (imgs.length) {
+    const last = msgs[msgs.length - 1], blocks = [];
+    for (const b of imgs) blocks.push({type:'image', source:{type:'base64', media_type:b.type || 'image/jpeg', data:await blobB64(b)}});
+    last.content = [...blocks, {type:'text', text:last.content}];
+  }
+  const tools = (opts.tools || []).map(t => ({name:t.name, description:t.description, input_schema:t.inputSchema || {type:'object', properties:{}}}));
+  for (let turn = 0; turn < 8; turn++) {
+    let r;
+    try {
+      r = await client.beta.messages.create({model:AI_MODEL, max_tokens:16000, output_config:{effort:'medium'}, betas:['server-side-fallback-2026-07-01'], fallbacks:'default', messages:msgs, ...(tools.length ? {tools} : {})}, opts.signal ? {signal:opts.signal} : undefined);
+    } catch (e) { throw apiErr(e, Anthropic); }
+    if (r.stop_reason === 'refusal') throw Object.assign(new Error('refusal'), {code:'refused'});
+    if (r.stop_reason === 'pause_turn') { msgs.push({role:'assistant', content:r.content}); continue; }
+    const uses = r.content.filter(b => b.type === 'tool_use'), text = r.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    if (r.stop_reason !== 'tool_use' || !uses.length) { if (opts.onText) opts.onText({text, delta:text}); return {text, truncated:r.stop_reason === 'max_tokens'}; }
+    msgs.push({role:'assistant', content:r.content});
+    const results = [];
+    for (const u of uses) {
+      const t = (opts.tools || []).find(x => x.name === u.name);
+      try { const out = t ? await t.execute(u.input || {}) : {error:'herramienta desconocida'}; results.push({type:'tool_result', tool_use_id:u.id, content:JSON.stringify(out == null ? {ok:true} : out)}); }
+      catch (e) { results.push({type:'tool_result', tool_use_id:u.id, content:String((e && e.message) || e), is_error:true}); }
+    }
+    msgs.push({role:'user', content:results});
+  }
+  throw Object.assign(new Error('loop'), {code:'error'});
+}
+apiSample.limits = async () => ({images:true});
+let aiTesting = false;
+async function aiKeyTest(show) {
+  if (aiTesting) return false; aiTesting = true;
+  const st = $('#ai-status'); if (st) { st.textContent = tL('Probando la conexión…', 'Testing the connection…'); st.className = 'ai-status'; }
+  try {
+    const r = await apiSample('Responde solo con la palabra: listo');
+    if (st) { st.textContent = tL('¡Conectada! La IA respondió.', 'Connected! The AI answered.'); st.className = 'ai-status ok'; }
+    if (show) { toast(tL('IA conectada y funcionando.', 'AI connected and working.')); SFX.found(); }
+    return !!r;
+  } catch (e) {
+    const m = e.code === 'bad_key' ? tL('Esa clave no funciona: revisa que esté completa y activa, y que tu cuenta tenga saldo.', 'That key doesn’t work: check it’s complete and active, and that your account has credit.')
+      : e.code === 'network' ? tL('No pude conectar con la IA. Revisa tu internet.', 'Couldn’t reach the AI. Check your internet.')
+      : e.code === 'rate_limited' ? tL('La IA está ocupada o llegaste a tu límite. Intenta en un momento.', 'The AI is busy or you hit your limit. Try again shortly.')
+      : tL(`La IA respondió con un error (${e.status || e.code}). Revisa tu cuenta en la consola de Anthropic.`, `The AI returned an error (${e.status || e.code}). Check your account in the Anthropic console.`);
+    if (st) { st.textContent = m; st.className = 'ai-status bad'; }
+    if (show) SFX.error();
+    return false;
+  } finally { aiTesting = false; }
+}
+async function aiKeySave(v) {
+  v = String(v || '').trim();
+  if (!/^sk-ant-[A-Za-z0-9_-]{20,}$/.test(v)) { toast(tL('Eso no parece una clave de Anthropic: empieza con sk-ant- y es larga.', 'That doesn’t look like an Anthropic key: it starts with sk-ant- and is long.')); SFX.error(); return; }
+  aiKeySet(v); rerender();
+  const ok = await aiKeyTest(false);
+  if (!ok) { const st = $('#ai-status'), msg = st ? st.textContent : ''; aiKeySet(''); rerender(); const s2 = $('#ai-status'); if (s2) { s2.textContent = msg; s2.className = 'ai-status bad'; } SFX.error(); return; }
+  rerender(); toast(tL('¡IA conectada! Ya puedes analizar fotos y hablar con Nubi.', 'AI connected! You can now analyze photos and talk with Nubi.')); SFX.claim();
+  setTimeout(() => nubiSay(tL('¡Ya tengo IA de verdad! Tómale foto a lo que vayas a comer y te digo todo.', 'I have real AI now! Snap what you’re about to eat and I’ll tell you everything.'), {act:'go-nutri', label:tL('Escanear comida', 'Scan food')}), 600);
+}
+function aiCard() {
+  const k = aiKeyGet(), via = aiVia;
+  const head = `<div class="sec-head"><h2 class="h2">${tL('IA de Nubeltia', 'Nubeltia AI')}</h2><span class="pill ${aiState === 'live' ? 'ok' : ''}">${aiState === 'live' ? tL('Conectada', 'Connected') : tL('Sin conectar', 'Not connected')}</span></div>`;
+  if (via === 'claude') return `<section class="card" id="ai-card">${head}<p class="muted small" style="margin-top:4px">${tL('Usa la IA de tu cuenta de Claude: analiza fotos de comida, responde en el chat y organiza tu día. No necesitas nada más.', 'Uses the AI from your Claude account: it analyzes food photos, answers in chat and organizes your day. Nothing else needed.')}</p></section>`;
+  if (via === 'key' && k) return `<section class="card" id="ai-card">${head}<p class="muted small" style="margin-top:4px">${tL(`Conectada con tu clave de API (termina en …${esc(k.slice(-4))}). Modelo: Claude Opus 5.5. Analiza tus fotos de comida, responde en el chat y organiza tu día.`, `Connected with your API key (ends in …${esc(k.slice(-4))}). Model: Claude Opus 5.5. It analyzes food photos, answers in chat and organizes your day.`)}</p>
+    <p class="ai-status" id="ai-status"></p><div class="sr-btns"><button class="btn small" data-act="ai-test">${tL('Probar conexión', 'Test connection')}</button><button class="btn small ghost" data-act="ai-forget">${tL('Quitar clave', 'Remove key')}</button></div></section>`;
+  return `<section class="card" id="ai-card">${head}
+    <p class="muted small" style="margin-top:4px">${tL('Conecta la IA para que Nubi analice fotos de comida, responda en el chat y organice tu día. Necesitas una clave de API de Anthropic:', 'Connect the AI so Nubi analyzes food photos, answers in chat and organizes your day. You need an Anthropic API key:')}</p>
+    <ol class="ai-steps"><li>${tL('Entra a <b>platform.claude.com</b> (la consola de Anthropic), crea tu cuenta y agrega saldo. Cada foto cuesta unos centavos de dólar.', 'Go to <b>platform.claude.com</b> (the Anthropic console), create your account and add credit. Each photo costs a few cents.')}</li><li>${tL('En <b>API Keys</b> crea una clave y cópiala (empieza con sk-ant-).', 'In <b>API Keys</b> create a key and copy it (it starts with sk-ant-).')}</li><li>${tL('Pégala aquí y toca Conectar.', 'Paste it here and tap Connect.')}</li></ol>
+    <form class="chat-form" id="ai-key-form"><label class="sr" for="ai-key">${tL('Clave de API de Anthropic', 'Anthropic API key')}</label><input id="ai-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…"><button class="btn small">${tL('Conectar', 'Connect')}</button></form>
+    <p class="ai-status" id="ai-status"></p>
+    <p class="muted small">${tL('Tu clave se guarda solo en este navegador y solo se usa para hablar con Claude. No la compartas; en la consola puedes ponerle un límite de gasto.', 'Your key is stored only in this browser and only used to talk to Claude. Don’t share it; you can set a spending limit in the console.')}</p></section>`;
+}
+function scanNeedsAI(img, q, badKey) {
+  openSheet(`<div class="sr-empty">${img ? `<div class="sr-shot" style="max-width:180px"><img src="${img}" alt=""></div>` : ic('sparkle', 34)}
+    <h3 class="h2">${badKey ? tL('Tu clave de IA no funciona', 'Your AI key isn’t working') : tL('Conecta la IA para analizar fotos', 'Connect the AI to analyze photos')}</h3>
+    <p class="muted">${badKey ? tL('Revisa tu clave en Perfil → IA de Nubeltia. Puede estar incompleta, desactivada o sin saldo.', 'Check your key in Profile → Nubeltia AI. It may be incomplete, disabled or out of credit.')
+      : q ? tL(`No encontré “${esc(q)}” en la base de productos. Con la IA conectada te digo la información de cualquier comida, bebida o suplemento.`, `I couldn’t find “${esc(q)}” in the product database. With the AI connected I can tell you about any food, drink or supplement.`)
+      : tL('Esta versión todavía no tiene IA conectada, así que no puedo leer tu foto. Conéctala en un minuto con tu clave de Anthropic. Mientras, si es un producto empacado, tómale foto a su código de barras.', 'This version has no AI connected yet, so I can’t read your photo. Connect it in a minute with your Anthropic key. Meanwhile, for packaged products, photograph the barcode.')}</p>
+    <div class="sr-btns"><button class="btn" data-act="ai-setup">${ic('sparkle', 16)} ${badKey ? tL('Revisar mi clave', 'Check my key') : tL('Conectar la IA', 'Connect the AI')}</button><button class="btn ghost" data-act="sheet-close">${tL('Ahora no', 'Not now')}</button></div></div>`, 'tall');
+  SFX.close();
+}
 
 /* ---------- boot ---------- */
 if (P3 && P3.play && !P3._snd) { const p0 = P3.play; P3.play = (n, ...r) => { if (CLIP_SND[n] && P3.ok && P3.ok()) CLIP_SND[n](); return p0(n, ...r); }; P3._snd = true; }
