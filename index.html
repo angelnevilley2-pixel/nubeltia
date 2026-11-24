@@ -16,6 +16,7 @@
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>html,body{margin:0}</style>
+<script src="config.js"></script>
 </head>
 <body>
 <title>Nubeltia</title>
@@ -901,6 +902,51 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .ai-status{font:600 13px/1.4 var(--f-body);margin:8px 0;color:var(--muted)}
 .ai-status:empty{display:none}
 .ai-status.ok{color:var(--food)}.ai-status.bad{color:var(--danger)}
+
+/* ---------- accounts: welcome, sign up, sign in ---------- */
+.auth{position:absolute;inset:0;z-index:85;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding:calc(14px + env(safe-area-inset-top)) 22px calc(20px + env(safe-area-inset-bottom));
+  background:radial-gradient(120% 60% at 50% -8%,rgba(57,225,255,.17),transparent 62%),radial-gradient(90% 55% at 105% 102%,rgba(142,92,247,.22),transparent 62%),var(--app)}
+.auth[hidden]{display:none}
+.auth-top{display:flex;align-items:center;gap:10px;min-height:40px}
+.auth-top .lang-btn{width:auto;padding:0 10px;gap:6px;font-weight:700;font-size:13px}
+.auth-hero{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;margin:4px 0 6px}
+.auth-hero .mascot{filter:drop-shadow(0 10px 26px rgba(142,92,247,.45))}
+.auth-hero .h1{font:800 29px/1.08 var(--f-display);letter-spacing:-.02em;margin:8px 0 0}
+.auth-hero.sm .h1{font-size:25px;margin-top:2px}
+.auth-hero p{color:var(--muted);margin:0;max-width:32ch}
+.auth-word{width:170px;height:19px;margin-top:2px}
+.auth-form{display:flex;flex-direction:column;gap:12px}
+.auth .field input{min-height:50px;font-size:16px;border-radius:14px}
+.auth .field input:focus{border-color:var(--brand);outline:0;box-shadow:0 0 0 3px var(--brand-soft)}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:52px!important}
+.pw-eye{position:absolute;right:3px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:12px;background:none;color:var(--muted);display:grid;place-items:center}
+.auth .btn{height:52px;font-size:16px;border-radius:15px}
+.auth .btn:not(.ghost):not(.google){background:var(--grad);color:#050720;box-shadow:0 8px 26px rgba(57,225,255,.22)}
+.btn.google{background:#fff;color:#1f1f1f;gap:10px}
+.btn[aria-busy="true"]{opacity:.72;pointer-events:none}
+.auth-or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}
+.auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--line)}
+.auth-alt{text-align:center;color:var(--muted);font-size:14px;margin:0}
+.auth-alt .link{font-size:14px}
+.auth-check{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.35;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px}
+.auth-check input{width:20px;height:20px;accent-color:var(--brand);flex:none;margin:0}
+.auth-note{display:flex;gap:10px;align-items:flex-start;background:rgba(11,15,44,.7);border:1px solid var(--line);border-radius:14px;padding:12px;color:var(--muted);font-size:13px;line-height:1.4;margin:auto 0 0}
+.auth-note .ic{color:var(--brand);flex:none;margin-top:1px}
+.auth .err:empty,.auth-ok:empty{display:none}
+.auth-ok{color:var(--brand);font-size:14px;font-weight:600;margin:0;background:var(--brand-soft);border-radius:12px;padding:10px 12px}
+.auth-forgot{align-self:flex-end;margin-top:-4px}
+.acct-row{display:flex;align-items:center;gap:12px;margin-top:6px}
+.acct-av{width:48px;height:48px;border-radius:50%;background:var(--grad);color:#050720;display:grid;place-items:center;font:800 21px var(--f-display);flex:none}
+.acct-row > div{flex:1;min-width:0}
+.acct-row b{display:block;font-size:16px}
+.acct-row .muted{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sync-line{display:flex;align-items:center;gap:7px;margin:12px 0}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--brand);flex:none;box-shadow:0 0 8px var(--brand)}
+.sync-dot.busy{animation:nb-blink 1s ease-in-out infinite}
+.sync-dot.warn{background:var(--gold);box-shadow:none}
+.sync-dot.bad{background:var(--danger);box-shadow:none}
+@keyframes nb-blink{50%{opacity:.25}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -962,6 +1008,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
     <input type="file" accept="image/*" capture="environment" id="scan-cam" hidden><input type="file" accept="image/*" id="scan-gal" hidden>
     <div class="chestov" id="chestov" role="dialog" aria-modal="true" aria-label="Cofre sorpresa"></div>
     <canvas id="fx"></canvas>
+    <div class="auth" id="auth" hidden role="dialog" aria-modal="true" aria-label="Tu cuenta"></div>
     <div class="splash" id="splash" aria-hidden="true"><span class="nb-mark"></span><span class="nb-word"></span></div>
   </div>
 </div>
@@ -1033,6 +1080,11 @@ const I = {
   dots:'<path d="M5.5 12h.01M12 12h.01M18.5 12h.01" stroke-width="3"/>',
   lock:'<rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
   search:'<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
+  back:'<path d="M14.5 6l-6 6 6 6"/>',
+  mail:'<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 6 7.5-6"/>',
+  eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+  eyeoff:'<path d="M4 4l16 16M10.6 6A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3 3.7M6.6 7.4C4 9.2 2.5 12 2.5 12S6 18.5 12 18.5c1.6 0 3-.4 4.2-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
+  out:'<path d="M14.5 4.5h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2h-3"/><path d="M10 16.5 5.5 12 10 7.5M5.5 12h10"/>',
 };
 const ic = (n, s = 20) => `<svg class="ic" viewBox="0 0 24 24" width="${s}" height="${s}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[n]||''}</svg>`;
 
@@ -1252,7 +1304,14 @@ Límites:
 - Máximo 90 palabras por respuesta. Sin títulos, sin listas largas y sin markdown.`;
 
 /* ---------- state ---------- */
-const KEY = 'focuspulse-proto-v1';
+/* Accounts: the whole state S is stored per account (nubeltia-u-<uid>). Without a session the app is covered by the
+   sign-in screen and nothing is saved. NB_FIREBASE comes from config.js on the public site; without it, device accounts. */
+const LEGACY_KEY = 'focuspulse-proto-v1', SESS_KEY = 'nubeltia-session';
+const NB_FB = window.NB_FIREBASE && typeof window.NB_FIREBASE === 'object' && window.NB_FIREBASE.apiKey && window.NB_FIREBASE.projectId ? window.NB_FIREBASE : null;
+const AUTH_MOCK = window.__NB_AUTH_MOCK || null, CLOUD = !!(NB_FB || AUTH_MOCK), NOAUTH = !!window.__NB_NOAUTH;
+function sessGet() { try { const x = JSON.parse(localStorage.getItem(SESS_KEY) || 'null'); return x && x.uid && (x.mode === 'local' || (x.mode === 'cloud' && CLOUD)) ? x : null; } catch (e) { return null; } }
+let SESS = NOAUTH ? null : sessGet(), KEY = SESS ? 'nubeltia-u-' + SESS.uid : LEGACY_KEY;
+let pushT = 0, syncSt = 'idle', syncErr = '', syncOK = false, lastSync = 0;
 function defaults() {
   return {
     v:1, day:todayKey(), name:'Ana', xp:640, streak:12, steps:6240, water:3,
@@ -1286,8 +1345,9 @@ function defaults() {
 }
 function defTasks() { return [{id:'t1', t:'Enviar propuesta al cliente', done:false}, {id:'t2', t:'Pagar el gimnasio', done:false}, {id:'t3', t:'Agendar cita con la nutrióloga', done:false}]; }
 function load() { try { const r = localStorage.getItem(KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function save() { if (!SESS && !NOAUTH) return; S._ts = Date.now(); try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} if (SESS && SESS.mode === 'cloud') cloudQueue(); }
 let S = load();
+function normS() {
 if (!S || S.v !== 1) S = defaults();
 if (!S.tasks) S.tasks = defTasks();
 if (S.coins === undefined) S.coins = 150;
@@ -1296,6 +1356,8 @@ if (S.chests === undefined) S.chests = 1;
 S.settings.sfx = Object.assign({ui:true, reward:true, nubi:true, focus:true}, S.settings.sfx || {}); if (S.settings.vol == null) S.settings.vol = .7;
 DEVICES.forEach(d => { if (d.ble) S.devices[d.id] = false; });
 if (S.asst) S.asst = S.asst.filter(m => !m.pending && m.content);
+}
+normS();
 function rollover() {
   if (S.day === todayKey()) return;
   S.week.push(S.check ? {mood:S.check.mood, stress:S.check.stress, sleep:S.check.sleep} : null);
@@ -2240,11 +2302,11 @@ function renderTrain() {
 
 /* ---------- render: perfil ---------- */
 function aboutHTML() {
-  const ok = ['Hábitos con recompensas, niveles y logros','Pomodoro con sonido y vibración','Registro mental, señales de burnout y por qué no cumpliste','Nutrición: IMC, cintura, calorías y macros','Rutina con series, descansos y caminatas','Nubi, la IA de acompañamiento'];
+  const ok = [tL('Cuentas: crear cuenta, iniciar sesión y recuperar contraseña', 'Accounts: sign up, sign in and password reset'), 'Hábitos con recompensas, niveles y logros','Pomodoro con sonido y vibración','Registro mental, señales de burnout y por qué no cumpliste','Nutrición: IMC, cintura, calorías y macros','Rutina con series, descansos y caminatas','Nubi, la IA de acompañamiento'];
   const sim = ['Avisos en el reloj','Conexión con relojes y anillos','Conexión con tu coach','Fotos de platillos y videos de ejercicios'];
   return `<h3>Funciona de verdad</h3><ul>${ok.map(t => `<li>${ic('check', 16)}<span>${t}</span></li>`).join('')}</ul>
     <h3>Simulado por ahora</h3><ul>${sim.map(t => `<li class="sim">${ic('sparkle', 16)}<span>${t}</span></li>`).join('')}</ul>
-    <p class="fine">Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. Para que Nubi use IA de verdad (fotos de comida, chat y asistente), conecta tu clave en Perfil → IA de Nubeltia; sin clave responde con ejemplos.</p>`;
+    <p class="fine">${aboutFine()}</p>`;
 }
 function renderPerfil() {
   const into = S.xp % 100, un = BADGES.filter(b => S.badges[b.id]).length;
@@ -2254,6 +2316,7 @@ function renderPerfil() {
     <label class="sr" for="pf-name">Tu nombre</label><input id="pf-name" class="name-in" maxlength="24" value="${esc(S.name)}" data-pf="name">
     <p class="muted small">Nivel ${level()} · ${nf(S.xp)} XP · Racha de ${S.streak} días</p><div class="bar gold"><i style="width:${into}%"></i></div></div>
     <span class="plan-chip ${S.plan || 'gratis'}">Plan ${planOf().n}</span></header>
+  ${accountCard()}
   <section id="planes"><div class="sec-head"><h2 class="h2">Planes</h2><span class="muted small">Pago mensual · MXN</span></div>
     <div class="plans">${PLANS.map(p => { const cur = planOf().id === p.id; return `<article class="plan ${p.id === 'pro' ? 'pop' : ''} ${p.id === 'coach' ? 'coach' : ''} ${cur ? 'cur' : ''}">
       <div class="plan-top"><div><h3>${p.n}</h3><p class="muted small">${p.d}</p></div>${cur ? '<span class="pill ok">Tu plan</span>' : p.tag ? `<span class="tag">${p.tag}</span>` : ''}</div>
@@ -2287,7 +2350,7 @@ function renderPerfil() {
   </section>
   <section class="card"><h2 class="h2">Privacidad</h2><p class="muted small" style="margin:4px 0 12px">Tus datos de salud son tuyos. No se venden ni se usan para publicidad.</p>
     <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small ghost" data-act="export">Descargar mis datos</button><button class="btn small ghost" data-act="delete" style="color:var(--danger)">Borrar mi cuenta</button></div>
-    <div class="confirm" id="del-confirm" hidden><p>En la app real esto borra tu cuenta y todos tus datos para siempre. En el prototipo vuelves a los datos de ejemplo.</p><div class="btns"><button class="btn small danger" data-act="delete-yes">Sí, borrar</button><button class="btn small ghost" data-act="delete-no">Cancelar</button></div></div>
+    <div class="confirm" id="del-confirm" hidden><p>${SESS ? tL('Esto borra tu cuenta y todos tus datos para siempre. No se puede deshacer.', 'This deletes your account and all your data forever. It can’t be undone.') : 'En la app real esto borra tu cuenta y todos tus datos para siempre. En el prototipo vuelves a los datos de ejemplo.'}</p><div class="btns"><button class="btn small danger" data-act="delete-yes">Sí, borrar</button><button class="btn small ghost" data-act="delete-no">Cancelar</button></div></div>
   </section>
   <section class="card"><h2 class="h2">Ayuda</h2><p class="muted small" style="margin:4px 0 12px">¿Quieres ver otra vez cómo funciona la app?</p><button class="btn small ghost" data-act="tour">${ic('sparkle', 16)} Ver el recorrido</button></section>
   <section class="card about"><h2 class="h2">Sobre este prototipo</h2>${aboutHTML()}</section>`;
@@ -2516,7 +2579,7 @@ const A = {
   'export': () => toast('En la app real recibirás un archivo con todos tus datos.'),
   'delete': () => { $('#del-confirm').hidden = false; },
   'delete-no': () => { $('#del-confirm').hidden = true; },
-  'delete-yes': () => { S = defaults(); save(); draft = null; editing = false; restEnd = 0; current = ''; go('inicio'); renderTop(); toast('Listo. Volviste a los datos de ejemplo.'); },
+  'delete-yes': () => { if (SESS) { acctDelete(); return; } S = defaults(); save(); draft = null; editing = false; restEnd = 0; current = ''; go('inicio'); renderTop(); toast('Listo. Volviste a los datos de ejemplo.'); },
 };
 /* Nubi comes alive: eyes follow the pointer (or glance around on their own when idle) and a tap makes it jump. */
 const POKE = ['¡Hey! Aquí sigo, flotando y entrenando.','¿Una pausa de respiración?','¡Vamos por ese hábito!','Tu mente también se entrena.','¡Me haces cosquillas!'];
@@ -2553,6 +2616,7 @@ document.addEventListener('input', e => {
 });
 document.addEventListener('submit', e => {
   e.preventDefault();
+  if (['au-signup', 'au-login', 'au-reset', 'pw-form'].includes(e.target.id)) { authSubmit(e.target.id); return; }
   if (e.target.id === 'ai-key-form') { const i = $('#ai-key'); aiKeySave(i.value); i.value = ''; return; }
   if (e.target.id === 'scan-form') { const i = $('#scan-q'), v = i.value.trim(); if (v) { i.value = ''; scanText(v); } return; }
   if (e.target.id === 'sr-fix-form') { const i = $('#sr-fix-in'), v = i.value.trim(); if (v) scanFix(v); return; }
@@ -2760,7 +2824,6 @@ const EN = {
 '¡Hey! Aquí sigo, flotando y entrenando.':'Hey! Still here, floating and training.','¿Una pausa de respiración?':'Breathing break?','¡Vamos por ese hábito!':'Let’s get that habit!','Tu mente también se entrena.':'Your mind needs training too.','¡Me haces cosquillas!':'That tickles!',
 };
 Object.assign(EN, {'¡Me mareo!':'I’m dizzy!'});
-Object.assign(EN, {'Los nombres y los datos de días anteriores son de ejemplo. Lo que hagas se guarda solo en este navegador. Para que Nubi use IA de verdad (fotos de comida, chat y asistente), conecta tu clave en Perfil → IA de Nubeltia; sin clave responde con ejemplos.':'Names and past days are sample data. What you do is saved only in this browser. For real AI (food photos, chat and assistant), connect your key in Profile → Nubeltia AI; without a key Nubi gives sample replies.'});
 Object.assign(EN, {'Estilo':'Style','Yoga':'Yoga','Correr':'Run','Patineta':'Skateboard','Karate':'Karate','Bici':'Bike','Pintar':'Paint','Cocinar':'Cook','DJ':'DJ','Espacio':'Space',
   'Gorro de fiesta':'Party hat','Gorro de invierno':'Beanie','Sombrero vaquero':'Cowboy hat','Gorro de chef':'Chef hat','Aureola':'Halo','Mochila':'Backpack','Jetpack':'Jetpack','Alas':'Wings','Tenis violeta':'Violet sneakers',
   'Lentes de corazón':'Heart glasses','Visor futurista':'Future visor','Corbata':'Tie','Cadena de oro':'Gold chain','Pesas rosas':'Pink dumbbells','Pesas violetas':'Violet dumbbells',
@@ -4818,6 +4881,436 @@ function scanNeedsAI(img, q, badKey) {
   SFX.close();
 }
 
+
+/* ---------- accounts: sign up, sign in and progress per account ----------
+   Cloud mode (window.NB_FIREBASE from config.js): Firebase Authentication (email + password, or Google) and each
+   person's progress in Firestore at users/{uid}, written over REST with their ID token so the security rules apply.
+   Device mode (no config, e.g. inside Claude): accounts live in this browser only, the password kept as a PBKDF2 hash.
+   S, the whole app state, is saved per account; cloud saves are debounced and the newest copy wins on sign-in. */
+const FB_CDN = 'https://www.gstatic.com/firebasejs/12.19.0/', ACC_KEY = 'nubeltia-accounts';
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const normEmail = e => String(e || '').trim().toLowerCase();
+let authMode = 'welcome', authBusy = false, authInfo = '', authPrefill = '', fb = null, fbReady = null, resuming = null;
+const locFail = {n:0, until:0};
+const GLOGO = '<svg width="19" height="19" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+
+function sessSet(x) { SESS = x; try { x ? localStorage.setItem(SESS_KEY, JSON.stringify(x)) : localStorage.removeItem(SESS_KEY); } catch (e) {} }
+function legacyState() { try { const r = JSON.parse(localStorage.getItem(LEGACY_KEY) || 'null'); return r && r.v === 1 && Array.isArray(r.habits) ? r : null; } catch (e) { return null; } }
+function nameFromEmail(e) { const n = String(e || '').split('@')[0].replace(/[._\-+0-9]+/g, ' ').trim(); return n ? (n.charAt(0).toUpperCase() + n.slice(1)).slice(0, 24) : tL('Tú', 'You'); }
+/* A new account starts clean: the sample habits and goals stay as a starting point, with no streaks or points yet. */
+function freshState(name) {
+  const d = defaults();
+  Object.assign(d, {name:String(name || '').slice(0, 24) || tL('Tú', 'You'), xp:0, streak:0, steps:0, water:0, coins:150, chests:1, badges:{}, tasks:[], chat:[], scans:[], tourDone:false, created:Date.now()});
+  d.habits.forEach(h => { h.streak = 0; h.state = null; });
+  d.goals.forEach(g => { g.cur = 0; });
+  Object.keys(d.reasons).forEach(k => { d.reasons[k] = 0; });
+  d.pomo.today = 0;
+  return d;
+}
+
+/* device accounts */
+function accAll() { try { return JSON.parse(localStorage.getItem(ACC_KEY) || '{}') || {}; } catch (e) { return {}; } }
+function accPut(all) { try { localStorage.setItem(ACC_KEY, JSON.stringify(all)); } catch (e) {} }
+const b64 = u8 => btoa(String.fromCharCode(...u8)), unb64 = x => Uint8Array.from(atob(x), c => c.charCodeAt(0));
+async function pwHash(pw, salt, it) {
+  if (!(window.crypto && crypto.subtle)) throw {code:'auth/no-crypto'};
+  const k = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+  return b64(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2', hash:'SHA-256', salt, iterations:it}, k, 256)));
+}
+const LocalAuth = {
+  async signUp(email, pw, name) {
+    const all = accAll(), e = normEmail(email);
+    if (all[e]) throw {code:'auth/email-already-in-use'};
+    const salt = crypto.getRandomValues(new Uint8Array(16)), uid = 'l' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+    all[e] = {uid, email:String(email).trim(), name, salt:b64(salt), hash:await pwHash(pw, salt, 150000), it:150000, created:Date.now()};
+    accPut(all);
+    return {uid, email:all[e].email, name, provider:'password'};
+  },
+  async signIn(email, pw) {
+    if (Date.now() < locFail.until) throw {code:'auth/too-many-requests'};
+    const a = accAll()[normEmail(email)];
+    if (!a || await pwHash(pw, unb64(a.salt), a.it) !== a.hash) { if (++locFail.n >= 5) { locFail.n = 0; locFail.until = Date.now() + 30000; } throw {code:'auth/invalid-credential'}; }
+    locFail.n = 0;
+    return {uid:a.uid, email:a.email, name:a.name, provider:'password'};
+  },
+  async changePw(email, oldPw, newPw) {
+    const all = accAll(), a = all[normEmail(email)];
+    if (!a || await pwHash(oldPw, unb64(a.salt), a.it) !== a.hash) throw {code:'local/bad-current'};
+    const salt = crypto.getRandomValues(new Uint8Array(16));
+    Object.assign(a, {salt:b64(salt), hash:await pwHash(newPw, salt, 150000), it:150000}); accPut(all);
+  },
+  remove(email) { const all = accAll(); delete all[normEmail(email)]; accPut(all); },
+};
+
+/* Firebase Authentication, loaded only when the cloud is configured. Tests swap in window.__NB_AUTH_MOCK. */
+function fbLoad() {
+  if (fbReady) return fbReady;
+  fbReady = (async () => {
+    if (AUTH_MOCK) return (fb = AUTH_MOCK);
+    let app, F;
+    try { const r = await Promise.all([import(FB_CDN + 'firebase-app.js'), import(FB_CDN + 'firebase-auth.js')]); app = r[0].initializeApp(NB_FB); F = r[1]; }
+    catch (e) { console.warn('firebase load', e); throw {code:'auth/network-request-failed'}; }
+    const auth = F.getAuth(app);
+    auth.languageCode = S.lang === 'en' ? 'en' : 'es';
+    await auth.authStateReady();
+    const me = () => { const u = auth.currentUser; if (!u) return null; return {uid:u.uid, email:u.email || '', name:u.displayName || '', provider:u.providerData.some(p => p.providerId === 'google.com') ? 'google' : 'password'}; };
+    return (fb = {
+      projectId:NB_FB.projectId, me,
+      async signUp(email, pw, name) { const c = await F.createUserWithEmailAndPassword(auth, email, pw); try { await F.updateProfile(c.user, {displayName:name}); } catch (e) {} F.sendEmailVerification(c.user).catch(() => {}); return Object.assign(me(), {name}); },
+      async signIn(email, pw) { await F.signInWithEmailAndPassword(auth, email, pw); return me(); },
+      google() {
+        const p = new F.GoogleAuthProvider(); p.setCustomParameters({prompt:'select_account'});
+        return F.signInWithPopup(auth, p).then(me, e => { if (e && e.code === 'auth/popup-blocked') return F.signInWithRedirect(auth, p).then(() => null); throw e; });
+      },
+      async redirect() { const r = await F.getRedirectResult(auth); return r && r.user ? me() : null; },
+      reset: email => F.sendPasswordResetEmail(auth, email),
+      signOut: () => F.signOut(auth),
+      token: () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.reject({code:'auth/no-user'}),
+      remove: () => F.deleteUser(auth.currentUser),
+    });
+  })();
+  fbReady.catch(() => { fbReady = null; });
+  return fbReady;
+}
+
+/* Firestore over REST: one document per person, users/{uid} = {state (JSON text), updatedAt, name, email}. */
+const fsURL = uid => `https://firestore.googleapis.com/v1/projects/${encodeURIComponent(fb.projectId)}/databases/(default)/documents/users/${encodeURIComponent(uid)}`;
+async function fsReq(method, uid, body, tok) {
+  tok = tok || await fb.token();
+  let r;
+  try { r = await fetch(fsURL(uid), {method, headers:body ? {Authorization:'Bearer ' + tok, 'Content-Type':'application/json'} : {Authorization:'Bearer ' + tok}, body:body ? JSON.stringify(body) : undefined}); }
+  catch (e) { throw {code:'network'}; }
+  if (r.ok) return method === 'GET' ? r.json() : true;
+  const j = await r.json().catch(() => ({})), msg = (j.error && j.error.message) || '';
+  if (/database \(default\) does not exist|has not been used|is disabled/i.test(msg)) throw {code:'fs/no-db', msg};
+  if (r.status === 404 && method !== 'PATCH') return null;
+  throw {code:r.status === 403 || r.status === 401 ? 'fs/denied' : 'fs/' + r.status, msg};
+}
+async function cloudLoad(uid) {
+  const d = await fsReq('GET', uid);
+  if (!d || !d.fields || !d.fields.state) return null;
+  return {state:JSON.parse(d.fields.state.stringValue), at:+((d.fields.updatedAt && d.fields.updatedAt.integerValue) || 0)};
+}
+function slimState() {
+  if (JSON.stringify(S).length < 800000) return S;
+  const c = JSON.parse(JSON.stringify(S));
+  (c.scans || []).forEach(x => { x.thumb = ''; }); c.chat = (c.chat || []).slice(-30); c.asst = (c.asst || []).slice(-30);
+  return c;
+}
+async function cloudSave() {
+  await fsReq('PATCH', SESS.uid, {fields:{state:{stringValue:JSON.stringify(slimState())}, updatedAt:{integerValue:String(S._ts || Date.now())}, name:{stringValue:S.name || ''}, email:{stringValue:SESS.email || ''}}});
+}
+const offline = e => e && (e.code === 'network' || e.code === 'auth/network-request-failed');
+function cloudQueue() { clearTimeout(pushT); if (syncSt !== 'saving' && syncSt !== 'error') syncSt = 'pending'; pushT = setTimeout(cloudPush, 1500); }
+async function cloudPush() {
+  clearTimeout(pushT); pushT = 0;
+  if (!SESS || SESS.mode !== 'cloud') return;
+  if (!syncOK) return cloudResume();
+  const uid = SESS.uid;
+  try {
+    await fbLoad(); const u = fb.me(); if (!u || u.uid !== uid) return;
+    if (syncSt !== 'error') { syncSt = 'saving'; paintSync(); }
+    await cloudSave();
+    if (SESS && SESS.uid === uid) { syncSt = pushT ? 'pending' : 'saved'; lastSync = Date.now(); syncErr = ''; }
+  } catch (e) { syncSt = offline(e) ? 'offline' : 'error'; syncErr = e.code || ''; if (offline(e)) pushT = setTimeout(cloudPush, 20000); }
+  paintSync();
+}
+/* On start with a saved session: compare this device's copy with the cloud and keep the newest. */
+function cloudResume() {
+  return resuming || (resuming = (async () => {
+    const uid = SESS && SESS.uid; if (!uid || SESS.mode !== 'cloud') return;
+    try {
+      await fbLoad(); const u = fb.me();
+      if (!u || u.uid !== uid) { authPrefill = SESS.email || ''; leaveAccount(); showAuth('login', tL('Tu sesión terminó. Vuelve a entrar para ver tu progreso.', 'Your session ended. Sign in again to see your progress.')); return; }
+      syncSt = 'saving'; paintSync();
+      const r = await cloudLoad(uid);
+      if (!SESS || SESS.uid !== uid) return;
+      syncOK = true;
+      if (r && r.at > (S._ts || 0)) swapState(r.state);
+      else if (!r || r.at < (S._ts || 0)) await cloudSave();
+      syncSt = 'saved'; lastSync = Date.now(); syncErr = '';
+    } catch (e) { syncSt = offline(e) ? 'offline' : 'error'; syncErr = e.code || ''; if (offline(e)) { clearTimeout(pushT); pushT = setTimeout(cloudPush, 20000); } }
+    finally { resuming = null; paintSync(); }
+  })());
+}
+addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && pushT && syncOK) cloudPush(); });
+addEventListener('online', () => { if (SESS && SESS.mode === 'cloud' && syncSt === 'offline') cloudPush(); });
+
+/* Put a different state on screen without reloading (same steps the old "delete" used). */
+function langTo(l) { if ((document.documentElement.lang === 'en' ? 'en' : 'es') !== l) setLang(l); }
+function swapState(st) {
+  S = st; normS(); rollover();
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+  draft = null; editing = false; restEnd = 0;
+  langTo(S.lang === 'en' ? 'en' : 'es');
+  const t = current || 'inicio'; current = ''; show(t); renderTop();
+}
+async function enterAccount(u, how, migrate, modeOverride) {
+  const mode = modeOverride || (CLOUD ? 'cloud' : 'local');
+  let st = null, fresh = false, lg = null;
+  if (mode === 'cloud' && how !== 'signup') { try { const r = await cloudLoad(u.uid); st = r && r.state; } catch (e) { try { await fb.signOut(); } catch (x) {} throw e; } }
+  if (mode === 'local') { try { st = JSON.parse(localStorage.getItem('nubeltia-u-' + u.uid) || 'null'); } catch (e) {} }
+  if (!st) {
+    fresh = true; lg = migrate ? legacyState() : null;
+    st = lg || freshState(u.name || nameFromEmail(u.email));
+    if (u.name) st.name = String(u.name).slice(0, 24);
+    if (!st.lang && S.lang) st.lang = S.lang;
+  }
+  sessSet({uid:u.uid, mode, email:u.email || '', name:u.name || st.name || '', provider:u.provider || 'password', at:Date.now()});
+  KEY = 'nubeltia-u-' + u.uid;
+  syncOK = mode === 'cloud'; syncErr = ''; syncSt = mode === 'cloud' && !fresh ? 'saved' : 'idle'; lastSync = mode === 'cloud' && !fresh ? Date.now() : 0;
+  S = st; normS(); rollover();
+  if (fresh) save(); else { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+  if (lg) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) {} }
+  if (fresh && mode === 'cloud') cloudPush();
+  draft = null; editing = false; restEnd = 0; authInfo = ''; authPrefill = '';
+  langTo(S.lang === 'en' ? 'en' : 'es');
+  hideAuth(); closeSheet(); current = ''; go('inicio'); renderTop(); $('#rail-about').innerHTML = aboutHTML();
+  SFX.claim();
+  if (fresh && !lg) toast(tL(`¡Hola, ${S.name}! Tu cuenta está lista.`, `Hi, ${S.name}! Your account is ready.`));
+  else if (lg) toast(tL('Listo: tu progreso de este dispositivo ya está en tu cuenta.', 'Done: your progress from this device is now in your account.'));
+  if (!S.tourDone) setTimeout(startTour, 800); else setTimeout(nubiWelcome, 900);
+}
+function leaveAccount() {
+  clearTimeout(pushT); pushT = 0; syncSt = 'idle'; syncOK = false; syncErr = ''; lastSync = 0;
+  sessSet(null); KEY = LEGACY_KEY;
+  const l = S.lang; S = defaults(); normS(); if (l) S.lang = l;
+  draft = null; editing = false; restEnd = 0;
+  closeSheet(); $('#tour').hidden = true; hideSay();
+  current = ''; show('inicio'); renderTop(); $('#rail-about').innerHTML = aboutHTML();
+}
+async function signOutNow(force) {
+  if (!SESS) return;
+  const was = SESS;
+  if (was.mode === 'cloud') {
+    if (pushT || syncSt === 'pending' || !syncOK) await cloudPush();
+    if (!force && (syncSt === 'offline' || syncSt === 'error')) {
+      openSheet(`<h3 class="h2">${tL('Hay cambios sin guardar en la nube', 'Some changes aren’t saved to the cloud')}</h3><p class="muted">${tL('Si cierras sesión ahora, lo último que hiciste en este dispositivo se pierde. Revisa tu internet e intenta otra vez.', 'If you sign out now, your latest changes on this device are lost. Check your internet and try again.')}</p>
+        <div class="sr-btns"><button class="btn" data-act="sheet-close">${tL('Seguir en mi cuenta', 'Stay signed in')}</button><button class="btn ghost" data-act="acct-out-force">${tL('Cerrar sesión igual', 'Sign out anyway')}</button></div>`);
+      SFX.error(); return;
+    }
+    try { await fbLoad(); await fb.signOut(); } catch (e) {}
+    try { localStorage.removeItem('nubeltia-u-' + was.uid); } catch (e) {}
+  }
+  SFX.close(); authPrefill = was.email || '';
+  leaveAccount();
+  showAuth('login', was.mode === 'cloud' ? tL('Cerraste sesión. Tu progreso queda guardado en tu cuenta.', 'You signed out. Your progress stays saved in your account.') : tL('Cerraste sesión. Tu progreso queda guardado en este dispositivo.', 'You signed out. Your progress stays saved on this device.'));
+}
+async function acctDelete() {
+  if (!SESS) return;
+  const was = SESS;
+  if (was.mode === 'local') {
+    LocalAuth.remove(was.email); try { localStorage.removeItem('nubeltia-u-' + was.uid); } catch (e) {}
+    leaveAccount(); showAuth('welcome', tL('Listo. Tu cuenta y tus datos se borraron de este dispositivo.', 'Done. Your account and data were deleted from this device.')); SFX.undo(); return;
+  }
+  const b = $('[data-act="delete-yes"]'); if (b) { b.setAttribute('aria-busy', 'true'); b.textContent = tL('Borrando…', 'Deleting…'); }
+  try {
+    await fbLoad(); clearTimeout(pushT); pushT = 0;
+    const tok = await fb.token();
+    await fsReq('DELETE', was.uid, null, tok);
+    try { await fb.remove(); } catch (e) { try { await cloudSave(); } catch (x) {} throw e; }
+    try { localStorage.removeItem('nubeltia-u-' + was.uid); } catch (e) {}
+    leaveAccount(); showAuth('welcome', tL('Listo. Tu cuenta y todos tus datos se borraron.', 'Done. Your account and all your data were deleted.')); SFX.undo();
+  } catch (e) {
+    rerender(); SFX.error();
+    toast(e.code === 'auth/requires-recent-login' ? tL('Por seguridad, cierra sesión, vuelve a entrar y bórrala otra vez.', 'For security, sign out, sign back in and delete it again.') : authMsg(e));
+  }
+}
+
+/* friendly messages for every error the sign-in can give */
+function authMsg(e) {
+  const c = String((e && e.code) || '');
+  if (/^auth\/api-key-not-valid/.test(c) || c === 'auth/invalid-api-key') return tL('La conexión con Firebase no está bien configurada: revisa la clave en config.js.', 'The Firebase connection isn’t set up right: check the key in config.js.');
+  const bad = ['Correo o contraseña incorrectos.', 'Wrong email or password.'];
+  const M = {
+    'auth/email-already-in-use':['Ya existe una cuenta con ese correo. Inicia sesión.', 'An account with that email already exists. Sign in.'],
+    'auth/invalid-email':['Ese correo no es válido.', 'That email isn’t valid.'], 'auth/missing-email':['Escribe tu correo.', 'Type your email.'],
+    'auth/weak-password':['Esa contraseña es muy débil. Usa al menos 8 caracteres.', 'That password is too weak. Use at least 8 characters.'],
+    'auth/missing-password':['Escribe tu contraseña.', 'Type your password.'],
+    'auth/invalid-credential':bad, 'auth/invalid-login-credentials':bad, 'auth/wrong-password':bad, 'auth/user-not-found':bad,
+    'auth/too-many-requests':['Demasiados intentos. Espera un momento o restablece tu contraseña.', 'Too many tries. Wait a moment or reset your password.'],
+    'auth/network-request-failed':['Sin conexión. Revisa tu internet e intenta otra vez.', 'No connection. Check your internet and try again.'], 'network':['Sin conexión. Revisa tu internet e intenta otra vez.', 'No connection. Check your internet and try again.'],
+    'auth/user-disabled':['Esta cuenta está desactivada.', 'This account is disabled.'],
+    'auth/operation-not-allowed':['Este método de acceso todavía no está activado (Firebase → Authentication → Método de acceso).', 'This sign-in method isn’t turned on yet (Firebase → Authentication → Sign-in method).'],
+    'auth/configuration-not-found':['Falta activar Authentication en Firebase (Authentication → Comenzar).', 'Authentication isn’t turned on in Firebase yet (Authentication → Get started).'],
+    'auth/unauthorized-domain':['Falta autorizar este sitio en Firebase (Authentication → Configuración → Dominios autorizados).', 'This site isn’t authorized in Firebase yet (Authentication → Settings → Authorized domains).'],
+    'auth/popup-closed-by-user':null, 'auth/cancelled-popup-request':null, 'auth/user-cancelled':null,
+    'auth/requires-recent-login':['Por seguridad, vuelve a iniciar sesión e inténtalo de nuevo.', 'For security, sign in again and retry.'],
+    'auth/no-crypto':['Este navegador no permite crear cuentas aquí. Prueba con Chrome o Safari actualizados.', 'This browser can’t create accounts here. Try an up-to-date Chrome or Safari.'],
+    'fs/denied':['Entraste, pero la nube no deja leer ni guardar tu progreso (revisa las reglas de Firestore).', 'You’re in, but the cloud won’t read or save your progress (check the Firestore rules).'],
+    'fs/no-db':['Entraste, pero falta crear la base de datos en Firebase (Firestore Database → Crear).', 'You’re in, but the Firebase database isn’t created yet (Firestore Database → Create).'],
+  };
+  if (c in M) return M[c] ? tL(M[c][0], M[c][1]) : '';
+  return tL(`No pude completar el acceso (${c || 'error'}). Intenta otra vez.`, `Couldn’t finish (${c || 'error'}). Try again.`);
+}
+
+/* ---------- the screens ---------- */
+function authHTML(m) {
+  const cloud = CLOUD, lg = !!legacyState();
+  const back = m === 'welcome' ? '' : `<button class="icon-btn" type="button" data-act="au-mode" data-m="${m === 'reset' ? 'login' : 'welcome'}" aria-label="${tL('Atrás', 'Back')}">${ic('back', 20)}</button>`;
+  const top = `<div class="auth-top">${back}<span class="spacer"></span><button class="icon-btn lang-btn" type="button" data-act="au-lang" aria-label="Idioma / Language">${ic('globe', 16)}<span>${(S.lang || 'es').toUpperCase()}</span></button></div>`;
+  const info = `<p class="auth-ok" id="au-ok" role="status">${esc(authInfo)}</p>`;
+  const google = cloud ? `<button class="btn full google" type="button" data-act="au-google">${GLOGO}<span>${tL('Continuar con Google', 'Continue with Google')}</span></button><div class="auth-or">${tL('o con tu correo', 'or with your email')}</div>` : '';
+  const pw = (id, ac) => `<div class="pw-wrap"><input id="${id}" type="password" autocomplete="${ac}" required><button class="pw-eye" type="button" data-act="au-eye" aria-label="${tL('Mostrar contraseña', 'Show password')}" aria-pressed="false">${ic('eye', 20)}</button></div>`;
+  const email = `<div class="field"><label for="au-email">${tL('Correo', 'Email')}</label><input id="au-email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required value="${esc(authPrefill)}"></div>`;
+  const note = `<p class="auth-note">${ic('shield', 18)}<span>${cloud ? tL('Tu progreso se guarda en tu cuenta y lo ves en cualquier dispositivo.', 'Your progress is saved to your account and you see it on any device.') : tL('Por ahora tu cuenta y tu progreso se guardan en este dispositivo.', 'For now your account and progress are saved on this device.')} ${tL('Tus datos de salud son tuyos: no se venden ni se usan para publicidad.', 'Your health data is yours: it’s never sold or used for ads.')}</span></p>`;
+  if (m === 'signup') return `${top}
+    <div class="auth-hero sm">${mascot('celebrate', 96)}<h1 class="h1">${tL('Crea tu cuenta', 'Create your account')}</h1><p>${tL('Toma 30 segundos. Nubi guarda tus hábitos, tus metas y tu progreso.', 'It takes 30 seconds. Nubi keeps your habits, goals and progress.')}</p></div>
+    <form class="auth-form" id="au-signup" novalidate>${google}
+      <div class="field"><label for="au-name">${tL('Tu nombre', 'Your name')}</label><input id="au-name" autocomplete="given-name" maxlength="24" required></div>
+      ${email}
+      <div class="field"><label for="au-pw">${tL('Contraseña', 'Password')}</label>${pw('au-pw', 'new-password')}<span class="muted small">${tL('Mínimo 8 caracteres.', 'At least 8 characters.')}</span></div>
+      ${lg ? `<label class="auth-check"><input type="checkbox" id="au-mig" checked><span>${tL('Pasar a mi cuenta lo que ya hice en este dispositivo', 'Move what I already did on this device to my account')}</span></label>` : ''}
+      <p class="err" id="au-err" role="alert"></p>
+      <button class="btn full" id="au-go">${tL('Crear cuenta', 'Create account')}</button>
+    </form>
+    <p class="auth-alt">${tL('¿Ya tienes cuenta?', 'Already have an account?')} <button class="link" type="button" data-act="au-mode" data-m="login">${tL('Inicia sesión', 'Sign in')}</button></p>${note}`;
+  if (m === 'login') return `${top}
+    <div class="auth-hero sm">${mascot('happy', 96)}<h1 class="h1">${tL('Qué gusto verte', 'Good to see you')}</h1><p>${tL('Entra para seguir con tus hábitos y tu racha.', 'Sign in to keep up your habits and streak.')}</p></div>
+    ${info}
+    <form class="auth-form" id="au-login" novalidate>${google}
+      ${email}
+      <div class="field"><label for="au-pw">${tL('Contraseña', 'Password')}</label>${pw('au-pw', 'current-password')}</div>
+      <button class="link auth-forgot" type="button" data-act="au-mode" data-m="reset">${tL('¿Olvidaste tu contraseña?', 'Forgot your password?')}</button>
+      <p class="err" id="au-err" role="alert"></p>
+      <button class="btn full" id="au-go">${tL('Iniciar sesión', 'Sign in')}</button>
+    </form>
+    <p class="auth-alt">${tL('¿No tienes cuenta?', 'No account yet?')} <button class="link" type="button" data-act="au-mode" data-m="signup">${tL('Crea una', 'Create one')}</button></p>${note}`;
+  if (m === 'reset') return `${top}
+    <div class="auth-hero sm">${mascot('calm', 92)}<h1 class="h1">${tL('Recupera tu contraseña', 'Reset your password')}</h1>
+      <p>${cloud ? tL('Escribe el correo de tu cuenta y te mandamos un enlace para crear una nueva.', 'Type your account email and we’ll send you a link to create a new one.') : tL('Las cuentas de este dispositivo todavía no pueden recuperarse por correo.', 'Accounts on this device can’t be recovered by email yet.')}</p></div>
+    ${cloud ? `<form class="auth-form" id="au-reset" novalidate>${email}${info}<p class="err" id="au-err" role="alert"></p><button class="btn full" id="au-go">${ic('mail', 18)} ${tL('Enviarme el enlace', 'Send me the link')}</button></form>`
+      : `<div class="auth-form"><p class="auth-check" style="display:block">${tL('Si no recuerdas tu contraseña, crea una cuenta nueva con otro correo. Cuando las cuentas se guarden en la nube podrás recuperarla con un enlace a tu correo.', 'If you don’t remember your password, create a new account with another email. Once accounts are saved in the cloud you’ll be able to reset it with a link to your email.')}</p>
+        <button class="btn full" type="button" data-act="au-mode" data-m="signup">${tL('Crear una cuenta nueva', 'Create a new account')}</button><button class="btn full ghost" type="button" data-act="au-mode" data-m="login">${tL('Volver a intentar', 'Try again')}</button></div>`}
+    ${note}`;
+  return `${top}
+    <div class="auth-hero">${mascot('happy', 158)}<span class="nb-word auth-word" role="img" aria-label="Nubeltia"></span><h1 class="h1">${tL('Tu bienestar, a tu ritmo', 'Your wellbeing, at your pace')}</h1><p>${tL('Hábitos, enfoque, nutrición y entreno con Nubi, tu nube entrenadora.', 'Habits, focus, nutrition and workouts with Nubi, your cloud coach.')}</p></div>
+    ${info}
+    <div class="auth-form">
+      <button class="btn full" type="button" data-act="au-mode" data-m="signup">${tL('Crear mi cuenta', 'Create my account')}</button>
+      <button class="btn full ghost" type="button" data-act="au-mode" data-m="login">${tL('Ya tengo cuenta', 'I have an account')}</button>
+      ${cloud ? `<button class="btn full google" type="button" data-act="au-google">${GLOGO}<span>${tL('Continuar con Google', 'Continue with Google')}</span></button>` : ''}
+      <p class="err" id="au-err" role="alert"></p>
+    </div>${note}`;
+}
+function showAuth(m, info) {
+  authMode = m || 'welcome'; if (info !== undefined) authInfo = info;
+  const el = $('#auth'); el.hidden = false; el.innerHTML = authHTML(authMode); el.scrollTop = 0;
+  $('#buddy') && $('#buddy').classList.remove('show');
+  if (authMode !== 'welcome') setTimeout(() => { const f = $(authMode === 'signup' ? '#au-name' : authPrefill && authMode === 'login' ? '#au-pw' : '#au-email'); f && f.focus({preventScroll:true}); }, 60);
+}
+function hideAuth() { const el = $('#auth'); el.hidden = true; el.innerHTML = ''; }
+function authBoot() {
+  showAuth('welcome');
+  if (!CLOUD) return;
+  fbLoad().then(a => { const u = a.me(); if (u) return enterAccount(u, 'login'); return a.redirect().then(u2 => { if (u2) { let mg = false; try { mg = sessionStorage.getItem('nb-mig') === '1'; } catch (e) {} return enterAccount(u2, 'google', mg); } }); })
+    .catch(e => { const el = $('#au-err'); const m = authMsg(e); if (el && m && !offline(e)) el.textContent = m; });
+}
+async function authRun(fn, label, btn) {
+  if (authBusy) return;
+  const b = btn || $('#au-go'), html = b ? b.innerHTML : ''; authBusy = true;
+  if (b) { b.setAttribute('aria-busy', 'true'); b.textContent = label; }
+  try { await fn(); }
+  catch (e) { console.warn('auth', e); const m = authMsg(e), el = $('#au-err'); if (m && el) { el.textContent = m; SFX.error(); } }
+  finally { authBusy = false; if (b && b.isConnected) { b.removeAttribute('aria-busy'); b.innerHTML = html; } }
+}
+function authFail(msg, sel) { const el = $('#au-err'); if (el) el.textContent = msg; SFX.error(); const f = sel && $(sel); f && f.focus(); }
+function googleGo(t) {
+  const mig = !!($('#au-mig') && $('#au-mig').checked);
+  try { sessionStorage.setItem('nb-mig', mig ? '1' : ''); } catch (e) {}
+  authRun(async () => { const a = fb || await fbLoad(); const u = await a.google(); if (u) await enterAccount(u, 'google', mig); }, tL('Abriendo Google…', 'Opening Google…'), t);
+}
+async function authSubmit(id) {
+  const v = sel => (($(sel) || {}).value || '');
+  const er = $('#au-err'); if (er) er.textContent = '';
+  if (id === 'pw-form') {
+    const o = v('#pw-old'), n = v('#pw-new'), pe = $('#pw-err');
+    if (n.length < 8) { pe.textContent = tL('La contraseña nueva debe tener al menos 8 caracteres.', 'The new password needs at least 8 characters.'); SFX.error(); return; }
+    try { await LocalAuth.changePw(SESS.email, o, n); closeSheet(); toast(tL('Listo, tu contraseña cambió.', 'Done, your password changed.')); SFX.claim(); }
+    catch (e) { pe.textContent = e.code === 'local/bad-current' ? tL('Tu contraseña actual no es correcta.', 'Your current password isn’t right.') : authMsg(e); SFX.error(); }
+    return;
+  }
+  const email = v('#au-email').trim(), pw = v('#au-pw');
+  if (id === 'au-signup') {
+    const name = v('#au-name').trim();
+    if (!name) return authFail(tL('Escribe tu nombre.', 'Type your name.'), '#au-name');
+    if (!EMAIL_RE.test(email)) return authFail(tL('Escribe un correo válido, por ejemplo ana@gmail.com.', 'Type a valid email, like ana@gmail.com.'), '#au-email');
+    if (pw.length < 8) return authFail(tL('La contraseña debe tener al menos 8 caracteres.', 'The password needs at least 8 characters.'), '#au-pw');
+    const mig = !!($('#au-mig') && $('#au-mig').checked);
+    return authRun(async () => { const a = CLOUD ? (fb || await fbLoad()) : LocalAuth; const u = await a.signUp(email, pw, name); await enterAccount(Object.assign({}, u, {name}), 'signup', mig); }, tL('Creando tu cuenta…', 'Creating your account…'));
+  }
+  if (id === 'au-login') {
+    if (!EMAIL_RE.test(email)) return authFail(tL('Escribe el correo de tu cuenta.', 'Type your account email.'), '#au-email');
+    if (!pw) return authFail(tL('Escribe tu contraseña.', 'Type your password.'), '#au-pw');
+    return authRun(async () => {
+      if (!CLOUD) { const u = await LocalAuth.signIn(email, pw); return enterAccount(u, 'login'); }
+      const a = fb || await fbLoad();
+      try { const u = await a.signIn(email, pw); await enterAccount(u, 'login'); }
+      catch (e) {
+        /* accounts made on this device before the cloud was turned on still open, here */
+        if (/invalid-credential|invalid-login|user-not-found|wrong-password/.test(e.code || '') && accAll()[normEmail(email)]) { const u = await LocalAuth.signIn(email, pw); return enterAccount(u, 'login', false, 'local'); }
+        throw e;
+      }
+    }, tL('Entrando…', 'Signing in…'));
+  }
+  if (id === 'au-reset') {
+    if (!EMAIL_RE.test(email)) return authFail(tL('Escribe el correo de tu cuenta.', 'Type your account email.'), '#au-email');
+    return authRun(async () => {
+      const a = fb || await fbLoad();
+      try { await a.reset(email); } catch (e) { if (/invalid-email|network|too-many|api-key|configuration/.test(e.code || '')) throw e; }
+      const ok = $('#au-ok'); if (ok) ok.textContent = tL('Listo. Si hay una cuenta con ese correo, te llegará un enlace para crear una contraseña nueva. Revisa también la carpeta de spam.', 'Done. If there’s an account with that email, a link to create a new password is on its way. Check your spam folder too.');
+      SFX.claim();
+    }, tL('Enviando…', 'Sending…'));
+  }
+}
+
+/* ---------- Perfil: your account ---------- */
+function agoTxt(t) { const m = Math.round((Date.now() - t) / 60000); return m < 1 ? tL('hace un momento', 'just now') : m < 60 ? tL(`hace ${m} min`, `${m} min ago`) : new Date(t).toLocaleTimeString(S.lang === 'en' ? 'en-US' : 'es-MX', {hour:'2-digit', minute:'2-digit'}); }
+function syncLine() {
+  if (!SESS) return '';
+  if (SESS.mode === 'local') return `<span class="sync-dot"></span>${tL('Guardado en este dispositivo', 'Saved on this device')}`;
+  const [cls, txt] = syncSt === 'saved' ? ['', tL(`Guardado en la nube · ${agoTxt(lastSync || Date.now())}`, `Saved to the cloud · ${agoTxt(lastSync || Date.now())}`)]
+    : syncSt === 'offline' ? ['warn', tL('Sin conexión: se guarda en la nube cuando vuelva el internet', 'Offline: it saves to the cloud when you’re back online')]
+    : syncSt === 'error' ? ['bad', authMsg({code:syncErr}) || tL('No se pudo guardar en la nube.', 'Couldn’t save to the cloud.')]
+    : ['busy', syncSt === 'idle' ? tL('Conectando con tu cuenta…', 'Connecting to your account…') : tL('Guardando en la nube…', 'Saving to the cloud…')];
+  return `<span class="sync-dot ${cls}"></span><span>${esc(txt)}</span>`;
+}
+function paintSync() { const el = $('#sync-line'); if (el) el.innerHTML = syncLine(); }
+function accountCard() {
+  if (!SESS) return '';
+  const nm = S.name || SESS.name || '', ini = ((nm.trim()[0]) || (SESS.email || '?')[0] || '?').toUpperCase(), cloud = SESS.mode === 'cloud';
+  return `<section class="card acct" id="acct-card"><div class="sec-head"><h2 class="h2">${tL('Tu cuenta', 'Your account')}</h2><span class="pill ${cloud ? 'ok' : ''}">${cloud ? tL('En la nube', 'In the cloud') : tL('En este dispositivo', 'On this device')}</span></div>
+    <div class="acct-row"><span class="acct-av" aria-hidden="true">${esc(ini)}</span><div><b>${esc(nm)}</b><span class="muted small">${esc(SESS.email)}${SESS.provider === 'google' ? ' · Google' : ''}</span></div></div>
+    <p class="sync-line muted small" id="sync-line" role="status">${syncLine()}</p>
+    ${!cloud && CLOUD ? `<p class="muted small" style="margin:-4px 0 12px">${tL('Pásala a la nube para entrar desde cualquier teléfono o computadora.', 'Move it to the cloud to sign in from any phone or computer.')}</p>` : ''}
+    <div class="sr-btns">${!cloud && CLOUD ? `<button class="btn small" data-act="acct-up">${ic('sparkle', 15)} ${tL('Pasar a la nube', 'Move to the cloud')}</button>` : ''}<button class="btn small ghost" data-act="acct-pw">${ic('lock', 15)} ${tL('Contraseña', 'Password')}</button><button class="btn small ghost" data-act="acct-out">${ic('out', 15)} ${tL('Cerrar sesión', 'Sign out')}</button></div></section>`;
+}
+function pwSheet() {
+  if (!SESS) return;
+  if (SESS.mode === 'local') openSheet(`<h3 class="h2">${tL('Cambiar contraseña', 'Change password')}</h3>
+    <form class="auth-form" id="pw-form" novalidate><div class="field"><label for="pw-old">${tL('Contraseña actual', 'Current password')}</label><input id="pw-old" type="password" autocomplete="current-password"></div>
+    <div class="field"><label for="pw-new">${tL('Contraseña nueva', 'New password')}</label><input id="pw-new" type="password" autocomplete="new-password"><span class="muted small">${tL('Mínimo 8 caracteres.', 'At least 8 characters.')}</span></div>
+    <p class="err" id="pw-err" role="alert"></p><button class="btn full">${tL('Guardar contraseña', 'Save password')}</button></form>`);
+  else if (SESS.provider === 'google') openSheet(`<h3 class="h2">${tL('Tu contraseña', 'Your password')}</h3><p class="muted">${tL('Entras con Google, así que tu contraseña se cambia en tu cuenta de Google.', 'You sign in with Google, so your password is changed in your Google account.')}</p><button class="btn full ghost" data-act="sheet-close">${tL('Entendido', 'Got it')}</button>`);
+  else openSheet(`<h3 class="h2">${tL('Cambiar contraseña', 'Change password')}</h3><p class="muted">${tL(`Te mandamos un enlace a <b>${esc(SESS.email)}</b> para que elijas una contraseña nueva.`, `We’ll send a link to <b>${esc(SESS.email)}</b> so you can choose a new password.`)}</p><p class="auth-ok" id="pw-ok" role="status"></p><button class="btn full" data-act="acct-pw-send">${ic('mail', 18)} ${tL('Enviarme el enlace', 'Send me the link')}</button>`);
+}
+function aboutFine() {
+  const sv = !SESS ? '' : SESS.mode === 'cloud' ? tL('Tu progreso se guarda en tu cuenta, en la nube.', 'Your progress is saved to your account, in the cloud.') : tL('Tu cuenta y tu progreso se guardan en este dispositivo.', 'Your account and progress are saved on this device.');
+  const ai = aiVia === 'key' ? tL('Nubi usa tu clave de IA.', 'Nubi uses your AI key.') : (aiVia === 'claude' || window.claude) ? tL('Nubi usa la cuenta de Claude de quien abre el prototipo.', 'Nubi uses the Claude account of whoever opens the prototype.') : tL('Para que Nubi use IA de verdad (fotos de comida, chat y asistente), conecta tu clave en Perfil → IA de Nubeltia.', 'For real AI (food photos, chat and assistant), connect your key in Profile → Nubeltia AI.');
+  return `${tL('Los nombres y los datos de días anteriores son de ejemplo.', 'Names and past days are sample data.')} ${sv} ${ai}`;
+}
+Object.assign(A, {
+  'au-mode': t => { authInfo = ''; const em = $('#au-email'); if (em && em.value) authPrefill = em.value.trim(); SFX.tap(); showAuth(t.dataset.m); },
+  'au-eye': t => { const i = t.parentElement.querySelector('input'), on = i.type === 'password'; i.type = on ? 'text' : 'password'; t.setAttribute('aria-pressed', String(on)); t.setAttribute('aria-label', on ? tL('Ocultar contraseña', 'Hide password') : tL('Mostrar contraseña', 'Show password')); t.innerHTML = ic(on ? 'eyeoff' : 'eye', 20); SFX.toggle(on); },
+  'au-google': t => googleGo(t),
+  'au-lang': () => { const em = $('#au-email'); if (em && em.value) authPrefill = em.value.trim(); setLang(S.lang === 'en' ? 'es' : 'en'); showAuth(authMode); },
+  'acct-out': () => signOutNow(false),
+  'acct-out-force': () => { closeSheet(); signOutNow(true); },
+  'acct-pw': () => pwSheet(),
+  'acct-pw-send': async t => { if (authBusy) return; authBusy = true; t.setAttribute('aria-busy', 'true'); try { await fbLoad(); await fb.reset(SESS.email); const ok = $('#pw-ok'); if (ok) ok.textContent = tL('Listo. Revisa tu correo (y la carpeta de spam).', 'Done. Check your email (and spam folder).'); SFX.claim(); } catch (e) { toast(authMsg(e)); SFX.error(); } finally { authBusy = false; t.removeAttribute('aria-busy'); } },
+  'acct-up': () => { try { localStorage.setItem(LEGACY_KEY, JSON.stringify(S)); } catch (e) {} authPrefill = SESS.email || ''; const nm = S.name; leaveAccount(); showAuth('signup', ''); const n = $('#au-name'); if (n) n.value = nm || ''; },
+});
+
 /* ---------- boot ---------- */
 if (P3 && P3.play && !P3._snd) { const p0 = P3.play; P3.play = (n, ...r) => { if (CLIP_SND[n] && P3.ok && P3.ok()) CLIP_SND[n](); return p0(n, ...r); }; P3._snd = true; }
 $('#tabbar').innerHTML = TABS.map(([t, l, i]) => `<button class="tab" data-act="tab" data-tab="${t}"><span class="tp">${ic(i, 22)}</span>${l}</button>`).join('');
@@ -4835,7 +5328,7 @@ $('#buddy').innerHTML = slot3d('happy', 62, 72, 82);
 P3.init();
 let p3raf = 0; const p3follow = () => { if (!p3raf) p3raf = requestAnimationFrame(() => { p3raf = 0; P3.mount(); }); };
 $('#scroller').addEventListener('scroll', p3follow, {passive:true}); window.addEventListener('resize', p3follow);
-if (!S.tourDone) setTimeout(startTour, 1900); else setTimeout(nubiWelcome, 2400);
+if (!SESS && !NOAUTH) authBoot(); else { if (!S.tourDone) setTimeout(startTour, 1900); else setTimeout(nubiWelcome, 2400); if (SESS && SESS.mode === 'cloud') setTimeout(cloudResume, 300); }
 })();
 </script>
 </body>
