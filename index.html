@@ -922,8 +922,16 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .pw-wrap input{padding-right:52px!important}
 .pw-eye{position:absolute;right:3px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:0;border-radius:12px;background:none;color:var(--muted);display:grid;place-items:center}
 .auth .btn{height:52px;font-size:16px;border-radius:15px}
-.auth .btn:not(.ghost):not(.google){background:var(--grad);color:#050720;box-shadow:0 8px 26px rgba(57,225,255,.22)}
+.auth .btn:not(.ghost):not(.google):not(.facebook){background:var(--grad);color:#050720;box-shadow:0 8px 26px rgba(57,225,255,.22)}
 .btn.google{background:#fff;color:#1f1f1f;gap:10px}
+.btn.facebook{background:#1877F2;color:#fff;gap:10px}
+.auth .btn.google,.auth .btn.facebook{box-shadow:none}
+.auth-social{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.auth-social.wide{grid-template-columns:1fr}
+.auth-soc{display:flex;flex-direction:column;gap:12px}
+.auth-soc-msg{margin:0;font-size:13.5px;line-height:1.4;font-weight:600;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.auth-soc-msg:empty{display:none}
+.auth-soc-msg.bad{color:var(--danger);background:var(--danger-soft);border-color:transparent}
 .btn[aria-busy="true"]{opacity:.72;pointer-events:none}
 .auth-or{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:13px}
 .auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -2303,7 +2311,7 @@ function renderTrain() {
 /* ---------- render: perfil ---------- */
 function aboutHTML() {
   const ok = [tL('Cuentas: crear cuenta, iniciar sesión y recuperar contraseña', 'Accounts: sign up, sign in and password reset'), 'Hábitos con recompensas, niveles y logros','Pomodoro con sonido y vibración','Registro mental, señales de burnout y por qué no cumpliste','Nutrición: IMC, cintura, calorías y macros','Rutina con series, descansos y caminatas','Nubi, la IA de acompañamiento'];
-  const sim = ['Avisos en el reloj','Conexión con relojes y anillos','Conexión con tu coach','Fotos de platillos y videos de ejercicios'];
+  const sim = [...(CLOUD ? [] : [tL('Entrar con Google o Facebook (se activa al conectar la nube)', 'Google or Facebook sign-in (turns on with the cloud)')]), 'Avisos en el reloj','Conexión con relojes y anillos','Conexión con tu coach','Fotos de platillos y videos de ejercicios'];
   return `<h3>Funciona de verdad</h3><ul>${ok.map(t => `<li>${ic('check', 16)}<span>${t}</span></li>`).join('')}</ul>
     <h3>Simulado por ahora</h3><ul>${sim.map(t => `<li class="sim">${ic('sparkle', 16)}<span>${t}</span></li>`).join('')}</ul>
     <p class="fine">${aboutFine()}</p>`;
@@ -4893,6 +4901,10 @@ const normEmail = e => String(e || '').trim().toLowerCase();
 let authMode = 'welcome', authBusy = false, authInfo = '', authPrefill = '', fb = null, fbReady = null, resuming = null;
 const locFail = {n:0, until:0};
 const GLOGO = '<svg width="19" height="19" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
+const FLOGO = '<svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#fff" d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.02 4.39 11.02 10.13 11.93v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.95.93-1.95 1.88v2.26h3.33l-.53 3.49h-2.8V24C19.61 23.09 24 18.09 24 12.07z"/></svg>';
+const SOCIAL = {google:{n:'Google', logo:GLOGO}, facebook:{n:'Facebook', logo:FLOGO}};
+/* a device account on its way to the cloud: kept in memory only, so nobody else on this device is offered its progress */
+let upFrom = null;
 
 function sessSet(x) { SESS = x; try { x ? localStorage.setItem(SESS_KEY, JSON.stringify(x)) : localStorage.removeItem(SESS_KEY); } catch (e) {} }
 function legacyState() { try { const r = JSON.parse(localStorage.getItem(LEGACY_KEY) || 'null'); return r && r.v === 1 && Array.isArray(r.habits) ? r : null; } catch (e) { return null; } }
@@ -4953,16 +4965,20 @@ function fbLoad() {
     const auth = F.getAuth(app);
     auth.languageCode = S.lang === 'en' ? 'en' : 'es';
     await auth.authStateReady();
-    const me = () => { const u = auth.currentUser; if (!u) return null; return {uid:u.uid, email:u.email || '', name:u.displayName || '', provider:u.providerData.some(p => p.providerId === 'google.com') ? 'google' : 'password'}; };
+    const me = () => {
+      const u = auth.currentUser; if (!u) return null;
+      const ids = u.providerData.map(p => p.providerId), pd = u.providerData.find(p => p.email) || {};
+      return {uid:u.uid, email:u.email || pd.email || '', name:u.displayName || '', provider:ids.includes('password') ? 'password' : ids.includes('google.com') ? 'google' : ids.includes('facebook.com') ? 'facebook' : 'password'};
+    };
     return (fb = {
       projectId:NB_FB.projectId, me,
       async signUp(email, pw, name) { const c = await F.createUserWithEmailAndPassword(auth, email, pw); try { await F.updateProfile(c.user, {displayName:name}); } catch (e) {} F.sendEmailVerification(c.user).catch(() => {}); return Object.assign(me(), {name}); },
       async signIn(email, pw) { await F.signInWithEmailAndPassword(auth, email, pw); return me(); },
-      google() {
-        const p = new F.GoogleAuthProvider(); p.setCustomParameters({prompt:'select_account'});
-        return F.signInWithPopup(auth, p).then(me, e => { if (e && e.code === 'auth/popup-blocked') return F.signInWithRedirect(auth, p).then(() => null); throw e; });
+      social(which) {
+        const p = which === 'facebook' ? new F.FacebookAuthProvider() : new F.GoogleAuthProvider();
+        if (which === 'facebook') { p.addScope('email'); p.setCustomParameters({display:'popup'}); } else p.setCustomParameters({prompt:'select_account'});
+        return F.signInWithPopup(auth, p).then(me);
       },
-      async redirect() { const r = await F.getRedirectResult(auth); return r && r.user ? me() : null; },
       reset: email => F.sendPasswordResetEmail(auth, email),
       signOut: () => F.signOut(auth),
       token: () => auth.currentUser ? auth.currentUser.getIdToken() : Promise.reject({code:'auth/no-user'}),
@@ -5051,7 +5067,7 @@ async function enterAccount(u, how, migrate, modeOverride) {
   if (mode === 'cloud' && how !== 'signup') { try { const r = await cloudLoad(u.uid); st = r && r.state; } catch (e) { try { await fb.signOut(); } catch (x) {} throw e; } }
   if (mode === 'local') { try { st = JSON.parse(localStorage.getItem('nubeltia-u-' + u.uid) || 'null'); } catch (e) {} }
   if (!st) {
-    fresh = true; lg = migrate ? legacyState() : null;
+    fresh = true; lg = migrate ? (upFrom ? upFrom.state : legacyState()) : null;
     st = lg || freshState(u.name || nameFromEmail(u.email));
     if (u.name) st.name = String(u.name).slice(0, 24);
     if (!st.lang && S.lang) st.lang = S.lang;
@@ -5061,14 +5077,16 @@ async function enterAccount(u, how, migrate, modeOverride) {
   syncOK = mode === 'cloud'; syncErr = ''; syncSt = mode === 'cloud' && !fresh ? 'saved' : 'idle'; lastSync = mode === 'cloud' && !fresh ? Date.now() : 0;
   S = st; normS(); rollover();
   if (fresh) save(); else { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
-  if (lg) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) {} }
+  if (lg && upFrom) { LocalAuth.remove(upFrom.email); try { localStorage.removeItem('nubeltia-u-' + upFrom.uid); } catch (e) {} }
+  else if (lg) { try { localStorage.removeItem(LEGACY_KEY); } catch (e) {} }
+  const moved = !!(lg && upFrom); upFrom = null;
   if (fresh && mode === 'cloud') cloudPush();
   draft = null; editing = false; restEnd = 0; authInfo = ''; authPrefill = '';
   langTo(S.lang === 'en' ? 'en' : 'es');
   hideAuth(); closeSheet(); current = ''; go('inicio'); renderTop(); $('#rail-about').innerHTML = aboutHTML();
   SFX.claim();
   if (fresh && !lg) toast(tL(`¡Hola, ${S.name}! Tu cuenta está lista.`, `Hi, ${S.name}! Your account is ready.`));
-  else if (lg) toast(tL('Listo: tu progreso de este dispositivo ya está en tu cuenta.', 'Done: your progress from this device is now in your account.'));
+  else if (lg) toast(moved ? tL('Listo: tu cuenta ya está en la nube.', 'Done: your account is now in the cloud.') : tL('Listo: tu progreso de este dispositivo ya está en tu cuenta.', 'Done: your progress from this device is now in your account.'));
   if (!S.tourDone) setTimeout(startTour, 800); else setTimeout(nubiWelcome, 900);
 }
 function leaveAccount() {
@@ -5119,6 +5137,7 @@ async function acctDelete() {
 
 /* friendly messages for every error the sign-in can give */
 function authMsg(e) {
+  e = e || {};
   const c = String((e && e.code) || '');
   if (/^auth\/api-key-not-valid/.test(c) || c === 'auth/invalid-api-key') return tL('La conexión con Firebase no está bien configurada: revisa la clave en config.js.', 'The Firebase connection isn’t set up right: check the key in config.js.');
   const bad = ['Correo o contraseña incorrectos.', 'Wrong email or password.'];
@@ -5131,7 +5150,10 @@ function authMsg(e) {
     'auth/too-many-requests':['Demasiados intentos. Espera un momento o restablece tu contraseña.', 'Too many tries. Wait a moment or reset your password.'],
     'auth/network-request-failed':['Sin conexión. Revisa tu internet e intenta otra vez.', 'No connection. Check your internet and try again.'], 'network':['Sin conexión. Revisa tu internet e intenta otra vez.', 'No connection. Check your internet and try again.'],
     'auth/user-disabled':['Esta cuenta está desactivada.', 'This account is disabled.'],
-    'auth/operation-not-allowed':['Este método de acceso todavía no está activado (Firebase → Authentication → Método de acceso).', 'This sign-in method isn’t turned on yet (Firebase → Authentication → Sign-in method).'],
+    'auth/operation-not-allowed':e.social ? [`Entrar con ${e.social} todavía no está activado. Usa tu correo y contraseña.`, `${e.social} sign-in isn’t turned on yet. Use your email and password.`] : ['Este método de acceso todavía no está activado (Firebase → Authentication → Método de acceso).', 'This sign-in method isn’t turned on yet (Firebase → Authentication → Sign-in method).'],
+    'auth/account-exists-with-different-credential':['Ya tienes una cuenta con ese correo. Entra como lo hiciste la primera vez (correo y contraseña o Google).', 'You already have an account with that email. Sign in the way you did the first time (email and password, or Google).'],
+    'auth/popup-blocked':['Tu navegador bloqueó la ventana. Permite ventanas emergentes para este sitio e intenta otra vez.', 'Your browser blocked the window. Allow pop-ups for this site and try again.'],
+    'auth/operation-not-supported-in-this-environment':['Aquí no se puede abrir esa ventana. Abre Nubeltia en Chrome o Safari.', 'That window can’t open here. Open Nubeltia in Chrome or Safari.'],
     'auth/configuration-not-found':['Falta activar Authentication en Firebase (Authentication → Comenzar).', 'Authentication isn’t turned on in Firebase yet (Authentication → Get started).'],
     'auth/unauthorized-domain':['Falta autorizar este sitio en Firebase (Authentication → Configuración → Dominios autorizados).', 'This site isn’t authorized in Firebase yet (Authentication → Settings → Authorized domains).'],
     'auth/popup-closed-by-user':null, 'auth/cancelled-popup-request':null, 'auth/user-cancelled':null,
@@ -5146,17 +5168,17 @@ function authMsg(e) {
 
 /* ---------- the screens ---------- */
 function authHTML(m) {
-  const cloud = CLOUD, lg = !!legacyState();
+  const cloud = CLOUD, lg = !!(upFrom || legacyState());
   const back = m === 'welcome' ? '' : `<button class="icon-btn" type="button" data-act="au-mode" data-m="${m === 'reset' ? 'login' : 'welcome'}" aria-label="${tL('Atrás', 'Back')}">${ic('back', 20)}</button>`;
   const top = `<div class="auth-top">${back}<span class="spacer"></span><button class="icon-btn lang-btn" type="button" data-act="au-lang" aria-label="Idioma / Language">${ic('globe', 16)}<span>${(S.lang || 'es').toUpperCase()}</span></button></div>`;
   const info = `<p class="auth-ok" id="au-ok" role="status">${esc(authInfo)}</p>`;
-  const google = cloud ? `<button class="btn full google" type="button" data-act="au-google">${GLOGO}<span>${tL('Continuar con Google', 'Continue with Google')}</span></button><div class="auth-or">${tL('o con tu correo', 'or with your email')}</div>` : '';
+  const social = wide => `<div class="auth-soc"><div class="auth-or">${tL('o continúa con', 'or continue with')}</div><div class="auth-social ${wide ? 'wide' : ''}">${Object.keys(SOCIAL).map(k => { const l = tL('Continuar con ', 'Continue with ') + SOCIAL[k].n; return `<button class="btn full ${k}" type="button" data-act="au-social" data-p="${k}" aria-label="${l}">${SOCIAL[k].logo}<span>${wide ? l : SOCIAL[k].n}</span></button>`; }).join('')}</div><p class="auth-soc-msg" id="au-soc" role="status"></p></div>`;
   const pw = (id, ac) => `<div class="pw-wrap"><input id="${id}" type="password" autocomplete="${ac}" required><button class="pw-eye" type="button" data-act="au-eye" aria-label="${tL('Mostrar contraseña', 'Show password')}" aria-pressed="false">${ic('eye', 20)}</button></div>`;
   const email = `<div class="field"><label for="au-email">${tL('Correo', 'Email')}</label><input id="au-email" type="email" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required value="${esc(authPrefill)}"></div>`;
   const note = `<p class="auth-note">${ic('shield', 18)}<span>${cloud ? tL('Tu progreso se guarda en tu cuenta y lo ves en cualquier dispositivo.', 'Your progress is saved to your account and you see it on any device.') : tL('Por ahora tu cuenta y tu progreso se guardan en este dispositivo.', 'For now your account and progress are saved on this device.')} ${tL('Tus datos de salud son tuyos: no se venden ni se usan para publicidad.', 'Your health data is yours: it’s never sold or used for ads.')}</span></p>`;
   if (m === 'signup') return `${top}
     <div class="auth-hero sm">${mascot('celebrate', 96)}<h1 class="h1">${tL('Crea tu cuenta', 'Create your account')}</h1><p>${tL('Toma 30 segundos. Nubi guarda tus hábitos, tus metas y tu progreso.', 'It takes 30 seconds. Nubi keeps your habits, goals and progress.')}</p></div>
-    <form class="auth-form" id="au-signup" novalidate>${google}
+    <form class="auth-form" id="au-signup" novalidate>
       <div class="field"><label for="au-name">${tL('Tu nombre', 'Your name')}</label><input id="au-name" autocomplete="given-name" maxlength="24" required></div>
       ${email}
       <div class="field"><label for="au-pw">${tL('Contraseña', 'Password')}</label>${pw('au-pw', 'new-password')}<span class="muted small">${tL('Mínimo 8 caracteres.', 'At least 8 characters.')}</span></div>
@@ -5164,17 +5186,19 @@ function authHTML(m) {
       <p class="err" id="au-err" role="alert"></p>
       <button class="btn full" id="au-go">${tL('Crear cuenta', 'Create account')}</button>
     </form>
+    ${social(false)}
     <p class="auth-alt">${tL('¿Ya tienes cuenta?', 'Already have an account?')} <button class="link" type="button" data-act="au-mode" data-m="login">${tL('Inicia sesión', 'Sign in')}</button></p>${note}`;
   if (m === 'login') return `${top}
     <div class="auth-hero sm">${mascot('happy', 96)}<h1 class="h1">${tL('Qué gusto verte', 'Good to see you')}</h1><p>${tL('Entra para seguir con tus hábitos y tu racha.', 'Sign in to keep up your habits and streak.')}</p></div>
     ${info}
-    <form class="auth-form" id="au-login" novalidate>${google}
+    <form class="auth-form" id="au-login" novalidate>
       ${email}
       <div class="field"><label for="au-pw">${tL('Contraseña', 'Password')}</label>${pw('au-pw', 'current-password')}</div>
       <button class="link auth-forgot" type="button" data-act="au-mode" data-m="reset">${tL('¿Olvidaste tu contraseña?', 'Forgot your password?')}</button>
       <p class="err" id="au-err" role="alert"></p>
       <button class="btn full" id="au-go">${tL('Iniciar sesión', 'Sign in')}</button>
     </form>
+    ${social(false)}
     <p class="auth-alt">${tL('¿No tienes cuenta?', 'No account yet?')} <button class="link" type="button" data-act="au-mode" data-m="signup">${tL('Crea una', 'Create one')}</button></p>${note}`;
   if (m === 'reset') return `${top}
     <div class="auth-hero sm">${mascot('calm', 92)}<h1 class="h1">${tL('Recupera tu contraseña', 'Reset your password')}</h1>
@@ -5189,9 +5213,9 @@ function authHTML(m) {
     <div class="auth-form">
       <button class="btn full" type="button" data-act="au-mode" data-m="signup">${tL('Crear mi cuenta', 'Create my account')}</button>
       <button class="btn full ghost" type="button" data-act="au-mode" data-m="login">${tL('Ya tengo cuenta', 'I have an account')}</button>
-      ${cloud ? `<button class="btn full google" type="button" data-act="au-google">${GLOGO}<span>${tL('Continuar con Google', 'Continue with Google')}</span></button>` : ''}
       <p class="err" id="au-err" role="alert"></p>
-    </div>${note}`;
+    </div>
+    ${social(true)}${note}`;
 }
 function showAuth(m, info) {
   authMode = m || 'welcome'; if (info !== undefined) authInfo = info;
@@ -5203,22 +5227,32 @@ function hideAuth() { const el = $('#auth'); el.hidden = true; el.innerHTML = ''
 function authBoot() {
   showAuth('welcome');
   if (!CLOUD) return;
-  fbLoad().then(a => { const u = a.me(); if (u) return enterAccount(u, 'login'); return a.redirect().then(u2 => { if (u2) { let mg = false; try { mg = sessionStorage.getItem('nb-mig') === '1'; } catch (e) {} return enterAccount(u2, 'google', mg); } }); })
+  fbLoad().then(a => { const u = a.me(); if (u) return enterAccount(u, 'login'); })
     .catch(e => { const el = $('#au-err'); const m = authMsg(e); if (el && m && !offline(e)) el.textContent = m; });
 }
-async function authRun(fn, label, btn) {
+async function authRun(fn, label, btn, where) {
   if (authBusy) return;
   const b = btn || $('#au-go'), html = b ? b.innerHTML : ''; authBusy = true;
   if (b) { b.setAttribute('aria-busy', 'true'); b.textContent = label; }
   try { await fn(); }
-  catch (e) { console.warn('auth', e); const m = authMsg(e), el = $('#au-err'); if (m && el) { el.textContent = m; SFX.error(); } }
+  catch (e) { console.warn('auth', e); const m = authMsg(e), el = $(where || '#au-err'); if (m && el) { el.textContent = m; if (where) el.classList.add('bad'); SFX.error(); } }
   finally { authBusy = false; if (b && b.isConnected) { b.removeAttribute('aria-busy'); b.innerHTML = html; } }
 }
 function authFail(msg, sel) { const el = $('#au-err'); if (el) el.textContent = msg; SFX.error(); const f = sel && $(sel); f && f.focus(); }
-function googleGo(t) {
+/* Google / Facebook. The pop-up must open inside the tap, so nothing is awaited before it when Firebase is already loaded.
+   Without the cloud there is nobody to ask, so the button says so instead of pretending. */
+function socialGo(t) {
+  const p = t.dataset.p, n = SOCIAL[p].n, msg = $('#au-soc');
+  if (msg) { msg.textContent = ''; msg.classList.remove('bad'); }
+  if (!CLOUD) { if (msg) msg.textContent = tL(`Entrar con ${n} todavía no está activado. Por ahora usa tu correo y contraseña.`, `${n} sign-in isn’t turned on yet. For now use your email and password.`); SFX.tap(); return; }
   const mig = !!($('#au-mig') && $('#au-mig').checked);
-  try { sessionStorage.setItem('nb-mig', mig ? '1' : ''); } catch (e) {}
-  authRun(async () => { const a = fb || await fbLoad(); const u = await a.google(); if (u) await enterAccount(u, 'google', mig); }, tL('Abriendo Google…', 'Opening Google…'), t);
+  authRun(async () => {
+    const a = fb || await fbLoad();
+    let u;
+    try { u = await a.social(p); }
+    catch (e) { throw Object.assign({}, {code:e.code, social:n, email:e.customData && e.customData.email}); }
+    if (u) await enterAccount(u, p, mig);
+  }, tL('Abriendo…', 'Opening…'), t, '#au-soc');
 }
 async function authSubmit(id) {
   const v = sel => (($(sel) || {}).value || '');
@@ -5280,7 +5314,7 @@ function accountCard() {
   if (!SESS) return '';
   const nm = S.name || SESS.name || '', ini = ((nm.trim()[0]) || (SESS.email || '?')[0] || '?').toUpperCase(), cloud = SESS.mode === 'cloud';
   return `<section class="card acct" id="acct-card"><div class="sec-head"><h2 class="h2">${tL('Tu cuenta', 'Your account')}</h2><span class="pill ${cloud ? 'ok' : ''}">${cloud ? tL('En la nube', 'In the cloud') : tL('En este dispositivo', 'On this device')}</span></div>
-    <div class="acct-row"><span class="acct-av" aria-hidden="true">${esc(ini)}</span><div><b>${esc(nm)}</b><span class="muted small">${esc(SESS.email)}${SESS.provider === 'google' ? ' · Google' : ''}</span></div></div>
+    <div class="acct-row"><span class="acct-av" aria-hidden="true">${esc(ini)}</span><div><b>${esc(nm)}</b><span class="muted small">${[esc(SESS.email), SOCIAL[SESS.provider] ? SOCIAL[SESS.provider].n : ''].filter(Boolean).join(' · ')}</span></div></div>
     <p class="sync-line muted small" id="sync-line" role="status">${syncLine()}</p>
     ${!cloud && CLOUD ? `<p class="muted small" style="margin:-4px 0 12px">${tL('Pásala a la nube para entrar desde cualquier teléfono o computadora.', 'Move it to the cloud to sign in from any phone or computer.')}</p>` : ''}
     <div class="sr-btns">${!cloud && CLOUD ? `<button class="btn small" data-act="acct-up">${ic('sparkle', 15)} ${tL('Pasar a la nube', 'Move to the cloud')}</button>` : ''}<button class="btn small ghost" data-act="acct-pw">${ic('lock', 15)} ${tL('Contraseña', 'Password')}</button><button class="btn small ghost" data-act="acct-out">${ic('out', 15)} ${tL('Cerrar sesión', 'Sign out')}</button></div></section>`;
@@ -5291,7 +5325,7 @@ function pwSheet() {
     <form class="auth-form" id="pw-form" novalidate><div class="field"><label for="pw-old">${tL('Contraseña actual', 'Current password')}</label><input id="pw-old" type="password" autocomplete="current-password"></div>
     <div class="field"><label for="pw-new">${tL('Contraseña nueva', 'New password')}</label><input id="pw-new" type="password" autocomplete="new-password"><span class="muted small">${tL('Mínimo 8 caracteres.', 'At least 8 characters.')}</span></div>
     <p class="err" id="pw-err" role="alert"></p><button class="btn full">${tL('Guardar contraseña', 'Save password')}</button></form>`);
-  else if (SESS.provider === 'google') openSheet(`<h3 class="h2">${tL('Tu contraseña', 'Your password')}</h3><p class="muted">${tL('Entras con Google, así que tu contraseña se cambia en tu cuenta de Google.', 'You sign in with Google, so your password is changed in your Google account.')}</p><button class="btn full ghost" data-act="sheet-close">${tL('Entendido', 'Got it')}</button>`);
+  else if (SOCIAL[SESS.provider]) { const pn = SOCIAL[SESS.provider].n; openSheet(`<h3 class="h2">${tL('Tu contraseña', 'Your password')}</h3><p class="muted">${tL(`Entras con ${pn}, así que tu contraseña se cambia en tu cuenta de ${pn}.`, `You sign in with ${pn}, so your password is changed in your ${pn} account.`)}</p><button class="btn full ghost" data-act="sheet-close">${tL('Entendido', 'Got it')}</button>`); }
   else openSheet(`<h3 class="h2">${tL('Cambiar contraseña', 'Change password')}</h3><p class="muted">${tL(`Te mandamos un enlace a <b>${esc(SESS.email)}</b> para que elijas una contraseña nueva.`, `We’ll send a link to <b>${esc(SESS.email)}</b> so you can choose a new password.`)}</p><p class="auth-ok" id="pw-ok" role="status"></p><button class="btn full" data-act="acct-pw-send">${ic('mail', 18)} ${tL('Enviarme el enlace', 'Send me the link')}</button>`);
 }
 function aboutFine() {
@@ -5300,15 +5334,15 @@ function aboutFine() {
   return `${tL('Los nombres y los datos de días anteriores son de ejemplo.', 'Names and past days are sample data.')} ${sv} ${ai}`;
 }
 Object.assign(A, {
-  'au-mode': t => { authInfo = ''; const em = $('#au-email'); if (em && em.value) authPrefill = em.value.trim(); SFX.tap(); showAuth(t.dataset.m); },
+  'au-mode': t => { authInfo = ''; if (t.dataset.m !== 'signup') upFrom = null; const em = $('#au-email'); if (em && em.value) authPrefill = em.value.trim(); SFX.tap(); showAuth(t.dataset.m); },
   'au-eye': t => { const i = t.parentElement.querySelector('input'), on = i.type === 'password'; i.type = on ? 'text' : 'password'; t.setAttribute('aria-pressed', String(on)); t.setAttribute('aria-label', on ? tL('Ocultar contraseña', 'Hide password') : tL('Mostrar contraseña', 'Show password')); t.innerHTML = ic(on ? 'eyeoff' : 'eye', 20); SFX.toggle(on); },
-  'au-google': t => googleGo(t),
+  'au-social': t => socialGo(t),
   'au-lang': () => { const em = $('#au-email'); if (em && em.value) authPrefill = em.value.trim(); setLang(S.lang === 'en' ? 'es' : 'en'); showAuth(authMode); },
   'acct-out': () => signOutNow(false),
   'acct-out-force': () => { closeSheet(); signOutNow(true); },
   'acct-pw': () => pwSheet(),
   'acct-pw-send': async t => { if (authBusy) return; authBusy = true; t.setAttribute('aria-busy', 'true'); try { await fbLoad(); await fb.reset(SESS.email); const ok = $('#pw-ok'); if (ok) ok.textContent = tL('Listo. Revisa tu correo (y la carpeta de spam).', 'Done. Check your email (and spam folder).'); SFX.claim(); } catch (e) { toast(authMsg(e)); SFX.error(); } finally { authBusy = false; t.removeAttribute('aria-busy'); } },
-  'acct-up': () => { try { localStorage.setItem(LEGACY_KEY, JSON.stringify(S)); } catch (e) {} authPrefill = SESS.email || ''; const nm = S.name; leaveAccount(); showAuth('signup', ''); const n = $('#au-name'); if (n) n.value = nm || ''; },
+  'acct-up': () => { if (!SESS) return; const keep = {email:SESS.email, uid:SESS.uid, state:JSON.parse(JSON.stringify(S))}; leaveAccount(); upFrom = keep; authPrefill = keep.email || ''; showAuth('signup', ''); const n = $('#au-name'); if (n) n.value = keep.state.name || ''; },
 });
 
 /* ---------- boot ---------- */
