@@ -955,6 +955,60 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
 .sync-dot.warn{background:var(--gold);box-shadow:none}
 .sync-dot.bad{background:var(--danger);box-shadow:none}
 @keyframes nb-blink{50%{opacity:.25}}
+
+/* ---------- meditation: Medita y baja el ritmo ---------- */
+.med-hero{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;border-radius:20px;padding:16px;color:#fff;
+  background:radial-gradient(120% 140% at 0% 0%,rgba(57,225,255,.32),transparent 55%),linear-gradient(135deg,#33247f,#5e37c8 55%,#8E5CF7);box-shadow:0 10px 30px rgba(142,92,247,.28)}
+.med-hero .mh-txt{flex:1;min-width:0}
+.med-hero .eyebrow{color:#d3ecff}
+.med-hero b{display:block;font:700 20px/1.2 var(--f-display);margin:3px 0 2px}
+.med-hero small{display:block;color:rgba(255,255,255,.84);font-size:13px;line-height:1.35}
+.med-play{width:50px;height:50px;border-radius:50%;background:#fff;color:#4b1fc2;display:grid;place-items:center;flex:none;box-shadow:0 0 0 6px rgba(255,255,255,.14)}
+.med-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}
+.med-tile{display:flex;flex-direction:column;align-items:flex-start;gap:7px;text-align:left;padding:12px;border-radius:16px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink);min-height:108px}
+.med-tile:last-child:nth-child(odd){grid-column:1/-1;min-height:0;flex-direction:row;align-items:center}
+.med-tile:last-child:nth-child(odd) small{margin:0 0 0 auto}
+.med-tile .mt-ic{width:34px;height:34px;border-radius:11px;background:var(--mental-soft);color:var(--mental);display:grid;place-items:center;flex:none}
+.med-tile b{font-size:14.5px;line-height:1.25}
+.med-tile small{color:var(--muted);font-size:12px;font-weight:600;margin-top:auto}
+.med-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.med-stats div{background:var(--surface-2);border-radius:14px;padding:10px 6px;text-align:center}
+.med-stats b{display:block;font:800 19px/1.15 var(--f-display);font-variant-numeric:tabular-nums}
+.med-stats span{font-size:11px;color:var(--muted);font-weight:700}
+.medov{position:absolute;inset:0;z-index:63;display:flex;flex-direction:column;padding:calc(12px + env(safe-area-inset-top)) 20px calc(18px + env(safe-area-inset-bottom));color:var(--ink);overflow-y:auto;
+  background:radial-gradient(90% 55% at 50% 34%,rgba(142,92,247,.26),transparent 70%),radial-gradient(70% 45% at 50% 100%,rgba(57,225,255,.1),transparent 70%),#04051a}
+.medov[hidden]{display:none}
+.mo-top{display:flex;align-items:center;gap:8px;min-height:40px}
+.mo-top .h2{flex:1;text-align:center;font-size:17px}
+.mo-top .sp{width:38px;flex:none}
+.mo-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:8px 0}
+.orb-wrap{position:relative;width:250px;height:250px;display:grid;place-items:center;flex:none}
+.orb-wrap.sm{width:170px;height:170px}
+.orb{position:absolute;inset:0;border-radius:50%;transform:scale(.62);will-change:transform;
+  background:radial-gradient(circle at 50% 46%,rgba(183,148,255,.6),rgba(142,92,247,.34) 46%,rgba(57,225,255,.13) 68%,transparent 71%)}
+.orb::after{content:"";position:absolute;inset:17%;border-radius:50%;border:1.5px solid rgba(183,148,255,.5)}
+.orb-wrap.sm .orb{transform:scale(.9)}
+.orb-ring{position:absolute;inset:0;border-radius:50%;border:1px dashed rgba(229,236,246,.16)}
+.orb-wrap .mascot{position:relative;filter:drop-shadow(0 8px 24px rgba(142,92,247,.5))}
+.mo-phase{font:700 31px/1.05 var(--f-display);letter-spacing:-.01em;margin:4px 0 0;min-height:33px}
+.mo-count{font:600 15px var(--f-body);color:var(--muted);font-variant-numeric:tabular-nums;margin:0;min-height:20px}
+.mo-guide{font:500 17px/1.45 var(--f-body);max-width:31ch;margin:0;min-height:76px;transition:opacity .7s}
+.mo-guide.fade{opacity:0}
+.mo-prog{height:6px;border-radius:99px;background:rgba(229,236,246,.1);overflow:hidden;flex:none}
+.mo-prog i{display:block;height:100%;width:0;background:var(--grad);border-radius:99px}
+.mo-time{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);margin:6px 0 12px;font-variant-numeric:tabular-nums}
+.mo-ctl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mo-set{display:flex;flex-direction:column;gap:14px;width:100%;text-align:left;margin-top:4px}
+.mo-set .label{display:block;margin-bottom:7px}
+.mo-set .set-row{border-top:0;padding:0}
+.mo-desc{color:var(--muted);margin:0;max-width:32ch}
+.mo-safe{font-size:12.5px;color:var(--muted);margin:0;max-width:34ch}
+.mo-feel{display:flex;flex-direction:column;gap:8px;width:100%;max-width:340px}
+.mo-feel .btn[aria-pressed="true"]{background:var(--mental);color:var(--mental-ink)}
+.mo-res{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.mo-say{margin:0;color:var(--ink);max-width:32ch}
+.mo-say:empty{display:none}
+@media (prefers-reduced-motion:reduce){.mo-guide{transition:none}}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
@@ -1006,6 +1060,7 @@ body{background:radial-gradient(ellipse at 72% 8%,rgba(142,92,247,.14),transpare
       <div class="notif-actions"><button class="btn small" data-act="notif-done">Hecho</button><button class="btn small ghost" data-act="notif-snooze">Posponer 10 min</button></div>
       <p class="notif-watch" id="notif-watch"></p>
     </div>
+    <div class="medov" id="medov" hidden role="dialog" aria-modal="true" aria-label="Meditación"></div>
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
     <div class="pbub" id="pbub" role="status" aria-live="polite"></div>
     <div class="backdrop" id="backdrop" data-act="sheet-close"></div>
@@ -1089,6 +1144,7 @@ const I = {
   lock:'<rect x="5.5" y="10.5" width="13" height="9.5" rx="2.5"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5"/>',
   search:'<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
   back:'<path d="M14.5 6l-6 6 6 6"/>',
+  leaf:'<path d="M5 19.5c0-8.5 5.5-14 15-14.5.3 9.8-5.6 15-14 15"/><path d="M5 19.5c2.6-4 6-7 10.5-9.5"/>',
   mail:'<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 6 7.5-6"/>',
   eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
   eyeoff:'<path d="M4 4l16 16M10.6 6A9.6 9.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3 3.7M6.6 7.4C4 9.2 2.5 12 2.5 12S6 18.5 12 18.5c1.6 0 3-.4 4.2-1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/>',
@@ -1207,6 +1263,7 @@ const BADGES = [
   {id:'agua', name:'Bien hidratado', desc:'8 vasos de agua en un día', icon:'drop'},
   {id:'entreno', name:'Entreno completo', desc:'Terminaste una rutina completa', icon:'train'},
   {id:'racha30', name:'Racha de 30', desc:'30 días seguidos cumpliendo', icon:'flame'},
+  {id:'zen', name:'Calma interior', desc:'Tu primera meditación', icon:'wind'},
 ];
 const PLANS = [
   {id:'gratis', n:'Gratis', p:0, d:'Para empezar a crear hábitos.', f:['Hábitos, metas y recordatorios','Pomodoro y temporizadores','Registro mental diario','5 mensajes al día con Nubi']},
@@ -1364,6 +1421,7 @@ if (S.chests === undefined) S.chests = 1;
 S.settings.sfx = Object.assign({ui:true, reward:true, nubi:true, focus:true}, S.settings.sfx || {}); if (S.settings.vol == null) S.settings.vol = .7;
 DEVICES.forEach(d => { if (d.ble) S.devices[d.id] = false; });
 if (S.asst) S.asst = S.asst.filter(m => !m.pending && m.content);
+if (!S.med) S.med = {log:{}, n:0, sound:'lluvia', voice:true, bell:false, dur:{}, feel:[]};
 }
 normS();
 function rollover() {
@@ -2064,10 +2122,9 @@ function renderMental() {
   return `
   <header class="screen-head"><p class="eyebrow">Mental</p><h1 class="h1">¿Cómo estás hoy, ${esc(S.name)}?</h1></header>
   <div class="quote">${slot3d('calm', 112, 126, 142)}<div class="bubble"><p class="eyebrow" style="color:var(--mental);margin-bottom:4px">Frase del día</p><p class="quote-txt">${esc(phrase())}</p><button class="link" data-act="next-phrase">Otra frase</button></div></div>
-  ${ck}${bo}${mindDevCard()}
+  ${ck}${medSection()}${bo}${mindDevCard()}
   <section><div class="sec-head"><h2 class="h2">Tu semana</h2><span class="muted small">Días anteriores: ejemplo</span></div>${weekCharts()}</section>
   ${reasonsBlock()}
-  <button class="card row-btn" data-act="breathe"><span class="ico">${ic('wind', 22)}</span><span><b>Respira 1 minuto</b><small>Inhala 4 segundos y exhala 6. Baja la tensión en el momento.</small></span>${ic('chevron', 18)}</button>
   <section class="card" id="chat-card">
     <div class="chat-head">${slot3d('happy', 84, 96, 108)}<div><h2 class="h2">Habla con Nubi</h2><p class="muted small">Te acompaña con estrés, ansiedad, burnout y enfoque. No sustituye a un psicólogo.</p></div></div>
     <div class="chat" id="chat" aria-live="polite"></div>
@@ -2643,6 +2700,7 @@ document.addEventListener('submit', e => {
 });
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
+  if (!$('#medov').hidden) { if (medRun && medRun.phase === 'run') medFinish(false); else medClose(); return; }
   if (!$('#tour').hidden) { endTour(); return; }
   if ($('#chestov').classList.contains('show')) { closeChest(); return; }
   if ($('#celeb').classList.contains('show')) closeCeleb(); else if ($('#sheet').classList.contains('show')) closeSheet(); else hideNotif();
@@ -4889,6 +4947,306 @@ function scanNeedsAI(img, q, badKey) {
   SFX.close();
 }
 
+
+
+/* ---------- meditation: "Medita y baja el ritmo" (Mental) ----------
+   Three kinds of session. breath: the orb follows a pattern [inhale, hold, exhale, hold] with a soft tone per phase.
+   guided: a script of lines spread over the session (read aloud by the browser voice when on) over a slow breathing orb.
+   open: silent sitting with bells, and a gentle reminder now and then. Background sounds are synthesized in the app's
+   mixer. Finished minutes go to S.med.log (streak, weekly minutes) and to S.mind (the breathing mission). */
+const MED_LEAD = 3;
+const MED = [
+  {id:'pausa', ic:'wind', kind:'breath', min:1, pat:[4, 0, 6, 0], n:['Pausa de 1 minuto', '1-minute pause'], t:['Respiración', 'Breathing'], d:['Inhala 4 segundos y exhala 6. Baja la tensión en el momento.', 'Breathe in for 4 and out for 6. Eases tension right away.'],
+    g:[['Inhala por la nariz mientras el círculo crece, y suelta el aire despacio mientras se encoge.', 'Breathe in through your nose as the circle grows, and slowly let it out as it shrinks.'], ['Deja caer los hombros con cada exhalación.', 'Let your shoulders drop with every out-breath.']]},
+  {id:'478', ic:'leaf', kind:'breath', min:2, choose:[1, 2, 3], pat:[4, 7, 8, 0], n:['Respiración 4-7-8', '4-7-8 breathing'], t:['Ansiedad y sueño', 'Anxiety and sleep'], d:['Inhala 4, sostén 7 y exhala 8. Calma la ansiedad y te ayuda a dormir.', 'In for 4, hold for 7, out for 8. Calms anxiety and helps you sleep.'], hold:true,
+    g:[['Inhala por la nariz en 4, sostén el aire en 7 y suéltalo por la boca en 8, como un suspiro largo.', 'Breathe in through your nose for 4, hold for 7, and let it out through your mouth for 8, like a long sigh.'], ['Si te mareas, respira normal un momento. No hay prisa.', 'If you feel dizzy, breathe normally for a moment. There’s no rush.'], ['Cada exhalación larga le dice a tu cuerpo que puede descansar.', 'Every long out-breath tells your body it can rest.']]},
+  {id:'cuadrada', ic:'shield', kind:'breath', min:4, choose:[2, 4, 6], pat:[4, 4, 4, 4], n:['Respiración cuadrada', 'Box breathing'], t:['Enfoque', 'Focus'], d:['4 segundos en cada lado: inhala, sostén, exhala y sostén. Te centra antes de algo importante.', '4 seconds on each side: in, hold, out, hold. Centers you before something important.'], hold:true,
+    g:[['Imagina un cuadrado: subes al inhalar, cruzas al sostener, bajas al exhalar y cruzas otra vez.', 'Picture a square: up as you breathe in, across as you hold, down as you breathe out, across again.'], ['Tu mente se aclara con cada vuelta.', 'Your mind clears with every round.'], ['Últimas vueltas. Mantén el ritmo, suave.', 'Last rounds. Keep the rhythm, gently.']]},
+  {id:'coherencia', ic:'heart', kind:'breath', min:5, choose:[3, 5, 10], pat:[5.5, 0, 5.5, 0], n:['Coherencia cardiaca', 'Heart coherence'], t:['Equilibrio', 'Balance'], d:['Inhala y exhala 5.5 segundos, unas 6 veces por minuto. Pone en sintonía tu corazón y tu respiración.', 'Breathe in and out for 5.5 seconds, about 6 times a minute. Brings your heart and breath into tune.'],
+    g:[['Respira al ritmo del círculo, sin forzar.', 'Breathe with the circle, without forcing it.'], ['Lleva la atención a tu pecho. Imagina que el aire entra y sale por el corazón.', 'Bring your attention to your chest. Imagine the air flowing in and out through your heart.'], ['Piensa en algo o en alguien que te haga sentir agradecimiento.', 'Think of something or someone you feel grateful for.']]},
+  {id:'ansiedad', ic:'sparkle', kind:'guided', min:3, pat:[4, 0, 6, 0], n:['Suelta la ansiedad', 'Let go of anxiety'], t:['Técnica 5-4-3-2-1', '5-4-3-2-1 technique'], d:['Vuelve al presente con tus cinco sentidos, paso a paso.', 'Come back to the present with your five senses, step by step.'],
+    g:[['Respira profundo. Vamos a volver al presente, paso a paso.', 'Take a deep breath. We’ll come back to the present, step by step.'], ['Mira a tu alrededor y nombra cinco cosas que puedes ver.', 'Look around and name five things you can see.'], ['Ahora, cuatro cosas que puedes tocar. Siente su textura.', 'Now four things you can touch. Feel their texture.'], ['Escucha: tres sonidos que oyes en este momento.', 'Listen: three sounds you can hear right now.'], ['Dos olores que puedas notar, aunque sean suaves.', 'Two smells you can notice, even faint ones.'], ['Y una cosa buena de este momento.', 'And one good thing about this moment.'], ['Respira lento. Estás aquí, en el presente.', 'Breathe slowly. You’re here, in the present.']]},
+  {id:'cuerpo', ic:'user', kind:'guided', min:8, pat:[4, 0, 6, 0], n:['Escaneo corporal', 'Body scan'], t:['Soltar tensión', 'Release tension'], d:['Recorre tu cuerpo de los pies a la cabeza y suelta la tensión parte por parte.', 'Move through your body from feet to head and release tension bit by bit.'],
+    g:[['Busca una postura cómoda, en una silla o acostándote. Si quieres, cierra los ojos.', 'Find a comfortable position, in a chair or lying down. Close your eyes if you like.'], ['Respira hondo por la nariz y suelta el aire despacio por la boca.', 'Breathe in deeply through your nose and slowly out through your mouth.'], ['Lleva tu atención a los pies. Nota cómo se sienten, sin cambiar nada.', 'Bring your attention to your feet. Notice how they feel, without changing anything.'], ['Sube a las piernas: pantorrillas, rodillas, muslos. Deja que pesen.', 'Move up to your legs: calves, knees, thighs. Let them feel heavy.'], ['Siente tu abdomen subir y bajar con cada respiración.', 'Feel your belly rise and fall with each breath.'], ['Nota tu pecho y tu espalda. Si hay tensión, respira hacia ahí y suéltala.', 'Notice your chest and back. If there’s tension, breathe into it and let it go.'], ['Relaja los hombros. Déjalos caer, lejos de las orejas.', 'Relax your shoulders. Let them drop, away from your ears.'], ['Recorre los brazos y las manos hasta la punta de los dedos.', 'Move down your arms and hands to your fingertips.'], ['Suelta la mandíbula, la frente y los ojos. Tu cara está tranquila.', 'Release your jaw, your forehead and your eyes. Your face is calm.'], ['Siente todo tu cuerpo a la vez, respirando, en calma.', 'Feel your whole body at once, breathing, calm.'], ['Poco a poco, mueve los dedos. Cuando quieras, abre los ojos.', 'Slowly move your fingers. Open your eyes whenever you’re ready.']]},
+  {id:'dormir', ic:'moon', kind:'guided', min:10, pat:[4, 0, 7, 0], fade:true, n:['Para dormir', 'For sleep'], t:['Noche', 'Night'], d:['Baja el ritmo del día, respira lento y prepárate para descansar. El sonido se apaga solo al final.', 'Slow down from the day, breathe slowly and get ready to rest. The sound fades out on its own at the end.'],
+    g:[['Acuéstate y deja que la cama sostenga todo tu peso.', 'Lie down and let the bed hold all your weight.'], ['Inhala en cuatro y exhala en siete, más lento que de costumbre.', 'Breathe in for four and out for seven, slower than usual.'], ['Suelta el día. Lo que quedó pendiente puede esperar hasta mañana.', 'Let the day go. Whatever’s left can wait until tomorrow.'], ['Aprieta los puños cinco segundos… y suéltalos. Siente la diferencia.', 'Squeeze your fists for five seconds… and let go. Feel the difference.'], ['Relaja los hombros, el cuello y la cara.', 'Relax your shoulders, your neck and your face.'], ['Imagina un lugar donde te sientas en paz. Quédate ahí un rato.', 'Imagine a place where you feel at peace. Stay there for a while.'], ['Tu respiración se vuelve más lenta, más suave.', 'Your breathing becomes slower, softer.'], ['No tienes que hacer nada más. Solo descansar.', 'There’s nothing else to do. Just rest.'], ['Buenas noches.', 'Good night.']]},
+  {id:'atencion', ic:'clock', kind:'open', min:5, choose:[3, 5, 10, 15, 20], n:['Atención plena', 'Mindfulness'], t:['Meditación libre', 'Open meditation'], d:['Observa tu respiración en silencio. Una campana marca el inicio y el final.', 'Watch your breath in silence. A bell marks the start and the end.'],
+    g:[['Siente el aire entrar y salir. No tienes que cambiarlo.', 'Feel the air come in and go out. You don’t have to change it.'], ['Si tu mente se va, está bien. Vuelve a la respiración, sin juzgarte.', 'If your mind wanders, that’s fine. Come back to your breath, without judging yourself.'], ['Nota dónde sientes más la respiración: la nariz, el pecho o el abdomen.', 'Notice where you feel your breath most: your nose, chest or belly.'], ['Cada vez que regresas, entrenas tu atención.', 'Every time you come back, you train your attention.'], ['Suelta lo que no necesitas en este momento.', 'Let go of what you don’t need right now.']]},
+];
+const MED_SND = [['none', 'Silencio', 'Silence'], ['lluvia', 'Lluvia', 'Rain'], ['mar', 'Mar', 'Sea'], ['suave', 'Ruido suave', 'Soft noise'], ['cuencos', 'Cuencos', 'Singing bowls']];
+let medRun = null, medAmb = null, medWake = null, medRaf = 0, medTick = 0;
+const medS = () => { if (!S.med) S.med = {log:{}, n:0, sound:'lluvia', voice:true, bell:false, dur:{}, feel:[]}; if (!S.med.dur) S.med.dur = {}; return S.med; };
+const medKey = t => dkey(new Date(t));
+const mmss = sec => { sec = Math.max(0, Math.round(sec)); return `${Math.floor(sec / 60)}:${pad(sec % 60)}`; };
+function medWeek() { let m = 0; const L = medS().log; for (let i = 0; i < 7; i++) m += L[medKey(Date.now() - i * 864e5)] || 0; return m; }
+function medStreak() { const L = medS().log; let i = L[todayKey()] ? 0 : 1, n = 0; while (L[medKey(Date.now() - i * 864e5)]) { n++; i++; } return n; }
+const medDur = x => (x.choose && medS().dur[x.id]) || x.min;
+function medPick() {
+  const h = new Date().getHours(), c = S.check;
+  if (h >= 21 || h < 5) return ['dormir', tL('Ya es de noche: prepárate para descansar.', 'It’s night: get ready to rest.')];
+  if (c && c.anx >= 7) return ['ansiedad', tL(`Tu ansiedad hoy está en ${c.anx}/10.`, `Your anxiety today is ${c.anx}/10.`)];
+  if (c && c.stress >= 7) return ['478', tL(`Tu estrés hoy está en ${c.stress}/10.`, `Your stress today is ${c.stress}/10.`)];
+  if (c && c.focus <= 4) return ['cuadrada', tL('Para recuperar el enfoque.', 'To get your focus back.')];
+  if (h < 11) return ['atencion', tL('Empieza el día con calma.', 'Start the day calmly.')];
+  if (h >= 13 && h < 18) return ['coherencia', tL('Una pausa a media tarde recarga tu energía.', 'An afternoon pause recharges your energy.')];
+  return ['pausa', tL('Un minuto basta para bajar el ritmo.', 'One minute is enough to slow down.')];
+}
+function medSection() {
+  const M = medS(), [rid, why] = medPick(), r = MED.find(x => x.id === rid), wk = medWeek(), st = medStreak();
+  return `<section class="card med" id="med"><div class="sec-head"><h2 class="h2">${tL('Medita y baja el ritmo', 'Meditate and slow down')}</h2><span class="muted small">${tL('Con o sin audífonos', 'With or without headphones')}</span></div>
+    <button class="med-hero" data-act="med-open" data-id="${r.id}"><span class="mh-txt"><span class="eyebrow">${tL('Para ti ahora', 'For you now')}</span><b>${tL(r.n[0], r.n[1])}</b><small>${medDur(r)} min · ${esc(why)}</small></span><span class="med-play" aria-hidden="true">${ic('play', 22)}</span></button>
+    <div class="med-grid">${MED.filter(x => x.id !== r.id).map(x => `<button class="med-tile" data-act="med-open" data-id="${x.id}"><span class="mt-ic">${ic(x.ic, 18)}</span><b>${tL(x.n[0], x.n[1])}</b><small>${medDur(x)} min · ${tL(x.t[0], x.t[1])}</small></button>`).join('')}</div>
+    <div class="med-stats"><div><b>${st}</b><span>${tL(st === 1 ? 'día seguido' : 'días seguidos', st === 1 ? 'day streak' : 'days in a row')}</span></div><div><b>${wk}</b><span>${tL('min esta semana', 'min this week')}</span></div><div><b>${M.n}</b><span>${tL(M.n === 1 ? 'sesión' : 'sesiones', M.n === 1 ? 'session' : 'sessions')}</span></div></div>
+  </section>`;
+}
+
+/* audio: meditation plays what the person picks here even if app sounds are off in Perfil (it still follows the volume) */
+function medForce(fn) { const s0 = S.settings.sound, sf = S.settings.sfx, f0 = sf && sf.focus; S.settings.sound = true; if (sf) sf.focus = true; try { return fn(); } finally { S.settings.sound = s0; if (sf) sf.focus = f0; } }
+const medLoud = () => !!(medRun && (medRun.snd !== 'none' || S.settings.sound));
+function medTone(k, secs) {
+  if (!medLoud()) return;
+  medForce(() => {
+    if (k === 'in') note(220, 0, Math.min(secs, 4), {type:'sine', f2:330, vol:.035, attack:.9, wet:.5, cat:'focus'});
+    else if (k === 'out') note(330, 0, Math.min(secs, 5), {type:'sine', f2:196, vol:.03, attack:.6, wet:.5, cat:'focus'});
+    else note(262, 0, 1.2, {type:'sine', vol:.012, attack:.3, wet:.6, cat:'focus'});
+  });
+}
+function medBowl(f, vol = .05, at = 0) { medForce(() => { note(f, at, 7, {type:'sine', vol, attack:.008, wet:.7, cat:'focus'}); note(f * 2.76, at, 4.5, {type:'sine', vol:vol * .38, attack:.008, wet:.7, cat:'focus'}); note(f * 5.4, at, 2.2, {type:'sine', vol:vol * .14, attack:.006, wet:.7, cat:'focus'}); note(f * 1.004, at, 7, {type:'sine', vol:vol * .5, attack:.02, wet:.7, cat:'focus'}); }); }
+function medBell(kind) { if (!medLoud()) return; if (kind === 2) { medBowl(392, .045); medBowl(392, .04, 2.6); } else medBowl(kind === 1 ? 523.25 : 392, kind === 1 ? .03 : .05); }
+const MEDBUF = {};
+function medBuf(kind) {
+  if (MEDBUF[kind]) return MEDBUF[kind];
+  const n = actx.sampleRate * 4, b = actx.createBuffer(1, n, actx.sampleRate), d = b.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < n; i++) { const w = Math.random() * 2 - 1; if (kind === 'brown') { last = (last + .02 * w) / 1.02; d[i] = last * 3.5; } else d[i] = w; }
+  /* fade the loop seam */
+  for (let i = 0; i < 2000; i++) { const k = i / 2000; d[i] *= k; d[n - 1 - i] *= k; }
+  return (MEDBUF[kind] = b);
+}
+function medAmbStart(k) {
+  medAmbStop(.8);
+  if (k === 'none') return;
+  if (!medForce(() => au('focus'))) return;
+  try {
+    const t = actx.currentTime, out = actx.createGain(), me = {k, out, nodes:[], timers:[], duck:1};
+    out.gain.setValueAtTime(0, t); out.gain.linearRampToValueAtTime(1, t + 1.8); out.connect(AU.master);
+    const loop = kind => { const x = actx.createBufferSource(); x.buffer = medBuf(kind); x.loop = true; x.start(t, Math.random() * 3); me.nodes.push(x); return x; };
+    const filt = (type, f, q = .7) => { const x = actx.createBiquadFilter(); x.type = type; x.frequency.value = f; x.Q.value = q; me.nodes.push(x); return x; };
+    const gain = v => { const x = actx.createGain(); x.gain.value = v; me.nodes.push(x); return x; };
+    const chain = (...a) => { for (let i = 0; i < a.length - 1; i++) a[i].connect(a[i + 1]); };
+    const lfo = (rate, depth, target) => { const o = actx.createOscillator(), g = gain(depth); o.frequency.value = rate; o.connect(g); g.connect(target); o.start(t); me.nodes.push(o); };
+    if (k === 'lluvia') {
+      chain(loop('white'), filt('highpass', 600), filt('lowpass', 5200), gain(.17), out);
+      chain(loop('brown'), filt('lowpass', 500), gain(.24), out);
+      const drop = () => { if (medAmb !== me) return; medForce(() => noise(0, .02 + Math.random() * .05, {type:'bandpass', f:2200 + Math.random() * 4200, q:3, vol:.008 + Math.random() * .018, cat:'focus', wet:.3})); me.timers.push(setTimeout(drop, 35 + Math.random() * 200)); };
+      me.timers.push(setTimeout(drop, 400));
+    } else if (k === 'mar') {
+      const g1 = gain(.24); chain(loop('brown'), filt('lowpass', 750), g1, out); lfo(.075, .2, g1.gain);
+      const g2 = gain(.05); chain(loop('white'), filt('bandpass', 1400, .5), g2, out); lfo(.075, .045, g2.gain);
+      const g3 = gain(.12); chain(loop('brown'), filt('lowpass', 380), g3, out); lfo(.047, .1, g3.gain);
+    } else if (k === 'suave') {
+      chain(loop('brown'), filt('lowpass', 520), gain(.45), out);
+    } else if (k === 'cuencos') {
+      chain(loop('brown'), filt('lowpass', 300), gain(.2), out);
+      const F = [174.61, 196, 220, 261.63, 293.66];
+      const strike = () => { if (medAmb !== me) return; medBowl(F[Math.floor(Math.random() * F.length)], .05 + Math.random() * .02); me.timers.push(setTimeout(strike, 9000 + Math.random() * 7000)); };
+      me.timers.push(setTimeout(strike, 1400));
+    }
+    medAmb = me;
+  } catch (e) { console.warn('ambient', e); }
+}
+function medAmbVol(v, secs = .8) { const m = medAmb; if (!m) return; try { const t = actx.currentTime; m.out.gain.cancelScheduledValues(t); m.out.gain.setValueAtTime(m.out.gain.value, t); m.out.gain.setTargetAtTime(Math.max(0, v), t, secs / 3); } catch (e) {} }
+function medAmbStop(fade = 1.2) {
+  const m = medAmb; if (!m) return; medAmb = null; m.timers.forEach(clearTimeout);
+  try { const t = actx.currentTime; m.out.gain.cancelScheduledValues(t); m.out.gain.setValueAtTime(m.out.gain.value, t); m.out.gain.setTargetAtTime(0, t, fade / 4); } catch (e) {}
+  setTimeout(() => { m.nodes.forEach(n => { try { n.stop && n.stop(); } catch (e) {} try { n.disconnect(); } catch (e) {} }); try { m.out.disconnect(); } catch (e) {} }, fade * 1000 + 300);
+}
+/* the browser's own voice reads the guidance, softer and slower; the background dips while it speaks */
+const medCanSpeak = () => 'speechSynthesis' in window && typeof SpeechSynthesisUtterance === 'function';
+function medVoicePick() {
+  try { const vs = speechSynthesis.getVoices(), l = S.lang === 'en' ? 'en' : 'es', of = v => (v.lang || '').toLowerCase().replace('_', '-');
+    return vs.find(v => of(v) === (l === 'es' ? 'es-mx' : 'en-us') && /natural|online|google/i.test(v.name)) || vs.find(v => of(v) === (l === 'es' ? 'es-mx' : 'en-us')) || vs.find(v => of(v).startsWith(l) && /natural|online|google/i.test(v.name)) || vs.find(v => of(v).startsWith(l)) || null; } catch (e) { return null; }
+}
+function medSay(text) {
+  if (!medRun || !medS().voice || !medCanSpeak()) return;
+  try {
+    const u = new SpeechSynthesisUtterance(text), v = medVoicePick();
+    u.lang = v ? v.lang : (S.lang === 'en' ? 'en-US' : 'es-MX'); try { if (v) u.voice = v; } catch (e) {} u.rate = .86; u.pitch = .95; u.volume = .95;
+    u.onstart = () => medAmbVol(.45); u.onend = u.onerror = () => { if (medRun && !medRun.pAt) medAmbVol(1); };
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch (e) {}
+}
+const medHush = () => { try { medCanSpeak() && speechSynthesis.cancel(); } catch (e) {} };
+async function medWakeOn() { try { if ('wakeLock' in navigator && !medWake) { medWake = await navigator.wakeLock.request('screen'); medWake.addEventListener('release', () => { medWake = null; }); } } catch (e) {} }
+function medWakeOff() { try { medWake && medWake.release(); } catch (e) {} medWake = null; }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && medRun && medRun.phase === 'run') medWakeOn(); });
+
+/* timing: elapsed seconds, frozen while paused (tests may speed it up with window.__medSpeed) */
+const medEl = () => { const r = medRun; if (!r || !r.t0) return 0; return ((r.pAt || performance.now()) - r.t0 - r.paused) / 1000 * (window.__medSpeed || 1); };
+function medPhase(pat, t) {
+  const cyc = pat[0] + pat[1] + pat[2] + pat[3], n = Math.floor(t / cyc); let u = t - n * cyc;
+  for (let i = 0; i < 4; i++) { if (u < pat[i]) return {k:['in', 'hold', 'out', 'rest'][i], i, p:u / pat[i], left:pat[i] - u, n}; u -= pat[i]; }
+  return {k:'in', i:0, p:0, left:pat[0], n:n + 1};
+}
+const MED_WORD = {in:['Inhala', 'Breathe in'], hold:['Sostén', 'Hold'], out:['Exhala', 'Breathe out'], rest:['Sostén', 'Hold']};
+
+function medOpen(id) {
+  const x = MED.find(m => m.id === id); if (!x) return;
+  closeSheet(); hideSay(); medClose(true);
+  medRun = {x, dur:medDur(x), phase:'setup', snd:S.settings.sound ? medS().sound : 'none'};
+  const ov = $('#medov'); ov.hidden = false; medPaint(); ov.scrollTop = 0; SFX.open();
+}
+function medPaint() {
+  const r = medRun, ov = $('#medov'); if (!r || !ov) return;
+  const x = r.x, M = medS(), name = tL(x.n[0], x.n[1]);
+  const top = (right = '<span class="sp"></span>') => `<div class="mo-top"><button class="icon-btn" data-act="${r.phase === 'run' ? 'med-end' : 'med-close'}" aria-label="${tL('Cerrar', 'Close')}">${ic('x', 18)}</button><h2 class="h2">${esc(name)}</h2>${right}</div>`;
+  if (r.phase === 'setup') {
+    ov.innerHTML = `${top()}
+      <div class="mo-body"><div class="orb-wrap sm"><div class="orb"></div>${mascot('calm', 104)}</div>
+        <p class="mo-desc">${tL(x.d[0], x.d[1])}</p>
+        <div class="mo-set">
+          ${x.choose ? `<div><span class="label">${tL('Duración', 'Length')}</span><div class="chips">${x.choose.map(m => `<button class="chip-btn" data-act="med-dur" data-m="${m}" aria-pressed="${r.dur === m}">${m} min</button>`).join('')}</div></div>` : ''}
+          <div><span class="label">${tL('Sonido de fondo', 'Background sound')}</span><div class="chips">${MED_SND.map(([k, es, en]) => `<button class="chip-btn" data-act="med-snd" data-k="${k}" aria-pressed="${r.snd === k}">${tL(es, en)}</button>`).join('')}</div></div>
+          ${medCanSpeak() && x.kind !== 'breath' ? `<div class="set-row"><div><b>${tL('Voz guía', 'Voice guide')}</b><span class="muted small">${tL('Te lee cada paso en voz baja', 'Reads each step to you softly')}</span></div>${sw(M.voice, 'med-voice', '', tL('Voz guía', 'Voice guide'))}</div>` : ''}
+          ${x.kind === 'open' ? `<div class="set-row"><div><b>${tL('Campana cada minuto', 'Bell every minute')}</b><span class="muted small">${tL('Un toque suave para saber cuánto llevas', 'A soft chime so you know how long it’s been')}</span></div>${sw(M.bell, 'med-bell', '', tL('Campana cada minuto', 'Bell every minute'))}</div>` : ''}
+          ${x.hold ? `<p class="mo-safe">${tL('Si sostener el aire te incomoda, respira normal y sigue el círculo cuando quieras.', 'If holding your breath feels uncomfortable, breathe normally and rejoin the circle when you like.')}</p>` : ''}
+        </div></div>
+      <button class="btn full" data-act="med-start">${ic('play', 18)} ${tL(`Empezar · ${r.dur} min`, `Start · ${r.dur} min`)}</button>`;
+    return;
+  }
+  if (r.phase === 'run') {
+    ov.innerHTML = `${top(`<button class="icon-btn" data-act="med-mute" aria-label="${tL('Sonido de fondo', 'Background sound')}" aria-pressed="${!!r.muted}">${ic(r.muted ? 'mute' : 'sound', 18)}</button>`)}
+      <div class="mo-body"><div class="orb-wrap"><div class="orb" id="mo-orb"></div><div class="orb-ring"></div>${mascot('calm', 112)}</div>
+        <p class="mo-phase" id="mo-phase" aria-live="polite">${tL('Prepárate', 'Get ready')}</p><p class="mo-count" id="mo-count"></p>
+        <p class="mo-guide" id="mo-guide"></p>${breathLiveBox()}</div>
+      <div class="mo-prog"><i id="mo-bar"></i></div><div class="mo-time"><span id="mo-el">0:00</span><span id="mo-left">-${mmss(r.total)}</span></div>
+      <div class="mo-ctl"><button class="btn ghost" data-act="med-pause" id="mo-pause">${ic('pause', 16)} ${tL('Pausa', 'Pause')}</button><button class="btn ghost" data-act="med-end">${tL('Terminar', 'End')}</button></div>`;
+    setTimeout(() => paintLive(true), 40);
+    return;
+  }
+  const st = medStreak(), lines = r.meas || [];
+  ov.innerHTML = `${top()}
+    <div class="mo-body">${mascot('celebrate', 128)}
+      <h1 class="h1">${r.done ? tL('Bien hecho', 'Well done') : tL('Cuenta igual', 'It still counts')}</h1>
+      <p class="mo-desc">${tL(`${r.min} min para ti. Ganaste ${r.xp} XP.`, `${r.min} min for you. You earned ${r.xp} XP.`)}</p>
+      <div class="mo-res">${st ? `<span class="chip">${ic('flame', 13)} ${tL(st === 1 ? '1 día meditando' : `${st} días seguidos meditando`, st === 1 ? '1 day meditating' : `${st} days in a row`)}</span>` : ''}<span class="chip">${ic('clock', 13)} ${tL(`${medWeek()} min esta semana`, `${medWeek()} min this week`)}</span></div>
+      ${lines.length ? `<p class="mo-say">${ic('heart', 14)} ${esc(tL('Medido con tu reloj: ', 'Measured with your watch: ') + lines.join(tL(' y ', ' and ')) + '.')}</p>` : ''}
+      <p class="label" style="margin-top:6px">${tL('¿Cómo te sientes ahora?', 'How do you feel now?')}</p>
+      <div class="mo-feel">${[[1, 'Con más calma', 'Calmer'], [0, 'Igual que antes', 'About the same'], [-1, 'Con más inquietud', 'More restless']].map(([v, es, en]) => `<button class="btn ghost full" data-act="med-feel" data-v="${v}" aria-pressed="${r.feel === v}">${tL(es, en)}</button>`).join('')}</div>
+      <p class="mo-say" id="mo-feelres">${r.feelTxt || ''}</p>
+      ${r.feel === -1 ? `<button class="btn small" data-act="med-talk" data-text="${esc(tL('Medité, pero sigo con inquietud.', 'I meditated but I still feel restless.'))}">${ic('send', 14)} ${tL('Hablar con Nubi', 'Talk with Nubi')}</button>` : ''}
+    </div>
+    <button class="btn full" data-act="med-close">${tL('Volver', 'Back')}</button>`;
+}
+function medStart() {
+  const r = medRun; if (!r || r.phase !== 'setup') return;
+  Object.assign(r, {phase:'run', t0:performance.now(), paused:0, pAt:0, total:r.dur * 60, lastPh:'', lastStep:-1, lastMin:0, base:{hrv:rmssd(), calm:live.calm, hr:live.hr}});
+  medS().last = r.x.id; save();
+  if (!medAmb && r.snd !== 'none') medAmbStart(r.snd);
+  medPaint(); medWakeOn(); medBell(0); buzz(15);
+  clearInterval(medTick); medTick = setInterval(medStep, 200); cancelAnimationFrame(medRaf); medRaf = requestAnimationFrame(medFrame);
+  medStep();
+}
+function medGuide(text) {
+  const g = $('#mo-guide'); if (!g) return;
+  if (RM || !g.textContent) { g.textContent = text; return; }
+  g.classList.add('fade'); setTimeout(() => { const g2 = $('#mo-guide'); if (g2) { g2.textContent = text; g2.classList.remove('fade'); } }, 650);
+}
+function medStep() {
+  const r = medRun; if (!r || r.phase !== 'run' || r.pAt) return;
+  const e = medEl(), x = r.x;
+  if (e >= r.total) { medFinish(true); return; }
+  const el = $('#mo-el'), lf = $('#mo-left'), bar = $('#mo-bar');
+  if (el) el.textContent = mmss(e); if (lf) lf.textContent = '-' + mmss(r.total - e); if (bar) bar.style.width = (e / r.total * 100).toFixed(2) + '%';
+  const lines = x.g || [];
+  if (lines.length) {
+    const si = x.kind === 'open' ? Math.min(Math.floor(e / 75), 999) : Math.min(lines.length - 1, Math.floor(e / (r.total / lines.length)));
+    if (si !== r.lastStep) { r.lastStep = si; const L = lines[si % lines.length], txt = tL(L[0], L[1]); medGuide(txt); if (x.kind !== 'breath' && (x.kind !== 'open' || si === 0 || si % 2 === 0)) medSay(txt); }
+  }
+  const ph = $('#mo-phase'), ct = $('#mo-count');
+  if (x.pat) {
+    const tb = e - MED_LEAD;
+    if (tb < 0) { if (ct) ct.textContent = String(Math.ceil(-tb)); return; }
+    const p = medPhase(x.pat, tb), key = p.n + p.k;
+    if (key !== r.lastPh) { r.lastPh = key; if (ph) ph.textContent = tL(MED_WORD[p.k][0], MED_WORD[p.k][1]); if (x.kind === 'breath') { medTone(p.k, x.pat[p.i]); buzz(p.k === 'in' ? 14 : 8); } }
+    if (ct) ct.textContent = x.kind === 'breath' ? String(Math.max(1, Math.ceil(p.left))) : '';
+  } else {
+    const mi = Math.floor(e / 60);
+    if (ph && !r.lastPh) { r.lastPh = 'open'; ph.textContent = tL('Respira con calma', 'Breathe easy'); }
+    if (ct) ct.textContent = tL(`Minuto ${mi + 1} de ${r.dur}`, `Minute ${mi + 1} of ${r.dur}`);
+    if (mi > r.lastMin) { r.lastMin = mi; if (medS().bell) medBell(1); }
+  }
+}
+function medFrame() {
+  const r = medRun; if (!r || r.phase !== 'run') return;
+  const o = $('#mo-orb');
+  if (o) {
+    let sc = .62;
+    if (r.x.pat) { const tb = medEl() - MED_LEAD; if (tb >= 0) { const p = medPhase(r.x.pat, tb), ez = .5 - Math.cos(Math.PI * p.p) / 2; sc = p.k === 'in' ? .62 + .38 * ez : p.k === 'hold' ? 1 : p.k === 'out' ? 1 - .38 * ez : .62; } }
+    else sc = .82 + .05 * Math.sin(medEl() / 1.6);
+    o.style.transform = `scale(${sc.toFixed(3)})`;
+  }
+  medRaf = requestAnimationFrame(medFrame);
+}
+function medMeasure(b) {
+  if (!b || !(BLE.hr || BLE.muse)) return [];
+  const hv = rmssd(), out = [];
+  if (BLE.hr && b.hr && live.hr) out.push(live.hr < b.hr ? tL(`tu pulso bajó de ${b.hr} a ${live.hr} lpm`, `your pulse dropped from ${b.hr} to ${live.hr} bpm`) : tL(`tu pulso quedó en ${live.hr} lpm`, `your pulse is at ${live.hr} bpm`));
+  if (BLE.hr && b.hrv != null && hv != null) out.push(hv > b.hrv ? tL(`tu VFC subió de ${b.hrv} a ${hv} ms`, `your HRV rose from ${b.hrv} to ${hv} ms`) : tL(`tu VFC está en ${hv} ms`, `your HRV is ${hv} ms`));
+  if (BLE.muse && b.calm != null && live.calm != null) out.push(tL(`tu calma pasó de ${Math.round(b.calm)} % a ${Math.round(live.calm)} %`, `your calm went from ${Math.round(b.calm)}% to ${Math.round(live.calm)}%`));
+  return out;
+}
+function medFinish(done) {
+  const r = medRun; if (!r || r.phase !== 'run') return;
+  const e = Math.min(medEl(), r.total);
+  clearInterval(medTick); cancelAnimationFrame(medRaf); medWakeOff(); medHush();
+  if (!done && e < 45) { medClose(); return; }
+  const min = done ? r.dur : Math.max(1, Math.round(e / 60));
+  medBell(2); medAmbStop(r.x.fade && done ? 25 : 5);
+  const M = medS(), k = todayKey();
+  M.log[k] = (M.log[k] || 0) + min; M.n = (M.n || 0) + 1;
+  Object.keys(M.log).sort().slice(0, -120).forEach(d => delete M.log[d]);
+  mindLog(min);
+  const xp = Math.min(40, 5 + min * 3);
+  Object.assign(r, {phase:'end', done, min, xp, meas:medMeasure(r.base)});
+  addXP(xp);
+  if (!S.badges.zen) unlock('zen');
+  medPaint(); $('#medov').scrollTop = 0; buzz([20, 60, 20]);
+}
+function medClose(quiet) {
+  const r = medRun;
+  clearInterval(medTick); cancelAnimationFrame(medRaf); medWakeOff(); medHush(); medAmbStop(1.2);
+  medRun = null; const ov = $('#medov'); if (ov) { ov.hidden = true; ov.innerHTML = ''; }
+  if (quiet) return;
+  SFX.close();
+  if (current === 'mental') rerender();
+  if (r && r.phase === 'end') setTimeout(() => { P3 && P3.ok && P3.ok() && P3.play('idle'); nubiSay(r.feel === -1 ? tL('Gracias por darte este rato. Aquí sigo si quieres platicar.', 'Thanks for giving yourself this time. I’m here if you want to talk.') : tL(`¡${r.min} min para ti! Tu mente te lo agradece.`, `${r.min} min for you! Your mind thanks you.`)); }, 500);
+}
+Object.assign(A, {
+  'med-open': t => medOpen(t.dataset.id),
+  'med-close': () => medClose(),
+  'med-start': () => medStart(),
+  'med-end': () => { if (medRun && medRun.phase === 'run') medFinish(false); else medClose(); },
+  'med-dur': t => { const r = medRun; if (!r) return; r.dur = +t.dataset.m; medS().dur[r.x.id] = r.dur; save(); SFX.tap(); medPaint(); },
+  'med-snd': t => { const r = medRun; if (!r) return; r.snd = t.dataset.k; if (r.snd !== 'none') medS().sound = r.snd; save(); medAmbStart(r.snd); medPaint(); },
+  'med-voice': t => { const M = medS(); M.voice = !M.voice; save(); t.setAttribute('aria-checked', M.voice); if (!M.voice) medHush(); },
+  'med-bell': t => { const M = medS(); M.bell = !M.bell; save(); t.setAttribute('aria-checked', M.bell); if (M.bell) medBell(1); },
+  'med-mute': t => { const r = medRun; if (!r) return; r.muted = !r.muted; medAmbVol(r.muted ? .0001 : 1); t.setAttribute('aria-pressed', r.muted); t.innerHTML = ic(r.muted ? 'mute' : 'sound', 18); },
+  'med-pause': t => {
+    const r = medRun; if (!r || r.phase !== 'run') return;
+    if (r.pAt) { r.paused += performance.now() - r.pAt; r.pAt = 0; if (!r.muted) medAmbVol(1); SFX.start(); }
+    else { r.pAt = performance.now(); medHush(); medAmbVol(r.muted ? .0001 : .25); SFX.pause(); const ph = $('#mo-phase'); if (ph) { ph.textContent = tL('En pausa', 'Paused'); r.lastPh = ''; } }
+    t.innerHTML = r.pAt ? `${ic('play', 16)} ${tL('Seguir', 'Resume')}` : `${ic('pause', 16)} ${tL('Pausa', 'Pause')}`;
+  },
+  'med-feel': t => {
+    const r = medRun; if (!r) return; const v = +t.dataset.v, M = medS();
+    r.feel = v; M.feel = [...(M.feel || []), {d:todayKey(), id:r.x.id, v}].slice(-60); save(); SFX.tap();
+    r.feelTxt = v === 1 ? tL('Qué bueno. Vuelve aquí cada vez que necesites bajar el ritmo.', 'Great. Come back whenever you need to slow down.') : v === 0 ? tL('Está bien. A veces el cambio se nota después de unos días. Puedes probar otra práctica.', 'That’s okay. Sometimes the change shows after a few days. You can try another practice.') : tL('Gracias por decírmelo. Si algo te inquieta, hablarlo ayuda.', 'Thanks for telling me. If something is bothering you, talking helps.');
+    medPaint();
+  },
+  'med-talk': t => { const txt = t.dataset.text; medClose(); toChat(txt); },
+});
+Object.assign(EN, {'Calma interior':'Inner calm', 'Tu primera meditación':'Your first meditation'});
 
 /* ---------- accounts: sign up, sign in and progress per account ----------
    Cloud mode (window.NB_FIREBASE from config.js): Firebase Authentication (email + password, or Google) and each
